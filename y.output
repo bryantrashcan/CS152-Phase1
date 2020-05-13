@@ -1,0 +1,2388 @@
+Grammar
+
+    0 $accept: program_start $end
+
+    1 program_start: functions
+
+    2 functions: %empty
+    3          | function functions
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    5 declare_loop: %empty
+    6             | IDENT ident_loop COLON dclr_choice INTEGER SEMICOLON declare_loop
+
+    7 ident_loop: %empty
+    8           | COMMA IDENT ident_loop
+
+    9 dclr_choice: %empty
+   10            | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF
+
+   11 dclr_choice2: %empty
+   12             | L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET
+
+   13 stmt_loop: stmt_options SEMICOLON choose_tostop
+
+   14 choose_tostop: %empty
+   15              | stmt_loop
+
+   16 stmt_options: s1
+   17             | s2
+   18             | s3
+   19             | s4
+   20             | s5
+   21             | s6
+   22             | s7
+   23             | s8
+   24             | s9
+
+   25 s1: var ASSIGN expression
+
+   26 s2: IF bool_expr THEN stmt_options SEMICOLON s2_choice ENDIF
+
+   27 s2_choice: %empty
+   28          | stmt_options SEMICOLON s2_choice
+   29          | ELSE stmt_options SEMICOLON s2_choice2
+
+   30 s2_choice2: %empty
+   31           | stmt_options SEMICOLON s2_choice2
+
+   32 s3: WHILE bool_expr BEGINLOOP stmt_options SEMICOLON s3_choice ENDLOOP
+
+   33 s3_choice: %empty
+   34          | stmt_options SEMICOLON s3_choice
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON s4_choice ENDLOOP WHILE bool_expr
+
+   36 s4_choice: %empty
+   37          | stmt_options SEMICOLON s4_choice
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+   39 s5_choice: %empty
+   40          | stmt_options SEMICOLON s5_choice
+
+   41 s6: READ var s6_choice
+
+   42 s6_choice: %empty
+   43          | COMMA var s6_choice
+
+   44 s7: WRITE var s7_choice
+
+   45 s7_choice: %empty
+   46          | COMMA var s7_choice
+
+   47 s8: CONTINUE
+
+   48 s9: RETURN expression
+
+   49 bool_expr: relation_and_expr bool_choice
+
+   50 bool_choice: %empty
+   51            | OR relation_and_expr bool_choice
+
+   52 relation_and_expr: relation_expr relandexpr_choice
+
+   53 relandexpr_choice: %empty
+   54                  | AND relation_expr relandexpr_choice
+
+   55 relation_expr: rel_choice
+   56              | NOT rel_choice
+
+   57 rel_choice: expression comp expression
+   58           | TRUE
+   59           | FALSE
+   60           | L_PAREN bool_expr R_PAREN
+
+   61 comp: EQ
+   62     | NEQ
+   63     | LT
+   64     | GT
+   65     | LTE
+   66     | GTE
+
+   67 var: IDENT var_choice
+
+   68 var_choice: %empty
+   69           | L_SQUARE_BRACKET expression R_SQUARE_BRACKET var_choice2
+
+   70 var_choice2: %empty
+   71            | L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+
+   72 expression: multiplicative_expression expr_choice
+
+   73 expr_choice: %empty
+   74            | expr_choice2 multiplicative_expression expr_choice
+
+   75 expr_choice2: ADD
+   76             | SUB
+
+   77 multiplicative_expression: term mult_choice
+
+   78 mult_choice: %empty
+   79            | mult_choice2 term mult_choice
+
+   80 mult_choice2: MOD
+   81             | DIV
+   82             | MULT
+
+   83 term: term_choice
+   84     | SUB term_choice
+   85     | IDENT L_PAREN term_choice2 R_PAREN
+
+   86 term_choice: var
+   87            | NUMBER
+   88            | L_PAREN expression R_PAREN
+
+   89 term_choice2: %empty
+   90             | expression term_comma
+
+   91 term_comma: %empty
+   92           | COMMA term_choice2
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+FUNCTION (258) 4
+BEGIN_PARAMS (259) 4
+END_PARAMS (260) 4
+BEGIN_LOCALS (261) 4
+END_LOCALS (262) 4
+BEGIN_BODY (263) 4
+END_BODY (264) 4
+INTEGER (265) 6
+ARRAY (266) 10
+OF (267) 10
+IF (268) 26
+THEN (269) 26
+ENDIF (270) 26
+ELSE (271) 29
+WHILE (272) 32 35
+DO (273) 35
+BEGINLOOP (274) 32 35 38
+ENDLOOP (275) 32 35 38
+CONTINUE (276) 47
+FOR (277) 38
+READ (278) 41
+WRITE (279) 44
+RETURN (280) 48
+AND (281) 54
+OR (282) 51
+NOT (283) 56
+TRUE (284) 58
+FALSE (285) 59
+SUB (286) 76 84
+ADD (287) 75
+MULT (288) 82
+DIV (289) 81
+MOD (290) 80
+EQ (291) 61
+NEQ (292) 62
+LT (293) 63
+GT (294) 64
+LTE (295) 65
+GTE (296) 66
+SEMICOLON (297) 4 6 13 26 28 29 31 32 34 35 37 38 40
+COLON (298) 6
+COMMA (299) 8 43 46 92
+L_PAREN (300) 60 85 88
+R_PAREN (301) 60 85 88
+L_SQUARE_BRACKET (302) 10 12 69 71
+R_SQUARE_BRACKET (303) 10 12 69 71
+ASSIGN (304) 25 38
+NUMBER (305) 10 12 38 87
+IDENT (306) 4 6 8 67 85
+
+
+Nonterminals, with rules where they appear
+
+$accept (52)
+    on left: 0
+program_start (53)
+    on left: 1, on right: 0
+functions (54)
+    on left: 2 3, on right: 1 3
+function (55)
+    on left: 4, on right: 3
+declare_loop (56)
+    on left: 5 6, on right: 4 6
+ident_loop (57)
+    on left: 7 8, on right: 6 8
+dclr_choice (58)
+    on left: 9 10, on right: 6
+dclr_choice2 (59)
+    on left: 11 12, on right: 10
+stmt_loop (60)
+    on left: 13, on right: 4 15
+choose_tostop (61)
+    on left: 14 15, on right: 13
+stmt_options (62)
+    on left: 16 17 18 19 20 21 22 23 24, on right: 13 26 28 29 31 32
+    34 35 37 38 40
+s1 (63)
+    on left: 25, on right: 16
+s2 (64)
+    on left: 26, on right: 17
+s2_choice (65)
+    on left: 27 28 29, on right: 26 28
+s2_choice2 (66)
+    on left: 30 31, on right: 29 31
+s3 (67)
+    on left: 32, on right: 18
+s3_choice (68)
+    on left: 33 34, on right: 32 34
+s4 (69)
+    on left: 35, on right: 19
+s4_choice (70)
+    on left: 36 37, on right: 35 37
+s5 (71)
+    on left: 38, on right: 20
+s5_choice (72)
+    on left: 39 40, on right: 38 40
+s6 (73)
+    on left: 41, on right: 21
+s6_choice (74)
+    on left: 42 43, on right: 41 43
+s7 (75)
+    on left: 44, on right: 22
+s7_choice (76)
+    on left: 45 46, on right: 44 46
+s8 (77)
+    on left: 47, on right: 23
+s9 (78)
+    on left: 48, on right: 24
+bool_expr (79)
+    on left: 49, on right: 26 32 35 38 60
+bool_choice (80)
+    on left: 50 51, on right: 49 51
+relation_and_expr (81)
+    on left: 52, on right: 49 51
+relandexpr_choice (82)
+    on left: 53 54, on right: 52 54
+relation_expr (83)
+    on left: 55 56, on right: 52 54
+rel_choice (84)
+    on left: 57 58 59 60, on right: 55 56
+comp (85)
+    on left: 61 62 63 64 65 66, on right: 57
+var (86)
+    on left: 67, on right: 25 38 41 43 44 46 86
+var_choice (87)
+    on left: 68 69, on right: 67
+var_choice2 (88)
+    on left: 70 71, on right: 69
+expression (89)
+    on left: 72, on right: 25 38 48 57 69 71 88 90
+expr_choice (90)
+    on left: 73 74, on right: 72 74
+expr_choice2 (91)
+    on left: 75 76, on right: 74
+multiplicative_expression (92)
+    on left: 77, on right: 72 74
+mult_choice (93)
+    on left: 78 79, on right: 77 79
+mult_choice2 (94)
+    on left: 80 81 82, on right: 79
+term (95)
+    on left: 83 84 85, on right: 77 79
+term_choice (96)
+    on left: 86 87 88, on right: 83 84
+term_choice2 (97)
+    on left: 89 90, on right: 85 92
+term_comma (98)
+    on left: 91 92, on right: 90
+
+
+State 0
+
+    0 $accept: . program_start $end
+
+    FUNCTION  shift, and go to state 1
+
+    $default  reduce using rule 2 (functions)
+
+    program_start  go to state 2
+    functions      go to state 3
+    function       go to state 4
+
+
+State 1
+
+    4 function: FUNCTION . IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    IDENT  shift, and go to state 5
+
+
+State 2
+
+    0 $accept: program_start . $end
+
+    $end  shift, and go to state 6
+
+
+State 3
+
+    1 program_start: functions .
+
+    $default  reduce using rule 1 (program_start)
+
+
+State 4
+
+    3 functions: function . functions
+
+    FUNCTION  shift, and go to state 1
+
+    $default  reduce using rule 2 (functions)
+
+    functions  go to state 7
+    function   go to state 4
+
+
+State 5
+
+    4 function: FUNCTION IDENT . SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    SEMICOLON  shift, and go to state 8
+
+
+State 6
+
+    0 $accept: program_start $end .
+
+    $default  accept
+
+
+State 7
+
+    3 functions: function functions .
+
+    $default  reduce using rule 3 (functions)
+
+
+State 8
+
+    4 function: FUNCTION IDENT SEMICOLON . BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    BEGIN_PARAMS  shift, and go to state 9
+
+
+State 9
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS . declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    IDENT  shift, and go to state 10
+
+    $default  reduce using rule 5 (declare_loop)
+
+    declare_loop  go to state 11
+
+
+State 10
+
+    6 declare_loop: IDENT . ident_loop COLON dclr_choice INTEGER SEMICOLON declare_loop
+
+    COMMA  shift, and go to state 12
+
+    $default  reduce using rule 7 (ident_loop)
+
+    ident_loop  go to state 13
+
+
+State 11
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop . END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    END_PARAMS  shift, and go to state 14
+
+
+State 12
+
+    8 ident_loop: COMMA . IDENT ident_loop
+
+    IDENT  shift, and go to state 15
+
+
+State 13
+
+    6 declare_loop: IDENT ident_loop . COLON dclr_choice INTEGER SEMICOLON declare_loop
+
+    COLON  shift, and go to state 16
+
+
+State 14
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS . BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    BEGIN_LOCALS  shift, and go to state 17
+
+
+State 15
+
+    8 ident_loop: COMMA IDENT . ident_loop
+
+    COMMA  shift, and go to state 12
+
+    $default  reduce using rule 7 (ident_loop)
+
+    ident_loop  go to state 18
+
+
+State 16
+
+    6 declare_loop: IDENT ident_loop COLON . dclr_choice INTEGER SEMICOLON declare_loop
+
+    ARRAY  shift, and go to state 19
+
+    $default  reduce using rule 9 (dclr_choice)
+
+    dclr_choice  go to state 20
+
+
+State 17
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS . declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    IDENT  shift, and go to state 10
+
+    $default  reduce using rule 5 (declare_loop)
+
+    declare_loop  go to state 21
+
+
+State 18
+
+    8 ident_loop: COMMA IDENT ident_loop .
+
+    $default  reduce using rule 8 (ident_loop)
+
+
+State 19
+
+   10 dclr_choice: ARRAY . L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF
+
+    L_SQUARE_BRACKET  shift, and go to state 22
+
+
+State 20
+
+    6 declare_loop: IDENT ident_loop COLON dclr_choice . INTEGER SEMICOLON declare_loop
+
+    INTEGER  shift, and go to state 23
+
+
+State 21
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop . END_LOCALS BEGIN_BODY stmt_loop END_BODY
+
+    END_LOCALS  shift, and go to state 24
+
+
+State 22
+
+   10 dclr_choice: ARRAY L_SQUARE_BRACKET . NUMBER R_SQUARE_BRACKET dclr_choice2 OF
+
+    NUMBER  shift, and go to state 25
+
+
+State 23
+
+    6 declare_loop: IDENT ident_loop COLON dclr_choice INTEGER . SEMICOLON declare_loop
+
+    SEMICOLON  shift, and go to state 26
+
+
+State 24
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS . BEGIN_BODY stmt_loop END_BODY
+
+    BEGIN_BODY  shift, and go to state 27
+
+
+State 25
+
+   10 dclr_choice: ARRAY L_SQUARE_BRACKET NUMBER . R_SQUARE_BRACKET dclr_choice2 OF
+
+    R_SQUARE_BRACKET  shift, and go to state 28
+
+
+State 26
+
+    6 declare_loop: IDENT ident_loop COLON dclr_choice INTEGER SEMICOLON . declare_loop
+
+    IDENT  shift, and go to state 10
+
+    $default  reduce using rule 5 (declare_loop)
+
+    declare_loop  go to state 29
+
+
+State 27
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY . stmt_loop END_BODY
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_loop     go to state 39
+    stmt_options  go to state 40
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 28
+
+   10 dclr_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET . dclr_choice2 OF
+
+    L_SQUARE_BRACKET  shift, and go to state 51
+
+    $default  reduce using rule 11 (dclr_choice2)
+
+    dclr_choice2  go to state 52
+
+
+State 29
+
+    6 declare_loop: IDENT ident_loop COLON dclr_choice INTEGER SEMICOLON declare_loop .
+
+    $default  reduce using rule 6 (declare_loop)
+
+
+State 30
+
+   26 s2: IF . bool_expr THEN stmt_options SEMICOLON s2_choice ENDIF
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    bool_expr                  go to state 60
+    relation_and_expr          go to state 61
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 31
+
+   32 s3: WHILE . bool_expr BEGINLOOP stmt_options SEMICOLON s3_choice ENDLOOP
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    bool_expr                  go to state 69
+    relation_and_expr          go to state 61
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 32
+
+   35 s4: DO . BEGINLOOP stmt_options SEMICOLON s4_choice ENDLOOP WHILE bool_expr
+
+    BEGINLOOP  shift, and go to state 70
+
+
+State 33
+
+   47 s8: CONTINUE .
+
+    $default  reduce using rule 47 (s8)
+
+
+State 34
+
+   38 s5: FOR . var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 71
+
+
+State 35
+
+   41 s6: READ . var s6_choice
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 72
+
+
+State 36
+
+   44 s7: WRITE . var s7_choice
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 73
+
+
+State 37
+
+   48 s9: RETURN . expression
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 75
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 38
+
+   67 var: IDENT . var_choice
+
+    L_SQUARE_BRACKET  shift, and go to state 76
+
+    $default  reduce using rule 68 (var_choice)
+
+    var_choice  go to state 77
+
+
+State 39
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop . END_BODY
+
+    END_BODY  shift, and go to state 78
+
+
+State 40
+
+   13 stmt_loop: stmt_options . SEMICOLON choose_tostop
+
+    SEMICOLON  shift, and go to state 79
+
+
+State 41
+
+   16 stmt_options: s1 .
+
+    $default  reduce using rule 16 (stmt_options)
+
+
+State 42
+
+   17 stmt_options: s2 .
+
+    $default  reduce using rule 17 (stmt_options)
+
+
+State 43
+
+   18 stmt_options: s3 .
+
+    $default  reduce using rule 18 (stmt_options)
+
+
+State 44
+
+   19 stmt_options: s4 .
+
+    $default  reduce using rule 19 (stmt_options)
+
+
+State 45
+
+   20 stmt_options: s5 .
+
+    $default  reduce using rule 20 (stmt_options)
+
+
+State 46
+
+   21 stmt_options: s6 .
+
+    $default  reduce using rule 21 (stmt_options)
+
+
+State 47
+
+   22 stmt_options: s7 .
+
+    $default  reduce using rule 22 (stmt_options)
+
+
+State 48
+
+   23 stmt_options: s8 .
+
+    $default  reduce using rule 23 (stmt_options)
+
+
+State 49
+
+   24 stmt_options: s9 .
+
+    $default  reduce using rule 24 (stmt_options)
+
+
+State 50
+
+   25 s1: var . ASSIGN expression
+
+    ASSIGN  shift, and go to state 80
+
+
+State 51
+
+   12 dclr_choice2: L_SQUARE_BRACKET . NUMBER R_SQUARE_BRACKET
+
+    NUMBER  shift, and go to state 81
+
+
+State 52
+
+   10 dclr_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 . OF
+
+    OF  shift, and go to state 82
+
+
+State 53
+
+   56 relation_expr: NOT . rel_choice
+
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    rel_choice                 go to state 83
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 54
+
+   58 rel_choice: TRUE .
+
+    $default  reduce using rule 58 (rel_choice)
+
+
+State 55
+
+   59 rel_choice: FALSE .
+
+    $default  reduce using rule 59 (rel_choice)
+
+
+State 56
+
+   84 term: SUB . term_choice
+
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 38
+
+    var          go to state 64
+    term_choice  go to state 84
+
+
+State 57
+
+   60 rel_choice: L_PAREN . bool_expr R_PAREN
+   88 term_choice: L_PAREN . expression R_PAREN
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    bool_expr                  go to state 85
+    relation_and_expr          go to state 61
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 86
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 58
+
+   87 term_choice: NUMBER .
+
+    $default  reduce using rule 87 (term_choice)
+
+
+State 59
+
+   67 var: IDENT . var_choice
+   85 term: IDENT . L_PAREN term_choice2 R_PAREN
+
+    L_PAREN           shift, and go to state 87
+    L_SQUARE_BRACKET  shift, and go to state 76
+
+    $default  reduce using rule 68 (var_choice)
+
+    var_choice  go to state 77
+
+
+State 60
+
+   26 s2: IF bool_expr . THEN stmt_options SEMICOLON s2_choice ENDIF
+
+    THEN  shift, and go to state 88
+
+
+State 61
+
+   49 bool_expr: relation_and_expr . bool_choice
+
+    OR  shift, and go to state 89
+
+    $default  reduce using rule 50 (bool_choice)
+
+    bool_choice  go to state 90
+
+
+State 62
+
+   52 relation_and_expr: relation_expr . relandexpr_choice
+
+    AND  shift, and go to state 91
+
+    $default  reduce using rule 53 (relandexpr_choice)
+
+    relandexpr_choice  go to state 92
+
+
+State 63
+
+   55 relation_expr: rel_choice .
+
+    $default  reduce using rule 55 (relation_expr)
+
+
+State 64
+
+   86 term_choice: var .
+
+    $default  reduce using rule 86 (term_choice)
+
+
+State 65
+
+   57 rel_choice: expression . comp expression
+
+    EQ   shift, and go to state 93
+    NEQ  shift, and go to state 94
+    LT   shift, and go to state 95
+    GT   shift, and go to state 96
+    LTE  shift, and go to state 97
+    GTE  shift, and go to state 98
+
+    comp  go to state 99
+
+
+State 66
+
+   72 expression: multiplicative_expression . expr_choice
+
+    SUB  shift, and go to state 100
+    ADD  shift, and go to state 101
+
+    $default  reduce using rule 73 (expr_choice)
+
+    expr_choice   go to state 102
+    expr_choice2  go to state 103
+
+
+State 67
+
+   77 multiplicative_expression: term . mult_choice
+
+    MULT  shift, and go to state 104
+    DIV   shift, and go to state 105
+    MOD   shift, and go to state 106
+
+    $default  reduce using rule 78 (mult_choice)
+
+    mult_choice   go to state 107
+    mult_choice2  go to state 108
+
+
+State 68
+
+   83 term: term_choice .
+
+    $default  reduce using rule 83 (term)
+
+
+State 69
+
+   32 s3: WHILE bool_expr . BEGINLOOP stmt_options SEMICOLON s3_choice ENDLOOP
+
+    BEGINLOOP  shift, and go to state 109
+
+
+State 70
+
+   35 s4: DO BEGINLOOP . stmt_options SEMICOLON s4_choice ENDLOOP WHILE bool_expr
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_options  go to state 110
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 71
+
+   38 s5: FOR var . ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    ASSIGN  shift, and go to state 111
+
+
+State 72
+
+   41 s6: READ var . s6_choice
+
+    COMMA  shift, and go to state 112
+
+    $default  reduce using rule 42 (s6_choice)
+
+    s6_choice  go to state 113
+
+
+State 73
+
+   44 s7: WRITE var . s7_choice
+
+    COMMA  shift, and go to state 114
+
+    $default  reduce using rule 45 (s7_choice)
+
+    s7_choice  go to state 115
+
+
+State 74
+
+   88 term_choice: L_PAREN . expression R_PAREN
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 116
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 75
+
+   48 s9: RETURN expression .
+
+    $default  reduce using rule 48 (s9)
+
+
+State 76
+
+   69 var_choice: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET var_choice2
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 117
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 77
+
+   67 var: IDENT var_choice .
+
+    $default  reduce using rule 67 (var)
+
+
+State 78
+
+    4 function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LOCALS declare_loop END_LOCALS BEGIN_BODY stmt_loop END_BODY .
+
+    $default  reduce using rule 4 (function)
+
+
+State 79
+
+   13 stmt_loop: stmt_options SEMICOLON . choose_tostop
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 14 (choose_tostop)
+
+    stmt_loop      go to state 118
+    choose_tostop  go to state 119
+    stmt_options   go to state 40
+    s1             go to state 41
+    s2             go to state 42
+    s3             go to state 43
+    s4             go to state 44
+    s5             go to state 45
+    s6             go to state 46
+    s7             go to state 47
+    s8             go to state 48
+    s9             go to state 49
+    var            go to state 50
+
+
+State 80
+
+   25 s1: var ASSIGN . expression
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 120
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 81
+
+   12 dclr_choice2: L_SQUARE_BRACKET NUMBER . R_SQUARE_BRACKET
+
+    R_SQUARE_BRACKET  shift, and go to state 121
+
+
+State 82
+
+   10 dclr_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF .
+
+    $default  reduce using rule 10 (dclr_choice)
+
+
+State 83
+
+   56 relation_expr: NOT rel_choice .
+
+    $default  reduce using rule 56 (relation_expr)
+
+
+State 84
+
+   84 term: SUB term_choice .
+
+    $default  reduce using rule 84 (term)
+
+
+State 85
+
+   60 rel_choice: L_PAREN bool_expr . R_PAREN
+
+    R_PAREN  shift, and go to state 122
+
+
+State 86
+
+   57 rel_choice: expression . comp expression
+   88 term_choice: L_PAREN expression . R_PAREN
+
+    EQ       shift, and go to state 93
+    NEQ      shift, and go to state 94
+    LT       shift, and go to state 95
+    GT       shift, and go to state 96
+    LTE      shift, and go to state 97
+    GTE      shift, and go to state 98
+    R_PAREN  shift, and go to state 123
+
+    comp  go to state 99
+
+
+State 87
+
+   85 term: IDENT L_PAREN . term_choice2 R_PAREN
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    $default  reduce using rule 89 (term_choice2)
+
+    var                        go to state 64
+    expression                 go to state 124
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+    term_choice2               go to state 125
+
+
+State 88
+
+   26 s2: IF bool_expr THEN . stmt_options SEMICOLON s2_choice ENDIF
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_options  go to state 126
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 89
+
+   51 bool_choice: OR . relation_and_expr bool_choice
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    relation_and_expr          go to state 127
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 90
+
+   49 bool_expr: relation_and_expr bool_choice .
+
+    $default  reduce using rule 49 (bool_expr)
+
+
+State 91
+
+   54 relandexpr_choice: AND . relation_expr relandexpr_choice
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    relation_expr              go to state 128
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 92
+
+   52 relation_and_expr: relation_expr relandexpr_choice .
+
+    $default  reduce using rule 52 (relation_and_expr)
+
+
+State 93
+
+   61 comp: EQ .
+
+    $default  reduce using rule 61 (comp)
+
+
+State 94
+
+   62 comp: NEQ .
+
+    $default  reduce using rule 62 (comp)
+
+
+State 95
+
+   63 comp: LT .
+
+    $default  reduce using rule 63 (comp)
+
+
+State 96
+
+   64 comp: GT .
+
+    $default  reduce using rule 64 (comp)
+
+
+State 97
+
+   65 comp: LTE .
+
+    $default  reduce using rule 65 (comp)
+
+
+State 98
+
+   66 comp: GTE .
+
+    $default  reduce using rule 66 (comp)
+
+
+State 99
+
+   57 rel_choice: expression comp . expression
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 129
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 100
+
+   76 expr_choice2: SUB .
+
+    $default  reduce using rule 76 (expr_choice2)
+
+
+State 101
+
+   75 expr_choice2: ADD .
+
+    $default  reduce using rule 75 (expr_choice2)
+
+
+State 102
+
+   72 expression: multiplicative_expression expr_choice .
+
+    $default  reduce using rule 72 (expression)
+
+
+State 103
+
+   74 expr_choice: expr_choice2 . multiplicative_expression expr_choice
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    multiplicative_expression  go to state 130
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 104
+
+   82 mult_choice2: MULT .
+
+    $default  reduce using rule 82 (mult_choice2)
+
+
+State 105
+
+   81 mult_choice2: DIV .
+
+    $default  reduce using rule 81 (mult_choice2)
+
+
+State 106
+
+   80 mult_choice2: MOD .
+
+    $default  reduce using rule 80 (mult_choice2)
+
+
+State 107
+
+   77 multiplicative_expression: term mult_choice .
+
+    $default  reduce using rule 77 (multiplicative_expression)
+
+
+State 108
+
+   79 mult_choice: mult_choice2 . term mult_choice
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var          go to state 64
+    term         go to state 131
+    term_choice  go to state 68
+
+
+State 109
+
+   32 s3: WHILE bool_expr BEGINLOOP . stmt_options SEMICOLON s3_choice ENDLOOP
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_options  go to state 132
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 110
+
+   35 s4: DO BEGINLOOP stmt_options . SEMICOLON s4_choice ENDLOOP WHILE bool_expr
+
+    SEMICOLON  shift, and go to state 133
+
+
+State 111
+
+   38 s5: FOR var ASSIGN . NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    NUMBER  shift, and go to state 134
+
+
+State 112
+
+   43 s6_choice: COMMA . var s6_choice
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 135
+
+
+State 113
+
+   41 s6: READ var s6_choice .
+
+    $default  reduce using rule 41 (s6)
+
+
+State 114
+
+   46 s7_choice: COMMA . var s7_choice
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 136
+
+
+State 115
+
+   44 s7: WRITE var s7_choice .
+
+    $default  reduce using rule 44 (s7)
+
+
+State 116
+
+   88 term_choice: L_PAREN expression . R_PAREN
+
+    R_PAREN  shift, and go to state 123
+
+
+State 117
+
+   69 var_choice: L_SQUARE_BRACKET expression . R_SQUARE_BRACKET var_choice2
+
+    R_SQUARE_BRACKET  shift, and go to state 137
+
+
+State 118
+
+   15 choose_tostop: stmt_loop .
+
+    $default  reduce using rule 15 (choose_tostop)
+
+
+State 119
+
+   13 stmt_loop: stmt_options SEMICOLON choose_tostop .
+
+    $default  reduce using rule 13 (stmt_loop)
+
+
+State 120
+
+   25 s1: var ASSIGN expression .
+
+    $default  reduce using rule 25 (s1)
+
+
+State 121
+
+   12 dclr_choice2: L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET .
+
+    $default  reduce using rule 12 (dclr_choice2)
+
+
+State 122
+
+   60 rel_choice: L_PAREN bool_expr R_PAREN .
+
+    $default  reduce using rule 60 (rel_choice)
+
+
+State 123
+
+   88 term_choice: L_PAREN expression R_PAREN .
+
+    $default  reduce using rule 88 (term_choice)
+
+
+State 124
+
+   90 term_choice2: expression . term_comma
+
+    COMMA  shift, and go to state 138
+
+    $default  reduce using rule 91 (term_comma)
+
+    term_comma  go to state 139
+
+
+State 125
+
+   85 term: IDENT L_PAREN term_choice2 . R_PAREN
+
+    R_PAREN  shift, and go to state 140
+
+
+State 126
+
+   26 s2: IF bool_expr THEN stmt_options . SEMICOLON s2_choice ENDIF
+
+    SEMICOLON  shift, and go to state 141
+
+
+State 127
+
+   51 bool_choice: OR relation_and_expr . bool_choice
+
+    OR  shift, and go to state 89
+
+    $default  reduce using rule 50 (bool_choice)
+
+    bool_choice  go to state 142
+
+
+State 128
+
+   54 relandexpr_choice: AND relation_expr . relandexpr_choice
+
+    AND  shift, and go to state 91
+
+    $default  reduce using rule 53 (relandexpr_choice)
+
+    relandexpr_choice  go to state 143
+
+
+State 129
+
+   57 rel_choice: expression comp expression .
+
+    $default  reduce using rule 57 (rel_choice)
+
+
+State 130
+
+   74 expr_choice: expr_choice2 multiplicative_expression . expr_choice
+
+    SUB  shift, and go to state 100
+    ADD  shift, and go to state 101
+
+    $default  reduce using rule 73 (expr_choice)
+
+    expr_choice   go to state 144
+    expr_choice2  go to state 103
+
+
+State 131
+
+   79 mult_choice: mult_choice2 term . mult_choice
+
+    MULT  shift, and go to state 104
+    DIV   shift, and go to state 105
+    MOD   shift, and go to state 106
+
+    $default  reduce using rule 78 (mult_choice)
+
+    mult_choice   go to state 145
+    mult_choice2  go to state 108
+
+
+State 132
+
+   32 s3: WHILE bool_expr BEGINLOOP stmt_options . SEMICOLON s3_choice ENDLOOP
+
+    SEMICOLON  shift, and go to state 146
+
+
+State 133
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON . s4_choice ENDLOOP WHILE bool_expr
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 36 (s4_choice)
+
+    stmt_options  go to state 147
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s4_choice     go to state 148
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 134
+
+   38 s5: FOR var ASSIGN NUMBER . SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    SEMICOLON  shift, and go to state 149
+
+
+State 135
+
+   43 s6_choice: COMMA var . s6_choice
+
+    COMMA  shift, and go to state 112
+
+    $default  reduce using rule 42 (s6_choice)
+
+    s6_choice  go to state 150
+
+
+State 136
+
+   46 s7_choice: COMMA var . s7_choice
+
+    COMMA  shift, and go to state 114
+
+    $default  reduce using rule 45 (s7_choice)
+
+    s7_choice  go to state 151
+
+
+State 137
+
+   69 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET . var_choice2
+
+    L_SQUARE_BRACKET  shift, and go to state 152
+
+    $default  reduce using rule 70 (var_choice2)
+
+    var_choice2  go to state 153
+
+
+State 138
+
+   92 term_comma: COMMA . term_choice2
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    $default  reduce using rule 89 (term_choice2)
+
+    var                        go to state 64
+    expression                 go to state 124
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+    term_choice2               go to state 154
+
+
+State 139
+
+   90 term_choice2: expression term_comma .
+
+    $default  reduce using rule 90 (term_choice2)
+
+
+State 140
+
+   85 term: IDENT L_PAREN term_choice2 R_PAREN .
+
+    $default  reduce using rule 85 (term)
+
+
+State 141
+
+   26 s2: IF bool_expr THEN stmt_options SEMICOLON . s2_choice ENDIF
+
+    IF        shift, and go to state 30
+    ELSE      shift, and go to state 155
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 27 (s2_choice)
+
+    stmt_options  go to state 156
+    s1            go to state 41
+    s2            go to state 42
+    s2_choice     go to state 157
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 142
+
+   51 bool_choice: OR relation_and_expr bool_choice .
+
+    $default  reduce using rule 51 (bool_choice)
+
+
+State 143
+
+   54 relandexpr_choice: AND relation_expr relandexpr_choice .
+
+    $default  reduce using rule 54 (relandexpr_choice)
+
+
+State 144
+
+   74 expr_choice: expr_choice2 multiplicative_expression expr_choice .
+
+    $default  reduce using rule 74 (expr_choice)
+
+
+State 145
+
+   79 mult_choice: mult_choice2 term mult_choice .
+
+    $default  reduce using rule 79 (mult_choice)
+
+
+State 146
+
+   32 s3: WHILE bool_expr BEGINLOOP stmt_options SEMICOLON . s3_choice ENDLOOP
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 33 (s3_choice)
+
+    stmt_options  go to state 158
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s3_choice     go to state 159
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 147
+
+   37 s4_choice: stmt_options . SEMICOLON s4_choice
+
+    SEMICOLON  shift, and go to state 160
+
+
+State 148
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON s4_choice . ENDLOOP WHILE bool_expr
+
+    ENDLOOP  shift, and go to state 161
+
+
+State 149
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON . bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    bool_expr                  go to state 162
+    relation_and_expr          go to state 61
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 150
+
+   43 s6_choice: COMMA var s6_choice .
+
+    $default  reduce using rule 43 (s6_choice)
+
+
+State 151
+
+   46 s7_choice: COMMA var s7_choice .
+
+    $default  reduce using rule 46 (s7_choice)
+
+
+State 152
+
+   71 var_choice2: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 163
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 153
+
+   69 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET var_choice2 .
+
+    $default  reduce using rule 69 (var_choice)
+
+
+State 154
+
+   92 term_comma: COMMA term_choice2 .
+
+    $default  reduce using rule 92 (term_comma)
+
+
+State 155
+
+   29 s2_choice: ELSE . stmt_options SEMICOLON s2_choice2
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_options  go to state 164
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 156
+
+   28 s2_choice: stmt_options . SEMICOLON s2_choice
+
+    SEMICOLON  shift, and go to state 165
+
+
+State 157
+
+   26 s2: IF bool_expr THEN stmt_options SEMICOLON s2_choice . ENDIF
+
+    ENDIF  shift, and go to state 166
+
+
+State 158
+
+   34 s3_choice: stmt_options . SEMICOLON s3_choice
+
+    SEMICOLON  shift, and go to state 167
+
+
+State 159
+
+   32 s3: WHILE bool_expr BEGINLOOP stmt_options SEMICOLON s3_choice . ENDLOOP
+
+    ENDLOOP  shift, and go to state 168
+
+
+State 160
+
+   37 s4_choice: stmt_options SEMICOLON . s4_choice
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 36 (s4_choice)
+
+    stmt_options  go to state 147
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s4_choice     go to state 169
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 161
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON s4_choice ENDLOOP . WHILE bool_expr
+
+    WHILE  shift, and go to state 170
+
+
+State 162
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr . SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    SEMICOLON  shift, and go to state 171
+
+
+State 163
+
+   71 var_choice2: L_SQUARE_BRACKET expression . R_SQUARE_BRACKET
+
+    R_SQUARE_BRACKET  shift, and go to state 172
+
+
+State 164
+
+   29 s2_choice: ELSE stmt_options . SEMICOLON s2_choice2
+
+    SEMICOLON  shift, and go to state 173
+
+
+State 165
+
+   28 s2_choice: stmt_options SEMICOLON . s2_choice
+
+    IF        shift, and go to state 30
+    ELSE      shift, and go to state 155
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 27 (s2_choice)
+
+    stmt_options  go to state 156
+    s1            go to state 41
+    s2            go to state 42
+    s2_choice     go to state 174
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 166
+
+   26 s2: IF bool_expr THEN stmt_options SEMICOLON s2_choice ENDIF .
+
+    $default  reduce using rule 26 (s2)
+
+
+State 167
+
+   34 s3_choice: stmt_options SEMICOLON . s3_choice
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 33 (s3_choice)
+
+    stmt_options  go to state 158
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s3_choice     go to state 175
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 168
+
+   32 s3: WHILE bool_expr BEGINLOOP stmt_options SEMICOLON s3_choice ENDLOOP .
+
+    $default  reduce using rule 32 (s3)
+
+
+State 169
+
+   37 s4_choice: stmt_options SEMICOLON s4_choice .
+
+    $default  reduce using rule 37 (s4_choice)
+
+
+State 170
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON s4_choice ENDLOOP WHILE . bool_expr
+
+    NOT      shift, and go to state 53
+    TRUE     shift, and go to state 54
+    FALSE    shift, and go to state 55
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 57
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    bool_expr                  go to state 176
+    relation_and_expr          go to state 61
+    relation_expr              go to state 62
+    rel_choice                 go to state 63
+    var                        go to state 64
+    expression                 go to state 65
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 171
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON . var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    IDENT  shift, and go to state 38
+
+    var  go to state 177
+
+
+State 172
+
+   71 var_choice2: L_SQUARE_BRACKET expression R_SQUARE_BRACKET .
+
+    $default  reduce using rule 71 (var_choice2)
+
+
+State 173
+
+   29 s2_choice: ELSE stmt_options SEMICOLON . s2_choice2
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 30 (s2_choice2)
+
+    stmt_options  go to state 178
+    s1            go to state 41
+    s2            go to state 42
+    s2_choice2    go to state 179
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 174
+
+   28 s2_choice: stmt_options SEMICOLON s2_choice .
+
+    $default  reduce using rule 28 (s2_choice)
+
+
+State 175
+
+   34 s3_choice: stmt_options SEMICOLON s3_choice .
+
+    $default  reduce using rule 34 (s3_choice)
+
+
+State 176
+
+   35 s4: DO BEGINLOOP stmt_options SEMICOLON s4_choice ENDLOOP WHILE bool_expr .
+
+    $default  reduce using rule 35 (s4)
+
+
+State 177
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var . ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    ASSIGN  shift, and go to state 180
+
+
+State 178
+
+   31 s2_choice2: stmt_options . SEMICOLON s2_choice2
+
+    SEMICOLON  shift, and go to state 181
+
+
+State 179
+
+   29 s2_choice: ELSE stmt_options SEMICOLON s2_choice2 .
+
+    $default  reduce using rule 29 (s2_choice)
+
+
+State 180
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN . expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    SUB      shift, and go to state 56
+    L_PAREN  shift, and go to state 74
+    NUMBER   shift, and go to state 58
+    IDENT    shift, and go to state 59
+
+    var                        go to state 64
+    expression                 go to state 182
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+
+
+State 181
+
+   31 s2_choice2: stmt_options SEMICOLON . s2_choice2
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 30 (s2_choice2)
+
+    stmt_options  go to state 178
+    s1            go to state 41
+    s2            go to state 42
+    s2_choice2    go to state 183
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 182
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression . BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
+
+    BEGINLOOP  shift, and go to state 184
+
+
+State 183
+
+   31 s2_choice2: stmt_options SEMICOLON s2_choice2 .
+
+    $default  reduce using rule 31 (s2_choice2)
+
+
+State 184
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP . stmt_options SEMICOLON s5_choice ENDLOOP
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    stmt_options  go to state 185
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 185
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options . SEMICOLON s5_choice ENDLOOP
+
+    SEMICOLON  shift, and go to state 186
+
+
+State 186
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON . s5_choice ENDLOOP
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 39 (s5_choice)
+
+    stmt_options  go to state 187
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s5_choice     go to state 188
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 187
+
+   40 s5_choice: stmt_options . SEMICOLON s5_choice
+
+    SEMICOLON  shift, and go to state 189
+
+
+State 188
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice . ENDLOOP
+
+    ENDLOOP  shift, and go to state 190
+
+
+State 189
+
+   40 s5_choice: stmt_options SEMICOLON . s5_choice
+
+    IF        shift, and go to state 30
+    WHILE     shift, and go to state 31
+    DO        shift, and go to state 32
+    CONTINUE  shift, and go to state 33
+    FOR       shift, and go to state 34
+    READ      shift, and go to state 35
+    WRITE     shift, and go to state 36
+    RETURN    shift, and go to state 37
+    IDENT     shift, and go to state 38
+
+    $default  reduce using rule 39 (s5_choice)
+
+    stmt_options  go to state 187
+    s1            go to state 41
+    s2            go to state 42
+    s3            go to state 43
+    s4            go to state 44
+    s5            go to state 45
+    s5_choice     go to state 191
+    s6            go to state 46
+    s7            go to state 47
+    s8            go to state 48
+    s9            go to state 49
+    var           go to state 50
+
+
+State 190
+
+   38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP .
+
+    $default  reduce using rule 38 (s5)
+
+
+State 191
+
+   40 s5_choice: stmt_options SEMICOLON s5_choice .
+
+    $default  reduce using rule 40 (s5_choice)

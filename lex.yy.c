@@ -570,12 +570,10 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "sample.lex"
-/* cs152-fall08 */
-/* A flex scanner specification for the calculator language */
-/* Written by Dennis Jeffrey */
-#line 6 "sample.lex"
+#line 2 "sample.lex"
+#include "y.tab.h"
    int currLine = 1, currPos = 1;
-#line 579 "lex.yy.c"
+#line 577 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -757,9 +755,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 18 "sample.lex"
+#line 15 "sample.lex"
 
-#line 763 "lex.yy.c"
+#line 761 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -844,286 +842,286 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 19 "sample.lex"
+#line 16 "sample.lex"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 20 "sample.lex"
-printf("FUNCTION\n"); currPos += yyleng;
+#line 17 "sample.lex"
+return(FUNCTION); currPos += yyleng;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 21 "sample.lex"
-printf("BEGIN_PARAMS\n"); currPos += yyleng;
+#line 18 "sample.lex"
+return(BEGIN_PARAMS); currPos += yyleng;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 22 "sample.lex"
-printf("END_PARAMS\n"); currPos += yyleng;
+#line 19 "sample.lex"
+return(END_PARAMS); currPos += yyleng;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 23 "sample.lex"
-printf("BEGIN_LOCALS\n"); currPos += yyleng;
+#line 20 "sample.lex"
+return(BEGIN_LOCALS); currPos += yyleng;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 24 "sample.lex"
-printf("END_LOCALS\n"); currPos += yyleng;
+#line 21 "sample.lex"
+return(END_LOCALS); currPos += yyleng;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 25 "sample.lex"
-printf("BEGIN_BODY\n"); currPos += yyleng;
+#line 22 "sample.lex"
+return(BEGIN_BODY); currPos += yyleng;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 26 "sample.lex"
-printf("END_BODY\n"); currPos += yyleng;
+#line 23 "sample.lex"
+return(END_BODY); currPos += yyleng;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 27 "sample.lex"
-printf("INTEGER\n"); currPos += yyleng;
+#line 24 "sample.lex"
+return(INTEGER); currPos += yyleng;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 28 "sample.lex"
-printf("ARRAY\n"); currPos += yyleng;
+#line 25 "sample.lex"
+return(ARRAY); currPos += yyleng;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 29 "sample.lex"
-printf("OF\n"); currPos += yyleng;
+#line 26 "sample.lex"
+return(OF); currPos += yyleng;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 30 "sample.lex"
-printf("IF\n"); currPos += yyleng;
+#line 27 "sample.lex"
+return(IF); currPos += yyleng;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 31 "sample.lex"
-printf("THEN\n"); currPos += yyleng;
+#line 28 "sample.lex"
+return(THEN); currPos += yyleng;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 32 "sample.lex"
-printf("ENDIF\n"); currPos += yyleng;
+#line 29 "sample.lex"
+return(ENDIF); currPos += yyleng;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 33 "sample.lex"
-printf("ELSE\n"); currPos += yyleng;
+#line 30 "sample.lex"
+return(ELSE); currPos += yyleng;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 34 "sample.lex"
-printf("WHILE\n"); currPos += yyleng;
+#line 31 "sample.lex"
+return(WHILE); currPos += yyleng;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 35 "sample.lex"
-printf("DO\n"); currPos += yyleng;
+#line 32 "sample.lex"
+return(DO); currPos += yyleng;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 36 "sample.lex"
-printf("FOR\n"); currPos += yyleng;
+#line 33 "sample.lex"
+return(FOR); currPos += yyleng;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 37 "sample.lex"
-printf("BEGINLOOP\n"); currPos += yyleng;
+#line 34 "sample.lex"
+return(BEGINLOOP); currPos += yyleng;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 38 "sample.lex"
-printf("ENDLOOP\n"); currPos += yyleng;
+#line 35 "sample.lex"
+return(ENDLOOP); currPos += yyleng;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 39 "sample.lex"
-printf("CONTINUE\n"); currPos += yyleng;
+#line 36 "sample.lex"
+return(CONTINUE); currPos += yyleng;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 40 "sample.lex"
-printf("READ\n"); currPos += yyleng;
+#line 37 "sample.lex"
+return(READ); currPos += yyleng;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 41 "sample.lex"
-printf("WRITE\n"); currPos += yyleng;
+#line 38 "sample.lex"
+return(WRITE); currPos += yyleng;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 42 "sample.lex"
-printf("AND\n"); currPos += yyleng;
+#line 39 "sample.lex"
+return(AND); currPos += yyleng;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 43 "sample.lex"
-printf("OR\n"); currPos += yyleng;
+#line 40 "sample.lex"
+return(OR); currPos += yyleng;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 44 "sample.lex"
-printf("NOT\n"); currPos += yyleng;
+#line 41 "sample.lex"
+return(NOT); currPos += yyleng;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 45 "sample.lex"
-printf("TRUE\n"); currPos += yyleng;
+#line 42 "sample.lex"
+return(TRUE); currPos += yyleng;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 46 "sample.lex"
-printf("FALSE\n"); currPos += yyleng;
+#line 43 "sample.lex"
+return(FALSE); currPos += yyleng;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 47 "sample.lex"
-printf("RETURN\n"); currPos += yyleng;
+#line 44 "sample.lex"
+return(RETURN); currPos += yyleng;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 49 "sample.lex"
-printf("SUB\n"); currPos += yyleng;
+#line 46 "sample.lex"
+return(SUB); currPos += yyleng;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 50 "sample.lex"
-printf("ADD\n"); currPos += yyleng;
+#line 47 "sample.lex"
+return(ADD); currPos += yyleng;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 51 "sample.lex"
-printf("MULT\n"); currPos += yyleng;
+#line 48 "sample.lex"
+return(MULT); currPos += yyleng;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 52 "sample.lex"
-printf("DIV\n"); currPos += yyleng;
+#line 49 "sample.lex"
+return(DIV); currPos += yyleng;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 53 "sample.lex"
-printf("MOD\n"); currPos += yyleng;
+#line 50 "sample.lex"
+return(MOD); currPos += yyleng;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 55 "sample.lex"
-printf("EQ\n"); currPos += yyleng;
+#line 52 "sample.lex"
+return(EQ); currPos += yyleng;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 56 "sample.lex"
-printf("NEQ\n"); currPos += yyleng;
+#line 53 "sample.lex"
+return(NEQ); currPos += yyleng;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 57 "sample.lex"
-printf("LT\n"); currPos += yyleng;
+#line 54 "sample.lex"
+return(LT); currPos += yyleng;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 58 "sample.lex"
-printf("GT\n"); currPos += yyleng;
+#line 55 "sample.lex"
+return(GT); currPos += yyleng;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 59 "sample.lex"
-printf("LTE\n"); currPos += yyleng;
+#line 56 "sample.lex"
+return(LTE); currPos += yyleng;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 60 "sample.lex"
-printf("GTE\n"); currPos += yyleng;
+#line 57 "sample.lex"
+return(GTE); currPos += yyleng;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 62 "sample.lex"
-printf("SEMICOLON\n"); currPos += yyleng;
+#line 59 "sample.lex"
+return(SEMICOLON); currPos += yyleng;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 63 "sample.lex"
-printf("COLON\n"); currPos += yyleng;
+#line 60 "sample.lex"
+return(COLON); currPos += yyleng;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 64 "sample.lex"
-printf("COMMA\n"); currPos += yyleng;
+#line 61 "sample.lex"
+return(COMMA); currPos += yyleng;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 65 "sample.lex"
-printf("L_PAREN\n"); currPos += yyleng;
+#line 62 "sample.lex"
+return(L_PAREN); currPos += yyleng;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 66 "sample.lex"
-printf("R_PAREN\n"); currPos += yyleng;
+#line 63 "sample.lex"
+return(R_PAREN); currPos += yyleng;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 67 "sample.lex"
-printf("L_SQUARE_BRACKET\n"); currPos += yyleng;
+#line 64 "sample.lex"
+return(L_SQUARE_BRACKET); currPos += yyleng;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 68 "sample.lex"
-printf("R_SQUARE_BRACKET\n"); currPos += yyleng;
+#line 65 "sample.lex"
+return(R_SQUARE_BRACKET); currPos += yyleng;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 69 "sample.lex"
-printf("ASSIGN\n"); currPos += yyleng;
+#line 66 "sample.lex"
+return(ASSIGN); currPos += yyleng;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 71 "sample.lex"
-printf("NUMBER %s\n",yytext);currPos += yyleng;
+#line 68 "sample.lex"
+printf("number -> NUMBER %s\n",yytext);yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 72 "sample.lex"
+#line 69 "sample.lex"
 fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);exit(0);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 73 "sample.lex"
+#line 70 "sample.lex"
 fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);exit(0);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 74 "sample.lex"
-printf("IDENT %s\n",yytext);currPos += yyleng;
+#line 71 "sample.lex"
+printf("ident -> IDENT %s\n",yytext);yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 75 "sample.lex"
+#line 72 "sample.lex"
 {/* ignore spaces */ currPos += yyleng;}
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 76 "sample.lex"
+#line 73 "sample.lex"
 {currLine++; currPos = 1;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 78 "sample.lex"
-{printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
+#line 75 "sample.lex"
+{fprintf(stderr,"Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 79 "sample.lex"
+#line 76 "sample.lex"
 ECHO;
 	YY_BREAK
-#line 1127 "lex.yy.c"
+#line 1125 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2117,26 +2115,9 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 79 "sample.lex"
+#line 76 "sample.lex"
 
 
 
-int main(int argc, char ** argv)
-{
-   if(argc >= 2)
-   {
-      yyin = fopen(argv[1], "r");
-      if(yyin == NULL)
-      {
-         yyin = stdin;
-      }
-   }
-   else
-   {
-      yyin = stdin;
-   }
-   
-   yylex();
-}
 
 
