@@ -1,66 +1,66 @@
-{terminals}
+(terminals)
 [non-terminals]
 
 
 [program_start] -> [functions]
-[functions] -> epsilon | [function] [functions]
-[function] -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS [declare_loop] END_PARAMS BEGIN_LOCALS [declare_loop] END_LOCALS BEGIN_BODY [stmt_loop] END_BODY
+[functions] -> [function] [functions] | epsilon
+[function] -> (function) (identifier) (;) (beginparams) [declare_loop] (endparams) (beginlocals) [declare_loop] (endlocals) (begin body) [stmt_loop] (endbody)
 
-[declare_loop] -> epsilon | IDENT [ident_loop] COLON [dclr_choice] INTEGER SEMICOLON [declare_loop] 
-[ident_loop] -> epsilon | COMMA IDENT [ident_loop]
-[dclr_choice] -> epsilon | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET [dclr_choice2] OF
-[dclr_choice2] -> epsilon | L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET 
+[declare_loop] -> [ident_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
+[ident_loop] -> (,) (identifier) [ident_loop] | epsilon
+[dclr_choice] -> (array) ([) (number) (]) [dclr_choice2] (of) | epsilon
+[dclr_choice2] -> ([) (number) (]) | epsilon
 
-[stmt_loop] -> [stmt_options] SEMICOLON [choose_tostop] 
-[choose_tostop] -> epsilon | [stmt_loop]
+[stmt_loop] -> [stmt_options] (:) [choose_tostop] 
+[choose_tostop] -> [stmt_loop] | epsilon
 
 [stmt_options] -> [s1] | [s2] | [s3] | [s4] | [s5] | [s6] | [s7] | [s8] | [s9]
-[s1] -> [var] ASSIGN [expression]
-[s2] -> IF [bool_expr] THEN [stmt_options] SEMICOLON [s2_choice] ENDIF
-[s2_choice] -> epsilon | [stmt_options] SEMICOLON [s2_choice] | ELSE [stmt_options] SEMICOLON [s2_choice2]
-[s2_choice2] -> epsilon | [stmt_options] SEMICOLON [s2_choice2]
-[s3] -> WHILE [bool_expr] BEGINLOOP [stmt_options] SEMICOLON [s3_choice] ENDLOOP
-[s3_choice] -> epsilon | [stmt_options] SEMICOLON [s3_choice]
-[s4] -> DO BEGINLOOP [stmt_options] SEMICOLON [s4_choice] ENDLOOP WHILE [bool_expr]
-[s4_choice] -> epsilon | [stmt_options] SEMICOLON [s4_choice]
+[s1] -> [var] (assign) [expression]
+[s2] -> (if) [bool_expr] (then) [stmt_options] (;) [s2_choice] (endif)
+[s2_choice] -> [stmt_options] (;) [s2_choice] | (else) [stmt_options] (;) [s2_choice2] | epsilon
+[s2_choice2] -> [stmt_options] (;) [s2_choice2] | epsilon
+[s3] -> (while) [bool_expr] (beginloop) [stmt_options] (;) [s3_choice] (endloop)
+[s3_choice] -> [stmt_options] (;) [s3_choice] | epsilon  
+[s4] -> (do) (beginloop) [stmt_options] (;) [s4_choice] (endloop) (while) [bool_expr]
+[s4_choice] -> [stmt_options] (;) [s4_choice] | epsilon 
 
-[s5] -> FOR [var] ASSIGN NUMBER SEMICOLON [bool_expr] SEMICOLON [var] ASSIGN [expression] BEGINLOOP [stmt_options] SEMICOLON [s5_choice] ENDLOOP
+[s5] -> (for) [var] ASSIGN NUMBER SEMICOLON [bool_expr] SEMICOLON [var] ASSIGN [expression] BEGINLOOP [stmt_options] SEMICOLON [s5_choice] ENDLOOP
 
-[s5_choice] -> epsilon | [stmt_options] SEMICOLON [s5_choice] 
+[s5_choice] -> [stmt_options] SEMICOLON [s5_choice] | epsilon 
 [s6] -> READ [var] [s6_choice]
-[s6_choice] -> epsilon | COMMA [var] [s6_choice]
+[s6_choice] -> COMMA [var] [s6_choice] | epsilon 
 [s7] -> WRITE [var] [s7_choice]
-[s7_choice] -> epsilon | COMMA [var] [s7_choice]
+[s7_choice] -> COMMA [var] [s7_choice] | epsilon 
 [s8] -> CONTINUE
 [s9] -> RETURN [expression]
 
 [bool_expr] -> [relation_and_expr] [bool_choice]
-[bool_choice] -> epsilon | OR [relation_and_expr] [bool_choice]
+[bool_choice] -> (or) [relation_and_expr] [bool_choice] | epsilon 
 
 [relation_and_expr] -> [relation_expr] [relandexpr_choice]
-[relandexpr_choice] -> epsilon | AND [relation_expr] [relandexpr_choice]
+[relandexpr_choice] -> AND [relation_expr] [relandexpr_choice] | epsilon 
 
 [relation_expr] -> [rel_choice] | NOT [rel_choice]
-[rel_choice] -> [expression] [comp] [expression] | TRUE | FALSE | L_PAREN [bool_expr] R_PARE
+[rel_choice] -> [expression] [comp] [expression] | TRUE | FALSE | L_PAREN [bool_expr] R_PAREN
 
 [comp] -> EQ | NEQ | LT | GT | LTE | GTE
 
 [var] -> IDENT [var_choice]
-[var_choice] -> epsilon | L_SQUARE_BRACKET [expression] R_SQUARE_BRACKET [var_choice2]
+[var_choice] -> L_SQUARE_BRACKET [expression] R_SQUARE_BRACKET [var_choice2] | epsilon 
 [var_choice2] -> L_SQUARE_BRACKET [expression] R_SQUARE_BRACKET
 
 [expression] -> [multiplicative_expression] [expr_choice]
-[expr_choice] -> epsilon | [expr_choice2] [multiplicative_expression] [expr_choice] 
+[expr_choice] -> [expr_choice2] [multiplicative_expression] [expr_choice] | epsilon 
 [expr_choice2] -> ADD | SUB 
 
 [multiplicative_expression] -> [term mult_choice]
-[mult_choice] -> epsilon | [mult_choice2] [term] [mult_choice]
+[mult_choice] -> [mult_choice2] [term] [mult_choice] | epsilon 
 [mult_choice2] -> MOD | DIV | MULT
 
 [term] -> [term_choice] | SUB [term_choice] | IDENT L_PAREN [term_choice2] R_PAREN
 [term_choice] -> [var] | NUMBER | L_PAREN [expression] R_PAREN
-[term_choice2] -> epsilon | [expression] [term_comma]
-[term_comma] -> epsilon | COMMA [term_choice2]
+[term_choice2] -> [expression] [term_comma] | epsilon 
+[term_comma] -> COMMA [term_choice2] | epsilon 
 
 
 
