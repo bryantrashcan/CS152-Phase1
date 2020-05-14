@@ -161,18 +161,18 @@ ENDIF (270) 26
 ELSE (271) 29
 WHILE (272) 32 35
 DO (273) 35
-BEGINLOOP (274) 32 35 38
-ENDLOOP (275) 32 35 38
-CONTINUE (276) 47
-FOR (277) 38
+FOR (274) 38
+BEGINLOOP (275) 32 35 38
+ENDLOOP (276) 32 35 38
+CONTINUE (277) 47
 READ (278) 41
 WRITE (279) 44
-RETURN (280) 48
-AND (281) 54
-OR (282) 51
-NOT (283) 56
-TRUE (284) 58
-FALSE (285) 59
+AND (280) 54
+OR (281) 51
+NOT (282) 56
+TRUE (283) 58
+FALSE (284) 59
+RETURN (285) 48
 SUB (286) 76 84
 ADD (287) 75
 MULT (288) 82
@@ -184,16 +184,16 @@ LT (293) 63
 GT (294) 64
 LTE (295) 65
 GTE (296) 66
-SEMICOLON (297) 4 6 13 26 28 29 31 32 34 35 37 38 40
-COLON (298) 6
-COMMA (299) 8 43 46 92
-L_PAREN (300) 60 85 88
-R_PAREN (301) 60 85 88
-L_SQUARE_BRACKET (302) 10 12 69 71
-R_SQUARE_BRACKET (303) 10 12 69 71
-ASSIGN (304) 25 38
-NUMBER (305) 10 12 38 87
-IDENT (306) 4 6 8 67 85
+NUMBER (297) 10 12 38 87
+IDENT (298) 4 6 8 67 85
+SEMICOLON (299) 4 6 13 26 28 29 31 32 34 35 37 38 40
+COLON (300) 6
+COMMA (301) 8 43 46 92
+L_PAREN (302) 60 85 88
+R_PAREN (303) 60 85 88
+L_SQUARE_BRACKET (304) 10 12 69 71
+R_SQUARE_BRACKET (305) 10 12 69 71
+ASSIGN (306) 25 38
 
 
 Nonterminals, with rules where they appear
@@ -526,8 +526,8 @@ State 27
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -573,9 +573,9 @@ State 30
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     bool_expr                  go to state 60
     relation_and_expr          go to state 61
@@ -596,9 +596,9 @@ State 31
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     bool_expr                  go to state 69
     relation_and_expr          go to state 61
@@ -620,18 +620,18 @@ State 32
 
 State 33
 
-   47 s8: CONTINUE .
-
-    $default  reduce using rule 47 (s8)
-
-
-State 34
-
    38 s5: FOR . var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
 
     IDENT  shift, and go to state 38
 
     var  go to state 71
+
+
+State 34
+
+   47 s8: CONTINUE .
+
+    $default  reduce using rule 47 (s8)
 
 
 State 35
@@ -657,9 +657,9 @@ State 37
    48 s9: RETURN . expression
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 75
@@ -784,9 +784,9 @@ State 53
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     rel_choice                 go to state 83
     var                        go to state 64
@@ -814,15 +814,35 @@ State 56
 
    84 term: SUB . term_choice
 
-    L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
+    NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 38
+    L_PAREN  shift, and go to state 74
 
     var          go to state 64
     term_choice  go to state 84
 
 
 State 57
+
+   87 term_choice: NUMBER .
+
+    $default  reduce using rule 87 (term_choice)
+
+
+State 58
+
+   67 var: IDENT . var_choice
+   85 term: IDENT . L_PAREN term_choice2 R_PAREN
+
+    L_PAREN           shift, and go to state 85
+    L_SQUARE_BRACKET  shift, and go to state 76
+
+    $default  reduce using rule 68 (var_choice)
+
+    var_choice  go to state 77
+
+
+State 59
 
    60 rel_choice: L_PAREN . bool_expr R_PAREN
    88 term_choice: L_PAREN . expression R_PAREN
@@ -831,39 +851,19 @@ State 57
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
-    bool_expr                  go to state 85
+    bool_expr                  go to state 86
     relation_and_expr          go to state 61
     relation_expr              go to state 62
     rel_choice                 go to state 63
     var                        go to state 64
-    expression                 go to state 86
+    expression                 go to state 87
     multiplicative_expression  go to state 66
     term                       go to state 67
     term_choice                go to state 68
-
-
-State 58
-
-   87 term_choice: NUMBER .
-
-    $default  reduce using rule 87 (term_choice)
-
-
-State 59
-
-   67 var: IDENT . var_choice
-   85 term: IDENT . L_PAREN term_choice2 R_PAREN
-
-    L_PAREN           shift, and go to state 87
-    L_SQUARE_BRACKET  shift, and go to state 76
-
-    $default  reduce using rule 68 (var_choice)
-
-    var_choice  go to state 77
 
 
 State 60
@@ -971,8 +971,8 @@ State 70
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1025,9 +1025,9 @@ State 74
    88 term_choice: L_PAREN . expression R_PAREN
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 116
@@ -1048,9 +1048,9 @@ State 76
    69 var_choice: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET var_choice2
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 117
@@ -1080,8 +1080,8 @@ State 79
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1109,9 +1109,9 @@ State 80
    25 s1: var ASSIGN . expression
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 120
@@ -1150,12 +1150,31 @@ State 84
 
 State 85
 
-   60 rel_choice: L_PAREN bool_expr . R_PAREN
+   85 term: IDENT L_PAREN . term_choice2 R_PAREN
 
-    R_PAREN  shift, and go to state 122
+    SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 74
+
+    $default  reduce using rule 89 (term_choice2)
+
+    var                        go to state 64
+    expression                 go to state 122
+    multiplicative_expression  go to state 66
+    term                       go to state 67
+    term_choice                go to state 68
+    term_choice2               go to state 123
 
 
 State 86
+
+   60 rel_choice: L_PAREN bool_expr . R_PAREN
+
+    R_PAREN  shift, and go to state 124
+
+
+State 87
 
    57 rel_choice: expression . comp expression
    88 term_choice: L_PAREN expression . R_PAREN
@@ -1166,28 +1185,9 @@ State 86
     GT       shift, and go to state 96
     LTE      shift, and go to state 97
     GTE      shift, and go to state 98
-    R_PAREN  shift, and go to state 123
+    R_PAREN  shift, and go to state 125
 
     comp  go to state 99
-
-
-State 87
-
-   85 term: IDENT L_PAREN . term_choice2 R_PAREN
-
-    SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
-
-    $default  reduce using rule 89 (term_choice2)
-
-    var                        go to state 64
-    expression                 go to state 124
-    multiplicative_expression  go to state 66
-    term                       go to state 67
-    term_choice                go to state 68
-    term_choice2               go to state 125
 
 
 State 88
@@ -1197,8 +1197,8 @@ State 88
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1225,9 +1225,9 @@ State 89
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     relation_and_expr          go to state 127
     relation_expr              go to state 62
@@ -1254,9 +1254,9 @@ State 91
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     relation_expr              go to state 128
     rel_choice                 go to state 63
@@ -1321,9 +1321,9 @@ State 99
    57 rel_choice: expression comp . expression
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 129
@@ -1358,9 +1358,9 @@ State 103
    74 expr_choice: expr_choice2 . multiplicative_expression expr_choice
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     multiplicative_expression  go to state 130
@@ -1401,9 +1401,9 @@ State 108
    79 mult_choice: mult_choice2 . term mult_choice
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var          go to state 64
     term         go to state 131
@@ -1417,8 +1417,8 @@ State 109
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1487,7 +1487,7 @@ State 116
 
    88 term_choice: L_PAREN expression . R_PAREN
 
-    R_PAREN  shift, and go to state 123
+    R_PAREN  shift, and go to state 125
 
 
 State 117
@@ -1527,20 +1527,6 @@ State 121
 
 State 122
 
-   60 rel_choice: L_PAREN bool_expr R_PAREN .
-
-    $default  reduce using rule 60 (rel_choice)
-
-
-State 123
-
-   88 term_choice: L_PAREN expression R_PAREN .
-
-    $default  reduce using rule 88 (term_choice)
-
-
-State 124
-
    90 term_choice2: expression . term_comma
 
     COMMA  shift, and go to state 138
@@ -1550,11 +1536,25 @@ State 124
     term_comma  go to state 139
 
 
-State 125
+State 123
 
    85 term: IDENT L_PAREN term_choice2 . R_PAREN
 
     R_PAREN  shift, and go to state 140
+
+
+State 124
+
+   60 rel_choice: L_PAREN bool_expr R_PAREN .
+
+    $default  reduce using rule 60 (rel_choice)
+
+
+State 125
+
+   88 term_choice: L_PAREN expression R_PAREN .
+
+    $default  reduce using rule 88 (term_choice)
 
 
 State 126
@@ -1634,8 +1634,8 @@ State 133
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1702,14 +1702,14 @@ State 138
    92 term_comma: COMMA . term_choice2
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     $default  reduce using rule 89 (term_choice2)
 
     var                        go to state 64
-    expression                 go to state 124
+    expression                 go to state 122
     multiplicative_expression  go to state 66
     term                       go to state 67
     term_choice                go to state 68
@@ -1738,8 +1738,8 @@ State 141
     ELSE      shift, and go to state 155
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1796,8 +1796,8 @@ State 146
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1841,9 +1841,9 @@ State 149
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     bool_expr                  go to state 162
     relation_and_expr          go to state 61
@@ -1875,9 +1875,9 @@ State 152
    71 var_choice2: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 163
@@ -1907,8 +1907,8 @@ State 155
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -1962,8 +1962,8 @@ State 160
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2021,8 +2021,8 @@ State 165
     ELSE      shift, and go to state 155
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2058,8 +2058,8 @@ State 167
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2103,9 +2103,9 @@ State 170
     TRUE     shift, and go to state 54
     FALSE    shift, and go to state 55
     SUB      shift, and go to state 56
-    L_PAREN  shift, and go to state 57
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
+    L_PAREN  shift, and go to state 59
 
     bool_expr                  go to state 176
     relation_and_expr          go to state 61
@@ -2141,8 +2141,8 @@ State 173
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2211,9 +2211,9 @@ State 180
    38 s5: FOR var ASSIGN NUMBER SEMICOLON bool_expr SEMICOLON var ASSIGN . expression BEGINLOOP stmt_options SEMICOLON s5_choice ENDLOOP
 
     SUB      shift, and go to state 56
+    NUMBER   shift, and go to state 57
+    IDENT    shift, and go to state 58
     L_PAREN  shift, and go to state 74
-    NUMBER   shift, and go to state 58
-    IDENT    shift, and go to state 59
 
     var                        go to state 64
     expression                 go to state 182
@@ -2229,8 +2229,8 @@ State 181
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2273,8 +2273,8 @@ State 184
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2307,8 +2307,8 @@ State 186
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37
@@ -2351,8 +2351,8 @@ State 189
     IF        shift, and go to state 30
     WHILE     shift, and go to state 31
     DO        shift, and go to state 32
-    CONTINUE  shift, and go to state 33
-    FOR       shift, and go to state 34
+    FOR       shift, and go to state 33
+    CONTINUE  shift, and go to state 34
     READ      shift, and go to state 35
     WRITE     shift, and go to state 36
     RETURN    shift, and go to state 37

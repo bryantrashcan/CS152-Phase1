@@ -61,18 +61,18 @@ extern int yydebug;
     ELSE = 271,
     WHILE = 272,
     DO = 273,
-    BEGINLOOP = 274,
-    ENDLOOP = 275,
-    CONTINUE = 276,
-    FOR = 277,
+    FOR = 274,
+    BEGINLOOP = 275,
+    ENDLOOP = 276,
+    CONTINUE = 277,
     READ = 278,
     WRITE = 279,
-    RETURN = 280,
-    AND = 281,
-    OR = 282,
-    NOT = 283,
-    TRUE = 284,
-    FALSE = 285,
+    AND = 280,
+    OR = 281,
+    NOT = 282,
+    TRUE = 283,
+    FALSE = 284,
+    RETURN = 285,
     SUB = 286,
     ADD = 287,
     MULT = 288,
@@ -84,16 +84,16 @@ extern int yydebug;
     GT = 294,
     LTE = 295,
     GTE = 296,
-    SEMICOLON = 297,
-    COLON = 298,
-    COMMA = 299,
-    L_PAREN = 300,
-    R_PAREN = 301,
-    L_SQUARE_BRACKET = 302,
-    R_SQUARE_BRACKET = 303,
-    ASSIGN = 304,
-    NUMBER = 305,
-    IDENT = 306
+    NUMBER = 297,
+    IDENT = 298,
+    SEMICOLON = 299,
+    COLON = 300,
+    COMMA = 301,
+    L_PAREN = 302,
+    R_PAREN = 303,
+    L_SQUARE_BRACKET = 304,
+    R_SQUARE_BRACKET = 305,
+    ASSIGN = 306
   };
 #endif
 
@@ -102,7 +102,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 14 "minil.y" /* yacc.c:1909  */
+#line 13 "minil.y" /* yacc.c:1909  */
 
 	char * cVal;
 	int iVal;

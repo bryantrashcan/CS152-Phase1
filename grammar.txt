@@ -1,66 +1,66 @@
 (terminals)
 [non-terminals]
-
+derived from https://www.cs.ucr.edu/~amazl001/teaching/cs152/S20/webpages2/syntax.html
 
 [program_start] -> [functions]
 [functions] -> [function] [functions] | epsilon
-[function] -> (function) (identifier) (;) (beginparams) [declare_loop] (endparams) (beginlocals) [declare_loop] (endlocals) (begin body) [stmt_loop] (endbody)
+[function] -> (function) ((identifier)ifier) (;) (beginparams) [declare_loop] (endparams) (beginlocals) [declare_loop] (endlocals) (begin body) [stmt_loop] (endbody)
 
-[declare_loop] -> [ident_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
-[ident_loop] -> (,) (identifier) [ident_loop] | epsilon
-[dclr_choice] -> (array) ([) (number) (]) [dclr_choice2] (of) | epsilon
-[dclr_choice2] -> ([) (number) (]) | epsilon
+[declare_loop] -> [(identifier)_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
+[(identifier)_loop] -> (,) ((identifier)ifier) [(identifier)_loop] | epsilon
+[dclr_choice] -> (array) ([) ((number)) (]) [dclr_choice2] (of) | epsilon
+[dclr_choice2] -> ([) ((number)) (]) | epsilon
 
 [stmt_loop] -> [stmt_options] (:) [choose_tostop] 
 [choose_tostop] -> [stmt_loop] | epsilon
 
 [stmt_options] -> [s1] | [s2] | [s3] | [s4] | [s5] | [s6] | [s7] | [s8] | [s9]
-[s1] -> [var] (assign) [expression]
+[s1] -> [var] (:=) [expression]
 [s2] -> (if) [bool_expr] (then) [stmt_options] (;) [s2_choice] (endif)
 [s2_choice] -> [stmt_options] (;) [s2_choice] | (else) [stmt_options] (;) [s2_choice2] | epsilon
 [s2_choice2] -> [stmt_options] (;) [s2_choice2] | epsilon
-[s3] -> (while) [bool_expr] (beginloop) [stmt_options] (;) [s3_choice] (endloop)
+[s3] -> (while) [bool_expr] ((beginloop)) [stmt_options] (;) [s3_choice] ((endloop))
 [s3_choice] -> [stmt_options] (;) [s3_choice] | epsilon  
-[s4] -> (do) (beginloop) [stmt_options] (;) [s4_choice] (endloop) (while) [bool_expr]
+[s4] -> (do) ((beginloop)) [stmt_options] (;) [s4_choice] ((endloop)) (while) [bool_expr]
 [s4_choice] -> [stmt_options] (;) [s4_choice] | epsilon 
 
-[s5] -> (for) [var] ASSIGN NUMBER SEMICOLON [bool_expr] SEMICOLON [var] ASSIGN [expression] BEGINLOOP [stmt_options] SEMICOLON [s5_choice] ENDLOOP
+[s5] -> (for) [var] (:=) (number) (;) [bool_expr] (;) [var] (:=) [expression] (beginloop) [stmt_options] (;) [s5_choice] (endloop)
 
-[s5_choice] -> [stmt_options] SEMICOLON [s5_choice] | epsilon 
-[s6] -> READ [var] [s6_choice]
-[s6_choice] -> COMMA [var] [s6_choice] | epsilon 
-[s7] -> WRITE [var] [s7_choice]
-[s7_choice] -> COMMA [var] [s7_choice] | epsilon 
-[s8] -> CONTINUE
-[s9] -> RETURN [expression]
+[s5_choice] -> [stmt_options] (;) [s5_choice] | epsilon 
+[s6] -> (read) [var] [s6_choice]
+[s6_choice] -> (,) [var] [s6_choice] | epsilon 
+[s7] -> (write) [var] [s7_choice]
+[s7_choice] -> (,) [var] [s7_choice] | epsilon 
+[s8] -> (continue)
+[s9] -> (return) [expression]
 
 [bool_expr] -> [relation_and_expr] [bool_choice]
 [bool_choice] -> (or) [relation_and_expr] [bool_choice] | epsilon 
 
 [relation_and_expr] -> [relation_expr] [relandexpr_choice]
-[relandexpr_choice] -> AND [relation_expr] [relandexpr_choice] | epsilon 
+[relandexpr_choice] -> (and) [relation_expr] [relandexpr_choice] | epsilon 
 
-[relation_expr] -> [rel_choice] | NOT [rel_choice]
-[rel_choice] -> [expression] [comp] [expression] | TRUE | FALSE | L_PAREN [bool_expr] R_PAREN
+[relation_expr] -> [rel_choice] | (not) [rel_choice]
+[rel_choice] -> [expression] [comp] [expression] | (true) | (false) | ("(") [bool_expr] (")")
 
-[comp] -> EQ | NEQ | LT | GT | LTE | GTE
+[comp] -> (=) | (<>) | (<) | (>) | (<=) | (>=)
 
-[var] -> IDENT [var_choice]
-[var_choice] -> L_SQUARE_BRACKET [expression] R_SQUARE_BRACKET [var_choice2] | epsilon 
-[var_choice2] -> L_SQUARE_BRACKET [expression] R_SQUARE_BRACKET
+[var] -> (identifier) [var_choice]
+[var_choice] -> ([) [expression] (]) [var_choice2] | epsilon 
+[var_choice2] -> ([) [expression] (])
 
-[expression] -> [multiplicative_expression] [expr_choice]
-[expr_choice] -> [expr_choice2] [multiplicative_expression] [expr_choice] | epsilon 
-[expr_choice2] -> ADD | SUB 
+[expression] -> [(*)iplicative_expression] [expr_choice]
+[expr_choice] -> [expr_choice2] [(*)iplicative_expression] [expr_choice] | epsilon 
+[expr_choice2] -> (+) | (-) 
 
-[multiplicative_expression] -> [term mult_choice]
-[mult_choice] -> [mult_choice2] [term] [mult_choice] | epsilon 
-[mult_choice2] -> MOD | DIV | MULT
+[(*)iplicative_expression] -> [term (*)_choice]
+[(*)_choice] -> [(*)_choice2] [term] [(*)_choice] | epsilon 
+[(*)_choice2] -> (%) | (/) | (*)
 
-[term] -> [term_choice] | SUB [term_choice] | IDENT L_PAREN [term_choice2] R_PAREN
-[term_choice] -> [var] | NUMBER | L_PAREN [expression] R_PAREN
+[term] -> [term_choice] | (-) [term_choice] | (identifier) ("(") [term_choice2] (")")
+[term_choice] -> [var] | (number) | ("(") [expression] (")")
 [term_choice2] -> [expression] [term_comma] | epsilon 
-[term_comma] -> COMMA [term_choice2] | epsilon 
+[term_comma] -> (,) [term_choice2] | epsilon 
 
 
 

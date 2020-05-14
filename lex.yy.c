@@ -569,8 +569,8 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "sample.lex"
-#line 2 "sample.lex"
+#line 1 "minil.lex"
+#line 2 "minil.lex"
 #include "y.tab.h"
    int currLine = 1, currPos = 1;
 #line 577 "lex.yy.c"
@@ -755,7 +755,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 15 "sample.lex"
+#line 15 "minil.lex"
 
 #line 761 "lex.yy.c"
 
@@ -842,283 +842,283 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 16 "sample.lex"
+#line 16 "minil.lex"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "sample.lex"
+#line 17 "minil.lex"
 return(FUNCTION); currPos += yyleng;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 18 "sample.lex"
+#line 18 "minil.lex"
 return(BEGIN_PARAMS); currPos += yyleng;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 19 "sample.lex"
+#line 19 "minil.lex"
 return(END_PARAMS); currPos += yyleng;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 20 "sample.lex"
+#line 20 "minil.lex"
 return(BEGIN_LOCALS); currPos += yyleng;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 21 "sample.lex"
+#line 21 "minil.lex"
 return(END_LOCALS); currPos += yyleng;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 22 "sample.lex"
+#line 22 "minil.lex"
 return(BEGIN_BODY); currPos += yyleng;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 23 "sample.lex"
+#line 23 "minil.lex"
 return(END_BODY); currPos += yyleng;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 24 "sample.lex"
+#line 24 "minil.lex"
 return(INTEGER); currPos += yyleng;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 25 "sample.lex"
+#line 25 "minil.lex"
 return(ARRAY); currPos += yyleng;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 26 "sample.lex"
+#line 26 "minil.lex"
 return(OF); currPos += yyleng;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 27 "sample.lex"
+#line 27 "minil.lex"
 return(IF); currPos += yyleng;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 28 "sample.lex"
+#line 28 "minil.lex"
 return(THEN); currPos += yyleng;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 29 "sample.lex"
+#line 29 "minil.lex"
 return(ENDIF); currPos += yyleng;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 30 "sample.lex"
+#line 30 "minil.lex"
 return(ELSE); currPos += yyleng;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 31 "sample.lex"
+#line 31 "minil.lex"
 return(WHILE); currPos += yyleng;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 32 "sample.lex"
+#line 32 "minil.lex"
 return(DO); currPos += yyleng;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 33 "sample.lex"
+#line 33 "minil.lex"
 return(FOR); currPos += yyleng;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 34 "sample.lex"
+#line 34 "minil.lex"
 return(BEGINLOOP); currPos += yyleng;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 35 "sample.lex"
+#line 35 "minil.lex"
 return(ENDLOOP); currPos += yyleng;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 36 "sample.lex"
+#line 36 "minil.lex"
 return(CONTINUE); currPos += yyleng;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 37 "sample.lex"
+#line 37 "minil.lex"
 return(READ); currPos += yyleng;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 38 "sample.lex"
+#line 38 "minil.lex"
 return(WRITE); currPos += yyleng;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 39 "sample.lex"
+#line 39 "minil.lex"
 return(AND); currPos += yyleng;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 40 "sample.lex"
+#line 40 "minil.lex"
 return(OR); currPos += yyleng;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 41 "sample.lex"
+#line 41 "minil.lex"
 return(NOT); currPos += yyleng;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 42 "sample.lex"
+#line 42 "minil.lex"
 return(TRUE); currPos += yyleng;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 43 "sample.lex"
+#line 43 "minil.lex"
 return(FALSE); currPos += yyleng;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 44 "sample.lex"
+#line 44 "minil.lex"
 return(RETURN); currPos += yyleng;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 46 "sample.lex"
+#line 46 "minil.lex"
 return(SUB); currPos += yyleng;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 47 "sample.lex"
+#line 47 "minil.lex"
 return(ADD); currPos += yyleng;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 48 "sample.lex"
+#line 48 "minil.lex"
 return(MULT); currPos += yyleng;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 49 "sample.lex"
+#line 49 "minil.lex"
 return(DIV); currPos += yyleng;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 50 "sample.lex"
+#line 50 "minil.lex"
 return(MOD); currPos += yyleng;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 52 "sample.lex"
+#line 52 "minil.lex"
 return(EQ); currPos += yyleng;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 53 "sample.lex"
+#line 53 "minil.lex"
 return(NEQ); currPos += yyleng;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 54 "sample.lex"
+#line 54 "minil.lex"
 return(LT); currPos += yyleng;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 55 "sample.lex"
+#line 55 "minil.lex"
 return(GT); currPos += yyleng;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 56 "sample.lex"
+#line 56 "minil.lex"
 return(LTE); currPos += yyleng;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 57 "sample.lex"
+#line 57 "minil.lex"
 return(GTE); currPos += yyleng;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 59 "sample.lex"
+#line 59 "minil.lex"
 return(SEMICOLON); currPos += yyleng;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 60 "sample.lex"
+#line 60 "minil.lex"
 return(COLON); currPos += yyleng;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 61 "sample.lex"
+#line 61 "minil.lex"
 return(COMMA); currPos += yyleng;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 62 "sample.lex"
+#line 62 "minil.lex"
 return(L_PAREN); currPos += yyleng;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 63 "sample.lex"
+#line 63 "minil.lex"
 return(R_PAREN); currPos += yyleng;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 64 "sample.lex"
+#line 64 "minil.lex"
 return(L_SQUARE_BRACKET); currPos += yyleng;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 65 "sample.lex"
+#line 65 "minil.lex"
 return(R_SQUARE_BRACKET); currPos += yyleng;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 66 "sample.lex"
+#line 66 "minil.lex"
 return(ASSIGN); currPos += yyleng;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 68 "sample.lex"
+#line 68 "minil.lex"
 printf("number -> NUMBER %s\n",yytext);yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 69 "sample.lex"
+#line 69 "minil.lex"
 fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);exit(0);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 70 "sample.lex"
+#line 70 "minil.lex"
 fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);exit(0);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 71 "sample.lex"
+#line 71 "minil.lex"
 printf("ident -> IDENT %s\n",yytext);yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 72 "sample.lex"
+#line 72 "minil.lex"
 {/* ignore spaces */ currPos += yyleng;}
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 73 "sample.lex"
+#line 73 "minil.lex"
 {currLine++; currPos = 1;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 75 "sample.lex"
+#line 75 "minil.lex"
 {fprintf(stderr,"Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 76 "sample.lex"
+#line 76 "minil.lex"
 ECHO;
 	YY_BREAK
 #line 1125 "lex.yy.c"
@@ -2115,7 +2115,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 76 "sample.lex"
+#line 76 "minil.lex"
 
 
 

@@ -1,4 +1,3 @@
-
 %{
 /*valid c code declaration*/
 #include <stdio.h>
@@ -21,12 +20,13 @@ void yyerror(const char *msg);
 %start program_start
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY
 %token INTEGER ARRAY OF 
-%token IF THEN ENDIF ELSE WHILE DO BEGINLOOP ENDLOOP CONTINUE FOR
-%token READ WRITE RETURN
-%token AND OR NOT TRUE FALSE
+%token IF THEN ENDIF ELSE WHILE DO FOR BEGINLOOP ENDLOOP CONTINUE
+%token READ WRITE
+%token AND OR NOT TRUE FALSE RETURN
 %token SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE 
-%token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
 %token NUMBER IDENT
+%token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
+
 
 
 
@@ -48,7 +48,7 @@ function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS BEGIN_LO
 declare_loop: /*epsilon*/ {printf("declare_loop -> EPSILON\n");}
 	    | IDENT ident_loop COLON dclr_choice INTEGER SEMICOLON declare_loop {printf("declare_loop -> IDENT ident_loop COLON dclr_choice INTEGER SEMICOLON declare_loop\n");}
 
-ident_loop: /*epsilon*/ {printf("ident_loop -> EPSILON\n");}
+ident_loop: /*epsilon*/{printf("ident_loop -> EPSILON\n");}
 	  | COMMA IDENT ident_loop {printf("ident_loop->IDENT COMMA ident_loop\n");}
 
 dclr_choice: /*epsilon*/ {printf("dclr_choice -> EPSILON\n");}
@@ -149,7 +149,6 @@ expr_choice: /*epsilon*/ {printf("expr_choice -> EPSILON\n");}
 expr_choice2: ADD {printf("expr_choice2 -> ADD\n");}
 	    |SUB {printf("expr_choice2 -> SUB\n");}
 
-/*TODO: ADD PRINTF LATER*/
 multiplicative_expression: term mult_choice {printf("multiplicative_expression -> term mult_choice\n");}
 mult_choice: /*epsilon*/ {printf("mult_choice -> EPSILON\n");}
 	   | mult_choice2 term mult_choice {printf("mult_choice -> mult_choice2 term mult_choice\n");}
