@@ -52,7 +52,7 @@ ident_loop: /*epsilon*/{printf("ident_loop -> EPSILON\n");}
 	  | COMMA IDENT ident_loop {printf("ident_loop->IDENT COMMA ident_loop\n");}
 
 dclr_choice: /*epsilon*/ {printf("dclr_choice -> EPSILON\n");}
-	    | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF {printf("dclr_choice -> AARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF\n");}
+	    | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF INTEGER {printf("dclr_choice -> AARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF INTEGER\n");}
 
 dclr_choice2: /*epsilon*/ {printf("dclr_choice2 -> EPSILON\n");}
 	    | L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET {printf("dclr_choice2 -> L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET\n");}
