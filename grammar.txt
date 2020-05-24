@@ -8,7 +8,7 @@ derived from https://www.cs.ucr.edu/~amazl001/teaching/cs152/S20/webpages2/synta
 
 [declare_loop] -> [identifier_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
 [identifier_loop] -> (,) (identifier) [identifier_loop] | epsilon
-[dclr_choice] -> (array) ([) (number) (]) [dclr_choice2] (of) (integer) | epsilon
+[dclr_choice] -> (array) ([) (number) (]) [dclr_choice2] (of) | epsilon
 [dclr_choice2] -> ([) (number) (]) | epsilon
 
 [stmt_loop] -> [stmt_options] (:) [choose_tostop] 
