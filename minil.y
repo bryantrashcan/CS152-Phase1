@@ -1,6 +1,8 @@
+
 %{
 /*valid c code declaration*/
 #include <stdio.h>
+\
 extern FILE * yyin;
 extern int currLine;
 extern int currPos;
@@ -51,10 +53,6 @@ declare_loop: /*epsilon*/ //{printf("declare_loop -> EPSILON\n");}
 ident_loop: /*epsilon*/ // //{printf("ident_loop -> EPSILON\n");}
 	  | COMMA IDENT ident_loop // //{printf("ident_loop->IDENT COMMA ident_loop\n");}
 
-=
-dclr_choice: /*epsilon*/ //{printf("dclr_choice -> EPSILON\n");}
-	    | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF //{printf("dclr_choice -> AARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF\n");}
-=======
 dclr_choice: /*epsilon*/ //{printf("dclr_choice -> EPSILON\n");}
 	    | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF INTEGER //{printf("dclr_choice -> AARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET dclr_choice2 OF INTEGER\n");}
 
