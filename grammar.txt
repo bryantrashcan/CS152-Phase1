@@ -4,12 +4,12 @@ derived from https://www.cs.ucr.edu/~amazl001/teaching/cs152/S20/webpages2/synta
 
 [program_start] -> [functions]
 [functions] -> [function] [functions] | epsilon
-[function] -> (function) ((identifier)ifier) (;) (beginparams) [declare_loop] (endparams) (beginlocals) [declare_loop] (endlocals) (begin body) [stmt_loop] (endbody)
+[function] -> (function) (identifier) (;) (beginparams) [declare_loop] (endparams) (beginlocals) [declare_loop] (endlocals) (begin body) [stmt_loop] (endbody)
 
-[declare_loop] -> [(identifier)_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
-[(identifier)_loop] -> (,) ((identifier)ifier) [(identifier)_loop] | epsilon
-[dclr_choice] -> (array) ([) ((number)) (]) [dclr_choice2] (of) | epsilon
-[dclr_choice2] -> ([) ((number)) (]) | epsilon
+[declare_loop] -> [identifier_loop] (:) [dclr_choice] (integer) (;) [declare_loop] | epsilon
+[identifier_loop] -> (,) (identifier) [identifier_loop] | epsilon
+[dclr_choice] -> (array) ([) (number) (]) [dclr_choice2] (of) | epsilon
+[dclr_choice2] -> ([) (number) (]) | epsilon
 
 [stmt_loop] -> [stmt_options] (:) [choose_tostop] 
 [choose_tostop] -> [stmt_loop] | epsilon
@@ -19,9 +19,9 @@ derived from https://www.cs.ucr.edu/~amazl001/teaching/cs152/S20/webpages2/synta
 [s2] -> (if) [bool_expr] (then) [stmt_options] (;) [s2_choice] (endif)
 [s2_choice] -> [stmt_options] (;) [s2_choice] | (else) [stmt_options] (;) [s2_choice2] | epsilon
 [s2_choice2] -> [stmt_options] (;) [s2_choice2] | epsilon
-[s3] -> (while) [bool_expr] ((beginloop)) [stmt_options] (;) [s3_choice] ((endloop))
+[s3] -> (while) [bool_expr] (beginloop) [stmt_options] (;) [s3_choice] ((endloop))
 [s3_choice] -> [stmt_options] (;) [s3_choice] | epsilon  
-[s4] -> (do) ((beginloop)) [stmt_options] (;) [s4_choice] ((endloop)) (while) [bool_expr]
+[s4] -> (do) (beginloop) [stmt_options] (;) [s4_choice] (endloop) (while) [bool_expr]
 [s4_choice] -> [stmt_options] (;) [s4_choice] | epsilon 
 
 [s5] -> (for) [var] (:=) (number) (;) [bool_expr] (;) [var] (:=) [expression] (beginloop) [stmt_options] (;) [s5_choice] (endloop)
@@ -49,13 +49,13 @@ derived from https://www.cs.ucr.edu/~amazl001/teaching/cs152/S20/webpages2/synta
 [var_choice] -> ([) [expression] (]) [var_choice2] | epsilon 
 [var_choice2] -> ([) [expression] (])
 
-[expression] -> [(*)iplicative_expression] [expr_choice]
-[expr_choice] -> [expr_choice2] [(*)iplicative_expression] [expr_choice] | epsilon 
+[expression] -> [multiplicative_expression] [expr_choice]
+[expr_choice] -> [expr_choice2] [multiplicative_expression] [expr_choice] | epsilon 
 [expr_choice2] -> (+) | (-) 
 
-[(*)iplicative_expression] -> [term (*)_choice]
-[(*)_choice] -> [(*)_choice2] [term] [(*)_choice] | epsilon 
-[(*)_choice2] -> (%) | (/) | (*)
+[multiplicative_expression] -> [term mult_choice]
+[mult_choice] -> [mult_choice2] [term] [mult_choice] | epsilon 
+[mult_choice2] -> (%) | (/) | (*)
 
 [term] -> [term_choice] | (-) [term_choice] | (identifier) ("(") [term_choice2] (")")
 [term_choice] -> [var] | (number) | ("(") [expression] (")")
