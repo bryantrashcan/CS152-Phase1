@@ -65,10 +65,10 @@ IDENT_VAR	{LETTER}({DIGIT}|{LETTER}|[_])*(({LETTER}|{DIGIT})+)*
 "\]"		return(R_SQUARE_BRACKET); currPos += yyleng;
 "\:\="		return(ASSIGN); currPos += yyleng;
 
-{IDENT_NUM}	printf("number -> NUMBER %s\n",yytext);yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
+{IDENT_NUM}	/*printf("number -> NUMBER %s\n",yytext);*/yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
 {ERR_NOTVAR}	fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",currLine,currPos,yytext);exit(0);
 {ERR_UND}		fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",currLine,currPos,yytext);exit(0);
-{IDENT_VAR}	printf("ident -> IDENT %s\n",yytext);yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
+{IDENT_VAR}	/*printf("ident -> IDENT %s\n",yytext);*/yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
 [ \t]+         {/* ignore spaces */ currPos += yyleng;}
 "\n"           {currLine++; currPos = 1;}
 

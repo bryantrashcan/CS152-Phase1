@@ -1083,7 +1083,7 @@ return(ASSIGN); currPos += yyleng;
 case 49:
 YY_RULE_SETUP
 #line 68 "minil.lex"
-printf("number -> NUMBER %s\n",yytext);yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
+/*printf("number -> NUMBER %s\n",yytext);*/yylval.iVal = atoi(yytext);currPos += yyleng;return(NUMBER);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
@@ -1098,7 +1098,7 @@ fprintf(stderr,"Error at line %d, column %d: identifier \"%s\" cannot end with a
 case 52:
 YY_RULE_SETUP
 #line 71 "minil.lex"
-printf("ident -> IDENT %s\n",yytext);yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
+/*printf("ident -> IDENT %s\n",yytext);*/yylval.cVal=yytext; currPos += yyleng; return(IDENT); 
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
