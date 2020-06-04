@@ -39,21 +39,24 @@ enum Type {INT,INT_ARR,FUNC};
 
 
     struct Terminal{
-       stringstream *code;
+       stringstream *term_code;
+        
        //location
        string *term_place;
        string *term_value;
        string *term_offset;
+        
        // branches
        string *op;
        string *begin_term;
        string *term_parent;
        string *end_term;
+        
        // type
-       //uint val;
        Type term_type;
        int term_length;
        string *term_index;
+        
        // idents and vars
        vector<string> *ids;
        vector<Var> *vars; 
