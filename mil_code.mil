@@ -22,4 +22,13 @@ call fibonacci, __temp__4
 + __temp__5, __temp__2, __temp__4
 ret __temp__5
 endfunc
-0xc621c8
+func main
+. n
+. fib_n
+.< n
+param n
+. __temp__6
+call fibonacci, __temp__6
+= fib_n, __temp__6
+.> fib_n
+endfunc

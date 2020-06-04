@@ -103,8 +103,8 @@ union YYSTYPE
 {
 #line 32 "mini_l.y" /* yacc.c:1909  */
 
-    int       int_val;
-    char str_val[256];
+    int		int_val;
+    char 	str_val[256];
 
 
     struct {
