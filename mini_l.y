@@ -35,7 +35,7 @@ stack<Loop> loop_stack;
 
 
     struct {
-        stringstream *code;
+        stringstream *term_code;
     }NonTerminal;
 
     struct Terminal Terminal;
@@ -94,7 +94,7 @@ function:   FUNCTION ident_term SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS B
                 if(tempstr.compare("main")){
                     hasMain = true;
                 }
-                *($$.term_code)  << "func " << tempstr << "\n" << $5.term_code->str() << $8.code->str();
+                *($$.term_code)  << "func " << tempstr << "\n" << $5.term_code->str() << $8.term_code->str();
                 for(int i = 0; i < $5.vars->size(); ++i){
                     if((*$5.vars)[i].var_type == INT_ARR){
                         yyerror("Error: cannot pass arrays to function.");
@@ -105,7 +105,7 @@ function:   FUNCTION ident_term SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS B
                         yyerror("Error: invalid type");
                     }
                 }
-                 *($$.term_code) << $11.code->str();
+                 *($$.term_code) << $11.term_code->str();
                 *($$.term_code) << "endfunc\n";
             }
 ;
@@ -150,8 +150,8 @@ declaration:    IDENT ident_loop {
 
                     $$.vars = $2.vars;
                     Var v = Var();
-                    v.var_type = $2.var_type;
-                    v.var_length = $2.var_length;
+                    v.var_type = $2.term_type;
+                    v.var_length = $2.term_length;
                     v.var_place = new string();
                     *v.var_place = $1;
                     $$.vars->push_back(v);
@@ -363,7 +363,7 @@ statement_4:    DO b_loop BEGINLOOP stmt_loop ENDLOOP WHILE bool_exp{
                     $$.begin_term = $2.begin_term;
                     $$.term_parent = $2.term_parent;
                     $$.end_term = $2.end_term;
-                    *($$.term_code) << dec_label($$.begin_term) << $4.term_code->str() << dec_label($$.term_parent) << $7.code->str() << "?:= " << *$$.begin_term << ", " << *$7.term_place << "\n" << dec_label($$.end_term);
+                    *($$.term_code) << dec_label($$.begin_term) << $4.term_code->str() << dec_label($$.term_parent) << $7.term_code->str() << "?:= " << *$$.begin_term << ", " << *$7.term_place << "\n" << dec_label($$.end_term);
                     loop_stack.pop();
                 }
                 ;
@@ -666,7 +666,7 @@ var:            IDENT var_2{
                     $$.term_type = $2.term_type;
                     string tempstr = $1;
                     check_map_dec(tempstr);
-                    if(check_map(tempstr) && var_map[tempstr].type != $2.term_type){
+                    if(check_map(tempstr) && var_map[tempstr].var_type != $2.term_type){
                         if($2.term_type == INT_ARR){
                             string output ="Error: used variable \"" + tempstr + "\" is not an array.";
                             yyerror(output.c_str());
@@ -687,8 +687,8 @@ var:            IDENT var_2{
                         string* tempstr = new string();
                         *tempstr = $1;
                         *($$.term_code) << dec_temp($$.term_place) << gen_code($$.term_place, "=[]", tempstr,$2.term_index);
-                        $$.value = new string();
-                        *$$.value = $1;
+                        $$.term_value = new string();
+                        *$$.term_value = $1;
                     }
                 }
                 ;
@@ -831,7 +831,7 @@ int main(int argc, char **argv) {
         file.close();
     }
     else{
-        cout << "***Errors exist, fix to compile code***" << endl;
+        cout << "***Errors exist, fix to compile term_code***" << endl;
     }
 
 
