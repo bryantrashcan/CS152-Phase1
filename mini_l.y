@@ -5,8 +5,6 @@ int yyerror(const char* s);
 int yylex(void);
 stringstream *all_code;
 FILE * myin;
-void print_test(string output);
-void print_test(stringstream o);
 string gen_code(string *res, string op, string *val1, string *val2);
 string to_string(char* s);
 string to_string(int s);
@@ -220,11 +218,9 @@ ident_loop:  COMMA IDENT ident_loop {
                             yyerror(tempstr.c_str());
                         }
                     }else{
-                        //printf("================ ERRRR\n");
                     }
                 }
                 | COLON declaration_3 INTEGER {
-                    //printf("declaration_2 -> COLON declaration_3 INTEGER\n");
                     $$.term_code = $2.term_code;
                     $$.term_type = $2.term_type;
                     $$.term_length = $2.term_length;
@@ -233,14 +229,12 @@ ident_loop:  COMMA IDENT ident_loop {
                 ;
 
 declaration_3:  ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
-                    //printf("declaration_3 -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF\n");
                     $$.term_code = new stringstream();
                     $$.vars = new vector<Var>();
                     $$.term_type = INT_ARR;
                     $$.term_length = $3;
                 }
                 | {
-                    //printf("declaration_3 -> EPSILON\n");
                     $$.term_code = new stringstream();
                     $$.vars = new vector<Var>();
                     $$.term_type = INT;
@@ -262,13 +256,11 @@ stmt_options:      statement_1 {
                 }
                 | statement_5 {
                     $$.term_code = $1.term_code;
-                    //print_test($$.term_code->str());
                 }
                 | statement_6 {
                     $$.term_code = $1.term_code;
                 }
                 | CONTINUE{
-                    //printf("statement -> CONTINUE\n");
                     $$.term_code = new stringstream();
                     if(loop_stack.size() <= 0){
                         yyerror("ERROR: continue statement not within a loop");
@@ -377,7 +369,6 @@ statement_5:    READ var statement_51{
                        *($$.term_code) << ".[]< " << *$2.term_place << ", " << $2.term_index << "\n"; 
                     }
                     *($$.term_code) << $3.term_code->str();
-                    //print_test($$.term_code->str());
                 }
                 ;
 
@@ -709,11 +700,7 @@ var_2:          L_SQUARE_BRACKET expression R_SQUARE_BRACKET{
             
 %%
 
-void print_test(string o){
-    cout << "\n---------TEST-----------\n"
-        << o
-        << "\n----------END -----------\n";
-}
+
 
 
 string gen_code(string *res, string op, string *val1, string *val2){
