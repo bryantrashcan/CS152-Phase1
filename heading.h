@@ -22,38 +22,38 @@ enum Type {INT,INT_ARR,FUNC};
 
     struct Var{
         
-        string *place;
-        string *value;
-        string *offset;
+        string *var_place;
+        string *var_value;
+        string *var_offset;
         //vector
-        Type type;
-        int length;
-        string *index;
+        Type var_type;
+        int var_length;
+        string *var_index;
     } ;
 
     struct Loop{
-        string *begin;
-        string *parent;
-        string *end;
+        string *begin_loop;
+        string *loop_parent;
+        string *end_loop;
     };
 
 
     struct Terminal{
        stringstream *code;
        //location
-       string *place;
-       string *value;
-       string *offset;
+       string *term_place;
+       string *term_value;
+       string *term_offset;
        // branches
        string *op;
-       string *begin;
-       string *parent;
-       string *end;
+       string *begin_term;
+       string *term_parent;
+       string *end_term;
        // type
        //uint val;
-       Type type;
-       int length;
-       string *index;
+       Type term_type;
+       int term_length;
+       string *term_index;
        // idents and vars
        vector<string> *ids;
        vector<Var> *vars; 
