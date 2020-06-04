@@ -61,39 +61,38 @@ extern int yydebug;
     ELSE = 271,
     WHILE = 272,
     DO = 273,
-    FOR = 274,
-    BEGINLOOP = 275,
-    ENDLOOP = 276,
-    CONTINUE = 277,
-    READ = 278,
-    WRITE = 279,
+    BEGINLOOP = 274,
+    ENDLOOP = 275,
+    CONTINUE = 276,
+    READ = 277,
+    WRITE = 278,
+    RETURN = 279,
     AND = 280,
     OR = 281,
     NOT = 282,
     TRUE = 283,
     FALSE = 284,
-    RETURN = 285,
-    SUB = 286,
-    ADD = 287,
-    MULT = 288,
-    DIV = 289,
-    MOD = 290,
-    EQ = 291,
-    NEQ = 292,
-    LT = 293,
-    GT = 294,
-    LTE = 295,
-    GTE = 296,
-    NUMBER = 297,
-    IDENT = 298,
-    SEMICOLON = 299,
-    COLON = 300,
-    COMMA = 301,
-    L_PAREN = 302,
-    R_PAREN = 303,
-    L_SQUARE_BRACKET = 304,
-    R_SQUARE_BRACKET = 305,
-    ASSIGN = 306
+    SUB = 285,
+    ADD = 286,
+    MULT = 287,
+    DIV = 288,
+    MOD = 289,
+    EQ = 290,
+    NEQ = 291,
+    LT = 292,
+    GT = 293,
+    LTE = 294,
+    GTE = 295,
+    SEMICOLON = 296,
+    COLON = 297,
+    COMMA = 298,
+    L_PAREN = 299,
+    R_PAREN = 300,
+    L_SQUARE_BRACKET = 301,
+    R_SQUARE_BRACKET = 302,
+    ASSIGN = 303,
+    NUMBER = 304,
+    IDENT = 305
   };
 #endif
 
@@ -102,12 +101,19 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "minil.y" /* yacc.c:1909  */
+#line 32 "mini_l.y" /* yacc.c:1909  */
 
-	char * cVal;
-	int iVal;
+    int       int_val;
+    char str_val[256];
 
-#line 111 "y.tab.h" /* yacc.c:1909  */
+
+    struct {
+        stringstream *code;
+    }NonTerminal;
+
+    struct Terminal Terminal;
+
+#line 117 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

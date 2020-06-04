@@ -1,100 +1,74 @@
 %{
-#include <iostream>
-#define YY_DECL yy::parser::symbol_type yylex()
-#include "parser.tab.hh"
+#include "heading.h"
+#include "y.tab.h"
+#include <string.h>
 
-static yy::location loc;
+	int line_cnt = 1;
+	int cursor_pos = 1;
 %}
 
-%option noyywrap 
-
-%{
-#define YY_USER_ACTION loc.columns(yyleng);
-%}
-
-	/* your definitions here */
-COMMENT ##.*
-DIGIT		[0-9]
-LETTER		[a-zA-Z]
-IDENT_NUM	{DIGIT}*
-ERR_NOTVAR	({DIGIT}|[_])({LETTER}|{DIGIT}|[_])*(({LETTER}|{DIGIT})+)*
-ERR_UND		{LETTER}({LETTER}|{DIGIT}|[_])*([_])+
-IDENT_VAR	{LETTER}({DIGIT}|{LETTER}|[_])*(({LETTER}|{DIGIT})+)*
-	/* your definitions end */
+DIGIT		    [0-9]
+LETTER  	    [a-zA-Z]
+COMMENT		    ##.*
+IDENT_VAR	    {LETTER}({LETTER}|{DIGIT}|[_])*(({LETTER}|{DIGIT})+)*
+IDENT_DIG	    {DIGIT}+
+IDENT_ERR_START ({DIGIT}|[_])({LETTER}|{DIGIT}|[_])*(({LETTER}|{DIGIT})+)*
+IDENT_ERR_END	{LETTER}({LETTER}|{DIGIT}|[_])*([_])+
 
 %%
-
-%{
-loc.step(); 
-%}
-
-	/* your rules here */
-
-	/* use this structure to pass the Token :
-	 * return yy::parser::make_TokenName(loc)
-	 * if the token has a type you can pass it's value
-	 * as the first argument. as an example we put
-	 * the rule to return token function.
-	 */
-
-{COMMENT}	{loc.step(); loc.lines();}
-"function"	{return yy::parser::make_FUNCTION(loc);}
-"beginparams"	{return yy::parser::make_BEGINPARAMS(loc);}
-"endparams"	{return yy::parser::make_ENDPARAMS(loc);}
-"beginlocals"	{return yy::parser::make_BEGINLOCALS(loc);}
-"endlocals"	{return yy::parser::make_ENDLOCALS(loc);}
-"beginbody"	{return yy::parser::make_BEGINBODY(loc);}
-"endbody"	{return yy::parser::make_ENDBODY(loc);}
-"integer"	{return yy::parser::make_INTEGER(loc);}
-"array"		{return yy::parser::make_ARRAY(loc);}
-"of"		{return yy::parser::make_OF(loc);}
-"if"		{return yy::parser::make_IF(loc);}
-"then"		{return yy::parser::make_THEN(loc);}
-"endif"		{return yy::parser::make_ENDIF(loc);}
-"else"		{return yy::parser::make_ELSE(loc);}
-"while"		{return yy::parser::make_WHILE(loc);}
-"do"		{return yy::parser::make_DO(loc);}
-"beginloop"	{return yy::parser::make_BEGINLOOP(loc);}
-"endloop"	{return yy::parser::make_ENDLOOP(loc);}
-"continue"	{return yy::parser::make_CONTINUE(loc);}
-"read"		{return yy::parser::make_READ(loc);}
-"write"		{return yy::parser::make_WRITE(loc);}
-"and"		{return yy::parser::make_AND(loc);}
-"or"		{return yy::parser::make_OR(loc);}
-"not"		{return yy::parser::make_NOT(loc);}
-"true"		{return yy::parser::make_TRUE(loc);}
-"false"		{return yy::parser::make_FALSE(loc);}
-"return"	{return yy::parser::make_RETURN(loc);}
-
-"\-"		{return yy::parser::make_SUB(loc);}
-"\+"		{return yy::parser::make_ADD(loc);}
-"\*"		{return yy::parser::make_MULT(loc);}
-"\/"		{return yy::parser::make_DIV(loc);}
-"\%"		{return yy::parser::make_MOD(loc);}
-
-"\=\="		{return yy::parser::make_EQ(loc);}
-"\<\>"		{return yy::parser::make_NEQ(loc);}
-"\<"		{return yy::parser::make_LT(loc);}
-"\>"		{return yy::parser::make_GT(loc);}
-"\<\="		{return yy::parser::make_LTE(loc);}
-"\>\="		{return yy::parser::make_GTE(loc);}
-
-"\;"		{return yy::parser::make_SEMICOLON(loc);}
-"\:"		{return yy::parser::make_COLON(loc);}
-"\,"		{return yy::parser::make_COMMA(loc);}
-"\("		{return yy::parser::make_L_PAREN(loc);}
-"\)"		{return yy::parser::make_R_PAREN(loc);}
-"\["		{return yy::parser::make_L_SQUARE_BRACKET(loc);}
-"\]"		{return yy::parser::make_R_SQUARE_BRACKET(loc);}
-"\:\="		{return yy::parser::make_ASSIGN(loc);}
-
-{IDENT_NUM}	{return yy::parser::make_NUMBER(atoi(yytext), loc);}
-{IDENT_VAR}	{return yy::parser::make_IDENTIFIER(yytext, loc);}
-[ \t]+          {loc.step();}
-"\n"            {loc.step(); loc.lines();}
-
- <<EOF>>	{return yy::parser::make_END(loc);}
-	/* your rules end */
-
+[ \t]+ 		        cursor_pos += yyleng;
+\n 		            ++line_cnt;cursor_pos=1;
+{COMMENT}	        
+function 	        return(FUNCTION);cursor_pos += yyleng;
+beginparams	        return(BEGIN_PARAMS);cursor_pos += yyleng;
+endparams	        return(END_PARAMS);cursor_pos += yyleng;
+beginlocals	        return(BEGIN_LOCALS);cursor_pos += yyleng;
+endlocals	        return(END_LOCALS);cursor_pos += yyleng;
+beginbody	        return(BEGIN_BODY);cursor_pos += yyleng;
+endbody		        return(END_BODY);cursor_pos += yyleng;
+integer		        return(INTEGER);cursor_pos += yyleng;
+array		        return(ARRAY);cursor_pos += yyleng;
+of		            return(OF);cursor_pos += yyleng;
+if		            return(IF);cursor_pos += yyleng;
+then		        return(THEN);cursor_pos += yyleng;
+endif		        return(ENDIF);cursor_pos += yyleng;
+else		        return(ELSE);cursor_pos += yyleng;
+while		        return(WHILE);cursor_pos += yyleng;
+do		            return(DO);cursor_pos += yyleng;
+beginloop	        return(BEGINLOOP);cursor_pos += yyleng;
+endloop		        return(ENDLOOP);cursor_pos += yyleng;
+continue	        return(CONTINUE);cursor_pos += yyleng;
+read		        return(READ);cursor_pos += yyleng;
+write		        return(WRITE);cursor_pos += yyleng;
+and		            return(AND);cursor_pos += yyleng;
+or		            return(OR);cursor_pos += yyleng;
+not		            return(NOT);cursor_pos += yyleng;
+true		        return(TRUE);cursor_pos += yyleng;
+false		        return(FALSE);cursor_pos += yyleng;
+\-		            return(SUB);cursor_pos += yyleng;
+\+		            return(ADD);cursor_pos += yyleng;
+\*		            return(MULT);cursor_pos += yyleng;
+\/		            return(DIV);cursor_pos += yyleng;
+\%		            return(MOD);cursor_pos += yyleng;
+\=\=		        return(EQ);cursor_pos += yyleng;
+\<\>		        return(NEQ);cursor_pos += yyleng;
+\<		            return(LT);cursor_pos += yyleng;
+\>		            return(GT);cursor_pos += yyleng;
+\<\=		        return(LTE);cursor_pos += yyleng;
+\>\=		        return(GTE);cursor_pos += yyleng;
+\;		            return(SEMICOLON);cursor_pos += yyleng;
+\:		            return(COLON);cursor_pos += yyleng;
+\,		            return(COMMA);cursor_pos += yyleng;
+\(		            return(L_PAREN);cursor_pos += yyleng;
+\)		            return(R_PAREN);cursor_pos += yyleng;
+\[		            return(L_SQUARE_BRACKET);cursor_pos += yyleng;
+\]		            return(R_SQUARE_BRACKET);cursor_pos += yyleng;
+\:\=		        return(ASSIGN);cursor_pos += yyleng;
+return              return(RETURN);cursor_pos += yyleng;
+{IDENT_DIG}	        /*printf("NUMBER -> %s\n",yytext)*/;yylval.int_val = atoi(yytext); return(NUMBER); cursor_pos += yyleng; 
+{IDENT_ERR_START}   printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",line_cnt,cursor_pos,yytext);exit(0);
+{IDENT_ERR_END}	    printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",line_cnt,cursor_pos,yytext);exit(0);
+{IDENT_VAR}	        /*printf("IDENT -> %s\n",yytext)*/;strcpy(yylval.str_val,yytext);return(IDENT);cursor_pos += yyleng;  
+.		            printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n",line_cnt,cursor_pos,yytext);exit(0);
 %%
 

@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PARSER_TAB_HH_INCLUDED
-# define YY_YY_PARSER_TAB_HH_INCLUDED
+#ifndef YY_YY_Y_TAB_HH_INCLUDED
+# define YY_YY_Y_TAB_HH_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -103,10 +103,8 @@ union YYSTYPE
 {
 #line 32 "mini_l.yy" /* yacc.c:1909  */
 
-    int       int_val;
+    int  int_val;
     char str_val[256];
-
-    //enum Type {INT, INT_ARR};
 
     struct {
         std::stringstream *code;
@@ -138,7 +136,7 @@ union YYSTYPE
 
 
 
-#line 142 "parser.tab.hh" /* yacc.c:1909  */
+#line 140 "y.tab.hh" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -151,4 +149,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PARSER_TAB_HH_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_HH_INCLUDED  */

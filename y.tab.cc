@@ -62,38 +62,38 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "mini_l.y" /* yacc.c:339  */
+#line 1 "mini_l.yy" /* yacc.c:339  */
 
 #include "heading.h"
 
 int yyerror(const char* s);
 int yylex(void);
-stringstream *all_code;
+std::stringstream *all_code;
 FILE * myin;
-void print_test(string output);
-void print_test(stringstream o);
-string gen_code(string *res, string op, string *val1, string *val2);
-string to_string(char* s);
-string to_string(int s);
+void print_test(std::string output);
+void print_test(std::stringstream o);
+std::string gen_code(std::string *res, std::string op, std::string *val1, std::string *val2);
+std::string std::to_string(char* s);
+std::string std::to_string(int s);
 int tempi = 0;
 int templ = 0;
-string * new_temp();
-string * new_label();
-string go_to(string *s);
-string dec_label(string *s);
-string dec_temp(string *s);
-void expression_code( Terminal &DD,  Terminal D2, Terminal D3,string op);
+std::string * new_temp();
+std::string * new_label();
+std::string go_to(std::string *s);
+std::string dec_label(std::string *s);
+std::string dec_temp(std::string *s);
+void expression_code( Terminal &DD,  Terminal D2, Terminal D3,std::string op);
 bool success = true;
 bool no_main = false;
-void push_map(string name, Var v);
-bool check_map(string name);
-void check_map_dec(string name);
+void push_map(std::string name, Var v);
+bool check_map(std::string name);
+void check_map_dec(std::string name);
 
-map<string,Var> var_map;
+map<std::string,Var> var_map;
 stack<Loop> loop_stack;
 
 
-#line 97 "y.tab.c" /* yacc.c:339  */
+#line 97 "y.tab.cc" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -112,9 +112,9 @@ stack<Loop> loop_stack;
 #endif
 
 /* In a future release of Bison, this section will be replaced
-   by #include "y.tab.h".  */
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+   by #include "y.tab.hh".  */
+#ifndef YY_YY_Y_TAB_HH_INCLUDED
+# define YY_YY_Y_TAB_HH_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -184,19 +184,42 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 32 "mini_l.y" /* yacc.c:355  */
+#line 32 "mini_l.yy" /* yacc.c:355  */
 
-    int       int_val;
+    int  int_val;
     char str_val[256];
 
-
     struct {
-        stringstream *code;
+        std::stringstream *code;
     }NonTerminal;
 
     struct Terminal Terminal;
 
-#line 200 "y.tab.c" /* yacc.c:355  */
+
+//    struct {
+//       std::stringstream *code;
+//       //location
+//       std::string *place;
+//       std::string *value;
+//       std::string *offset;
+//       // branches
+//       std::string *op;
+//       std::string *begin;
+//       std::string *parent;
+//       std::string *end;
+//       // type
+//       //uint val;
+//       Type type;
+//       int length;
+//       std::string *index;
+//       // idents and vars
+//       std::vector<std::string> *ids;
+//       std::vector<Var> *vars; 
+//    } Terminal;
+
+
+
+#line 223 "y.tab.cc" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -209,11 +232,11 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_HH_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 217 "y.tab.c" /* yacc.c:358  */
+#line 240 "y.tab.cc" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -515,14 +538,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    65,    65,    76,    82,   108,   121,   126,   133,   142,
-     149,   154,   160,   216,   256,   265,   272,   281,   284,   287,
-     290,   293,   297,   300,   314,   321,   347,   365,   370,   377,
-     399,   416,   427,   441,   453,   459,   472,   483,   489,   510,
-     530,   537,   553,   572,   579,   584,   592,   600,   606,   612,
-     619,   625,   631,   637,   643,   649,   657,   674,   696,   715,
-     722,   739,   758,   777,   794,   801,   808,   813,   820,   827,
-     833,   840,   851,   858,   863,   867,   872,   906,   914
+       0,    93,    93,   104,   110,   136,   149,   154,   161,   170,
+     177,   182,   188,   244,   284,   293,   300,   309,   312,   315,
+     318,   321,   325,   328,   342,   349,   375,   393,   398,   405,
+     427,   444,   455,   469,   481,   487,   500,   511,   517,   538,
+     558,   565,   581,   600,   607,   612,   620,   628,   634,   640,
+     647,   653,   659,   665,   671,   677,   685,   702,   724,   743,
+     750,   767,   786,   805,   822,   829,   836,   841,   848,   855,
+     861,   868,   879,   886,   891,   895,   900,   934,   942
 };
 #endif
 
@@ -1401,11 +1424,11 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 65 "mini_l.y" /* yacc.c:1646  */
+#line 93 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("program -> function program\n");
                 (yyval.NonTerminal).code = (yyvsp[-1].Terminal).code;
-                *((yyval.NonTerminal).code) << *((yyvsp[0].NonTerminal).code);//->str();
+                *((yyval.NonTerminal).code) << (yyvsp[0].NonTerminal).code->str();
                 if(!no_main){
                     yyerror("ERROR: main function not defined.");
                 }
@@ -1413,20 +1436,20 @@ yyreduce:
 
                 all_code = (yyval.NonTerminal).code;
               }
-#line 1417 "y.tab.c" /* yacc.c:1646  */
+#line 1440 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 76 "mini_l.y" /* yacc.c:1646  */
+#line 104 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("program -> EPSILON\n");
-                (yyval.NonTerminal).code = new stringstream();
+                (yyval.NonTerminal).code = new std::stringstream();
               }
-#line 1426 "y.tab.c" /* yacc.c:1646  */
+#line 1449 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 82 "mini_l.y" /* yacc.c:1646  */
+#line 110 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS decl_loop END_PARAMS BEGIN_LOCALS decl_loop END_LOCALS BEGIN_BODY statement SEMICOLON function_2\n");
                 //IDENT = $2
@@ -1434,8 +1457,8 @@ yyreduce:
                 //decl_loop = $8
                 //statement = $11
                 //func_2 = $13
-                (yyval.Terminal).code = new stringstream(); 
-                string tmp = *(yyvsp[-11].Terminal).place;
+                (yyval.Terminal).code = new std::stringstream(); 
+                std::string tmp = *(yyvsp[-11].Terminal).place;
                 if( tmp.compare("main") == 0){
                     no_main = true;
                 }
@@ -1445,55 +1468,55 @@ yyreduce:
                         yyerror("Error: cannot pass arrays to function.");
                     }
                     else if((*(yyvsp[-8].Terminal).vars)[i].type == INT){
-                        *((yyval.Terminal).code) << "= " << *((*(yyvsp[-8].Terminal).vars)[i].place) << ", " << "$"<< to_string(i) << "\n";
+                        *((yyval.Terminal).code) << "= " << *((*(yyvsp[-8].Terminal).vars)[i].place) << ", " << "$"<< std::to_string(i) << "\n";
                     }else{
                         yyerror("Error: invalid type");
                     }
                 }
                  *((yyval.Terminal).code) << (yyvsp[-2].Terminal).code->str() << (yyvsp[0].Terminal).code->str();
             }
-#line 1456 "y.tab.c" /* yacc.c:1646  */
+#line 1479 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 108 "mini_l.y" /* yacc.c:1646  */
+#line 136 "mini_l.yy" /* yacc.c:1646  */
     {
             //cout << "b_func" << endl;
-            string tmp = (yyvsp[0].str_val);
+            std::string tmp = (yyvsp[0].str_val);
             Var myf = Var();
             myf.type = FUNC;
             if(!check_map(tmp)){
                 push_map(tmp,myf); 
             }
-            (yyval.Terminal).place = new string();
+            (yyval.Terminal).place = new std::string();
             *(yyval.Terminal).place = tmp;
             //cout << "end b_func" << endl;
         }
-#line 1473 "y.tab.c" /* yacc.c:1646  */
+#line 1496 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 121 "mini_l.y" /* yacc.c:1646  */
+#line 149 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("function_2 -> statement SEMICOLON function_2\n");
                 (yyval.Terminal).code = (yyvsp[-2].Terminal).code;
                 *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
               }
-#line 1483 "y.tab.c" /* yacc.c:1646  */
+#line 1506 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 126 "mini_l.y" /* yacc.c:1646  */
+#line 154 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("function_2 -> END_BODY\n");
-                (yyval.Terminal).code = new stringstream();
+                (yyval.Terminal).code = new std::stringstream();
                 *((yyval.Terminal).code) << "endfunc\n";
               }
-#line 1493 "y.tab.c" /* yacc.c:1646  */
+#line 1516 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 133 "mini_l.y" /* yacc.c:1646  */
+#line 161 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("decl_loop -> declaration SEMICOLON decl_loop\n");
                 (yyval.Terminal).code = (yyvsp[-2].Terminal).code;
@@ -1503,40 +1526,40 @@ yyreduce:
                 }
                 *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                 }
-#line 1507 "y.tab.c" /* yacc.c:1646  */
+#line 1530 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 142 "mini_l.y" /* yacc.c:1646  */
+#line 170 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("decl_loop -> EPSILON\n");
-                (yyval.Terminal).code = new stringstream();
-                (yyval.Terminal).vars = new vector<Var>();
+                (yyval.Terminal).code = new std::stringstream();
+                (yyval.Terminal).vars = new std::vector<Var>();
               }
-#line 1517 "y.tab.c" /* yacc.c:1646  */
+#line 1540 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 149 "mini_l.y" /* yacc.c:1646  */
+#line 177 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("stmt_loop -> statement SEMICOLON stmt_loop\n");
                 (yyval.Terminal).code = (yyvsp[-2].Terminal).code;
                 *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
               }
-#line 1527 "y.tab.c" /* yacc.c:1646  */
+#line 1550 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 154 "mini_l.y" /* yacc.c:1646  */
+#line 182 "mini_l.yy" /* yacc.c:1646  */
     {
                 //printf("stmt_loop -> EPSILON\n");
-                (yyval.Terminal).code = new stringstream();
+                (yyval.Terminal).code = new std::stringstream();
               }
-#line 1536 "y.tab.c" /* yacc.c:1646  */
+#line 1559 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 160 "mini_l.y" /* yacc.c:1646  */
+#line 188 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("declaration -> IDENT declaration_2\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
@@ -1547,7 +1570,7 @@ yyreduce:
                     Var v = Var();
                     v.type = (yyvsp[0].Terminal).type;
                     v.length = (yyvsp[0].Terminal).length;
-                    v.place = new string();
+                    v.place = new std::string();
                     *v.place = (yyvsp[-1].str_val);
                     (yyval.Terminal).vars->push_back(v);
                     if((yyvsp[0].Terminal).type == INT_ARR){
@@ -1555,28 +1578,28 @@ yyreduce:
                             yyerror("ERROR: invalid array size <= 0");
                         }
                         *((yyval.Terminal).code) << ".[] " << (yyvsp[-1].str_val) << ", " << (yyvsp[0].Terminal).length << "\n";
-                        string s = (yyvsp[-1].str_val);
+                        std::string s = (yyvsp[-1].str_val);
                         if(!check_map(s)){
                             push_map(s,v);
                         }
                         else{
-                            string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            std::string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
                             yyerror(tmp.c_str());
                         }
                     }
 
                     else if((yyvsp[0].Terminal).type == INT){
                         *((yyval.Terminal).code) << ". " << (yyvsp[-1].str_val) << "\n";
-                        string s = (yyvsp[-1].str_val);
+                        std::string s = (yyvsp[-1].str_val);
                         if(!check_map(s)){
                             push_map(s,v);
                         }
                         else{
-                            string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            std::string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
                             yyerror(tmp.c_str());
                         }
                         //if(var_map.find($1) == var_map.end()){
-                        //    string s = $1;
+                        //    std::string s = $1;
                         //    var_map[s] = v;
                         //}
                         //else{
@@ -1585,17 +1608,17 @@ yyreduce:
                     }else{
                             yyerror("ERROR: invalid type");
                     }
-                    //print_test(to_string($$.vars->size()));
+                    //print_test(std::to_string($$.vars->size()));
                     //for(int i = 0; i < $$.vars->size(); ++i){
-                    //    print_test("type:" + to_string((*$$.vars)[i].type) + "\nlength:" + to_string((*$$.vars)[i].length) + "\nplace:" + *(*$$.vars)[i].place);
+                    //    print_test("type:" + std::to_string((*$$.vars)[i].type) + "\nlength:" + std::to_string((*$$.vars)[i].length) + "\nplace:" + *(*$$.vars)[i].place);
                     //}
 
                 }
-#line 1595 "y.tab.c" /* yacc.c:1646  */
+#line 1618 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 216 "mini_l.y" /* yacc.c:1646  */
+#line 244 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("declaration_2 -> COMMA IDENT declaration_2\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
@@ -1608,39 +1631,39 @@ yyreduce:
                     Var v = Var();
                     v.type = (yyvsp[0].Terminal).type;
                     v.length = (yyvsp[0].Terminal).length;
-                    v.place = new string();
+                    v.place = new std::string();
                     *v.place = (yyvsp[-1].str_val);
                     (yyval.Terminal).vars->push_back(v);
                     if((yyvsp[0].Terminal).type == INT_ARR){
                         *((yyval.Terminal).code) << ".[] " << (yyvsp[-1].str_val) << ", " << (yyvsp[0].Terminal).length << "\n";
-                        string s = (yyvsp[-1].str_val);
+                        std::string s = (yyvsp[-1].str_val);
                         if(!check_map(s)){
                             push_map(s,v);
                         }
                         else{
-                            string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            std::string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
                             yyerror(tmp.c_str());
                         }
                     }
                     else if((yyvsp[0].Terminal).type == INT){
                         *((yyval.Terminal).code) << ". " << (yyvsp[-1].str_val) << "\n";
-                        string s = (yyvsp[-1].str_val);
+                        std::string s = (yyvsp[-1].str_val);
                         if(!check_map(s)){
                             push_map(s,v);
                         }
                         else{
-                            string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            std::string tmp = "Error: Symbol \"" + s + "\" is multiply-defined";
                             yyerror(tmp.c_str());
                         }
                     }else{
                         //printf("================ ERRRR\n");
                     }
                 }
-#line 1640 "y.tab.c" /* yacc.c:1646  */
+#line 1663 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 256 "mini_l.y" /* yacc.c:1646  */
+#line 284 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("declaration_2 -> COLON declaration_3 INTEGER\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1648,87 +1671,87 @@ yyreduce:
                     (yyval.Terminal).length = (yyvsp[-1].Terminal).length;
                     (yyval.Terminal).vars = (yyvsp[-1].Terminal).vars;
                 }
-#line 1652 "y.tab.c" /* yacc.c:1646  */
+#line 1675 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 265 "mini_l.y" /* yacc.c:1646  */
+#line 293 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("declaration_3 -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).vars = new vector<Var>();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).vars = new std::vector<Var>();
                     (yyval.Terminal).type = INT_ARR;
                     (yyval.Terminal).length = (yyvsp[-2].int_val);
                 }
-#line 1664 "y.tab.c" /* yacc.c:1646  */
+#line 1687 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 272 "mini_l.y" /* yacc.c:1646  */
+#line 300 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("declaration_3 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).vars = new vector<Var>();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).vars = new std::vector<Var>();
                     (yyval.Terminal).type = INT;
                     (yyval.Terminal).length = 0;
                   }
-#line 1676 "y.tab.c" /* yacc.c:1646  */
+#line 1699 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 281 "mini_l.y" /* yacc.c:1646  */
+#line 309 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 1684 "y.tab.c" /* yacc.c:1646  */
+#line 1707 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 284 "mini_l.y" /* yacc.c:1646  */
+#line 312 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 1692 "y.tab.c" /* yacc.c:1646  */
+#line 1715 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 287 "mini_l.y" /* yacc.c:1646  */
+#line 315 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 1700 "y.tab.c" /* yacc.c:1646  */
+#line 1723 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 290 "mini_l.y" /* yacc.c:1646  */
+#line 318 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 1708 "y.tab.c" /* yacc.c:1646  */
+#line 1731 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 293 "mini_l.y" /* yacc.c:1646  */
+#line 321 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     //print_test($$.code->str());
                 }
-#line 1717 "y.tab.c" /* yacc.c:1646  */
+#line 1740 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 297 "mini_l.y" /* yacc.c:1646  */
+#line 325 "mini_l.yy" /* yacc.c:1646  */
     {
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 1725 "y.tab.c" /* yacc.c:1646  */
+#line 1748 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 300 "mini_l.y" /* yacc.c:1646  */
+#line 328 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement -> CONTINUE\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     if(loop_stack.size() <= 0){
                         yyerror("ERROR: continue statement not within a loop");
                     }
@@ -1740,22 +1763,22 @@ yyreduce:
                     //TODO: probably add code to jump to start of loop?
                     //TODO: check if used inside loop
                 }
-#line 1744 "y.tab.c" /* yacc.c:1646  */
+#line 1767 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 314 "mini_l.y" /* yacc.c:1646  */
+#line 342 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement -> RETURN expression\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[0].Terminal).place;
                     *((yyval.Terminal).code) << "ret " << *(yyval.Terminal).place << "\n";
                 }
-#line 1755 "y.tab.c" /* yacc.c:1646  */
+#line 1778 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 321 "mini_l.y" /* yacc.c:1646  */
+#line 349 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement -> var ASSIGN expression\n");
                     //TODO: check if var was declared?
@@ -1771,7 +1794,7 @@ yyreduce:
                         *((yyval.Terminal).code) << gen_code((yyvsp[-2].Terminal).value, "[]=", (yyvsp[-2].Terminal).index, (yyvsp[0].Terminal).place);
                     }
                     else if((yyvsp[-2].Terminal).type == INT_ARR && (yyvsp[0].Terminal).type == INT_ARR){
-                        string *tmp = new_temp();
+                        std::string *tmp = new_temp();
                         *((yyval.Terminal).code) << dec_temp(tmp) << gen_code(tmp, "=[]", (yyvsp[0].Terminal).place, (yyvsp[0].Terminal).index);
                         *((yyval.Terminal).code) << gen_code((yyvsp[-2].Terminal).value, "[]=", (yyvsp[-2].Terminal).index, tmp);
                     }
@@ -1780,14 +1803,14 @@ yyreduce:
                     }
                     //print_test($$.code->str());
                 }
-#line 1784 "y.tab.c" /* yacc.c:1646  */
+#line 1807 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 347 "mini_l.y" /* yacc.c:1646  */
+#line 375 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "statement -> IF bool_exp THEN stmt_loop statement_21 ENDIF\n" << endl;
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).begin = new_label();
                     (yyval.Terminal).end = new_label();
                     *((yyval.Terminal).code) << (yyvsp[-4].Terminal).code->str() << "?:= " << *(yyval.Terminal).begin << ", " <<  *(yyvsp[-4].Terminal).place << "\n";
@@ -1801,34 +1824,34 @@ yyreduce:
                     }
                     *((yyval.Terminal).code) << dec_label((yyval.Terminal).end);
                 }
-#line 1805 "y.tab.c" /* yacc.c:1646  */
+#line 1828 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 365 "mini_l.y" /* yacc.c:1646  */
+#line 393 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_21 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).begin = NULL;
                 }
-#line 1815 "y.tab.c" /* yacc.c:1646  */
+#line 1838 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 370 "mini_l.y" /* yacc.c:1646  */
+#line 398 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_21 -> ELSE stmt_loop\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).begin = new_label();
                 }
-#line 1825 "y.tab.c" /* yacc.c:1646  */
+#line 1848 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 377 "mini_l.y" /* yacc.c:1646  */
+#line 405 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "statement -> WHILE bool_exp BEGINLOOP stmt_loop ENDLOOP\n" << endl;
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).begin = (yyvsp[-3].Terminal).begin;
                     (yyval.Terminal).parent = (yyvsp[-3].Terminal).parent;
                     (yyval.Terminal).end = (yyvsp[-3].Terminal).end;
@@ -1846,14 +1869,14 @@ yyreduce:
                     loop_stack.pop();
 
                 }
-#line 1850 "y.tab.c" /* yacc.c:1646  */
+#line 1873 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 399 "mini_l.y" /* yacc.c:1646  */
+#line 427 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "bLOOP" << endl;
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).begin = new_label();
                     (yyval.Terminal).parent = new_label();
                     (yyval.Terminal).end = new_label();
@@ -1867,25 +1890,25 @@ yyreduce:
                     loop_stack.push(l);
                     //cout << "end bloop" << endl;
                 }
-#line 1871 "y.tab.c" /* yacc.c:1646  */
+#line 1894 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 416 "mini_l.y" /* yacc.c:1646  */
+#line 444 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "statement -> DO BEGINLOOP stmt_loop ENDLOOP WHILE bool_exp\n" << endl;
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).begin = (yyvsp[-5].Terminal).begin;
                     (yyval.Terminal).parent = (yyvsp[-5].Terminal).parent;
                     (yyval.Terminal).end = (yyvsp[-5].Terminal).end;
                     *((yyval.Terminal).code) << dec_label((yyval.Terminal).begin) << (yyvsp[-3].Terminal).code->str() << dec_label((yyval.Terminal).parent) << (yyvsp[0].Terminal).code->str() << "?:= " << *(yyval.Terminal).begin << ", " << *(yyvsp[0].Terminal).place << "\n" << dec_label((yyval.Terminal).end);
                     loop_stack.pop();
                 }
-#line 1885 "y.tab.c" /* yacc.c:1646  */
+#line 1908 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 427 "mini_l.y" /* yacc.c:1646  */
+#line 455 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement -> READ var statement_51\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1898,11 +1921,11 @@ yyreduce:
                     *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                     //print_test($$.code->str());
                 }
-#line 1902 "y.tab.c" /* yacc.c:1646  */
+#line 1925 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 441 "mini_l.y" /* yacc.c:1646  */
+#line 469 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_51 -> COMMA var statement_51\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1915,20 +1938,20 @@ yyreduce:
                     *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                     //print_test($$.code->str());
                 }
-#line 1919 "y.tab.c" /* yacc.c:1646  */
+#line 1942 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 453 "mini_l.y" /* yacc.c:1646  */
+#line 481 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_51 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                   }
-#line 1928 "y.tab.c" /* yacc.c:1646  */
+#line 1951 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 459 "mini_l.y" /* yacc.c:1646  */
+#line 487 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement -> WRITE var statement_61\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1940,11 +1963,11 @@ yyreduce:
                     }
                     *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                   }
-#line 1944 "y.tab.c" /* yacc.c:1646  */
+#line 1967 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 472 "mini_l.y" /* yacc.c:1646  */
+#line 500 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_61 -> COMMA var statement_61\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1956,20 +1979,20 @@ yyreduce:
                     }
                     *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                   }
-#line 1960 "y.tab.c" /* yacc.c:1646  */
+#line 1983 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 483 "mini_l.y" /* yacc.c:1646  */
+#line 511 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("statement_61 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                  }
-#line 1969 "y.tab.c" /* yacc.c:1646  */
+#line 1992 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 489 "mini_l.y" /* yacc.c:1646  */
+#line 517 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "bool_exp -> rel_and_exp bool_exp2\n" << endl;
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -1989,23 +2012,23 @@ yyreduce:
                     //print_test($$.code->str());
                     //cout << "END OF BOOL" << endl;
                 }
-#line 1993 "y.tab.c" /* yacc.c:1646  */
+#line 2016 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 510 "mini_l.y" /* yacc.c:1646  */
+#line 538 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout <<"bool_exp2 -> OR rel_and_exp bool_exp2\n" << endl;
                     //$$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "||";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "||";
 
                     //    *($$.code) << dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2014,21 +2037,21 @@ yyreduce:
 
 
                 }
-#line 2018 "y.tab.c" /* yacc.c:1646  */
+#line 2041 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 530 "mini_l.y" /* yacc.c:1646  */
+#line 558 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "bool_exp2 -> EPSILON\n" << endl;
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 2028 "y.tab.c" /* yacc.c:1646  */
+#line 2051 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 537 "mini_l.y" /* yacc.c:1646  */
+#line 565 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("rel_and_exp -> relation_exp rel_and_exp2\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -2043,23 +2066,23 @@ yyreduce:
                         (yyval.Terminal).op = (yyvsp[-1].Terminal).op;
                     }
                 }
-#line 2047 "y.tab.c" /* yacc.c:1646  */
+#line 2070 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 553 "mini_l.y" /* yacc.c:1646  */
+#line 581 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("rel_and_exp2 -> AND relation_exp rel_and_exp2\n");
                     //$$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "&&";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "&&";
 
                     //    *($$.code) << dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2067,42 +2090,42 @@ yyreduce:
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"&&");
 
                 }
-#line 2071 "y.tab.c" /* yacc.c:1646  */
+#line 2094 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 572 "mini_l.y" /* yacc.c:1646  */
+#line 600 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("rel_and_exp2 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 2081 "y.tab.c" /* yacc.c:1646  */
+#line 2104 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 579 "mini_l.y" /* yacc.c:1646  */
+#line 607 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("relation_exp -> relation_exp_s\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[0].Terminal).place; 
                 }
-#line 2091 "y.tab.c" /* yacc.c:1646  */
+#line 2114 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 584 "mini_l.y" /* yacc.c:1646  */
+#line 612 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("relation_exp -> NOT relation_exp_s\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = new_temp();
                     *((yyval.Terminal).code) << dec_temp((yyval.Terminal).place) << gen_code((yyval.Terminal).place, "!", (yyvsp[0].Terminal).place, NULL);
                 }
-#line 2102 "y.tab.c" /* yacc.c:1646  */
+#line 2125 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 592 "mini_l.y" /* yacc.c:1646  */
+#line 620 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("relation_exp_s -> expression comp expression\n");
                     (yyval.Terminal).code = (yyvsp[-2].Terminal).code;
@@ -2111,109 +2134,109 @@ yyreduce:
                     (yyval.Terminal).place = new_temp();
                     *((yyval.Terminal).code)<< dec_temp((yyval.Terminal).place) << gen_code((yyval.Terminal).place, *(yyvsp[-1].Terminal).op, (yyvsp[-2].Terminal).place, (yyvsp[0].Terminal).place);
                 }
-#line 2115 "y.tab.c" /* yacc.c:1646  */
+#line 2138 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 600 "mini_l.y" /* yacc.c:1646  */
+#line 628 "mini_l.yy" /* yacc.c:1646  */
     {                    
                     //printf("relation_exp_s -> TRUE\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).place = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).place = new std::string();
                     *(yyval.Terminal).place = "1";
                     }
-#line 2126 "y.tab.c" /* yacc.c:1646  */
+#line 2149 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 606 "mini_l.y" /* yacc.c:1646  */
+#line 634 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("relation_exp_s -> FALSE\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).place = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).place = new std::string();
                     *(yyval.Terminal).place = "0";
                   }
-#line 2137 "y.tab.c" /* yacc.c:1646  */
+#line 2160 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 612 "mini_l.y" /* yacc.c:1646  */
+#line 640 "mini_l.yy" /* yacc.c:1646  */
     {
                     //cout << "relation_exp_s -> L_PAREN bool_exp R_PAREN\n" << endl;
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[-1].Terminal).place;
                 }
-#line 2147 "y.tab.c" /* yacc.c:1646  */
+#line 2170 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 619 "mini_l.y" /* yacc.c:1646  */
+#line 647 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> EQ\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = "==";
                   }
-#line 2158 "y.tab.c" /* yacc.c:1646  */
+#line 2181 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 625 "mini_l.y" /* yacc.c:1646  */
+#line 653 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> NEQ\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = "!=";
                   }
-#line 2169 "y.tab.c" /* yacc.c:1646  */
+#line 2192 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 631 "mini_l.y" /* yacc.c:1646  */
+#line 659 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> LT\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = "<";
                   }
-#line 2180 "y.tab.c" /* yacc.c:1646  */
+#line 2203 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 637 "mini_l.y" /* yacc.c:1646  */
+#line 665 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> GT\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = ">";
                   }
-#line 2191 "y.tab.c" /* yacc.c:1646  */
+#line 2214 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 643 "mini_l.y" /* yacc.c:1646  */
+#line 671 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> LTE\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = "<=";
                   }
-#line 2202 "y.tab.c" /* yacc.c:1646  */
+#line 2225 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 649 "mini_l.y" /* yacc.c:1646  */
+#line 677 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("comp -> GTE\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).op = new string();
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).op = new std::string();
                     *(yyval.Terminal).op = ">=";
                   }
-#line 2213 "y.tab.c" /* yacc.c:1646  */
+#line 2236 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 657 "mini_l.y" /* yacc.c:1646  */
+#line 685 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("expression -> mult_expr expression_2\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -2229,23 +2252,23 @@ yyreduce:
                     }
                     (yyval.Terminal).type = INT;
                   }
-#line 2233 "y.tab.c" /* yacc.c:1646  */
+#line 2256 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 674 "mini_l.y" /* yacc.c:1646  */
+#line 702 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("expression_2 -> ADD mult_expr expression_2\n");
                     //$$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "+";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "+";
 
                     //    *($$.code)<< dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2256,23 +2279,23 @@ yyreduce:
                     //print_test($$.code->str());
 
                   }
-#line 2260 "y.tab.c" /* yacc.c:1646  */
+#line 2283 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 696 "mini_l.y" /* yacc.c:1646  */
+#line 724 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("expression_2 -> SUB mult_expr expression_2\n");
                     //$$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "-";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "-";
 
                     //    *($$.code)<< dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2280,21 +2303,21 @@ yyreduce:
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"-");
                     //print_test("SUB\n" +$$.code->str());
                   }
-#line 2284 "y.tab.c" /* yacc.c:1646  */
+#line 2307 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 715 "mini_l.y" /* yacc.c:1646  */
+#line 743 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("expression -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).op = NULL;
                   }
-#line 2294 "y.tab.c" /* yacc.c:1646  */
+#line 2317 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 722 "mini_l.y" /* yacc.c:1646  */
+#line 750 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("mult_expr -> term mult_expr_2\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
@@ -2309,23 +2332,23 @@ yyreduce:
                         (yyval.Terminal).op = (yyvsp[-1].Terminal).op;
                     }
                   }
-#line 2313 "y.tab.c" /* yacc.c:1646  */
+#line 2336 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 739 "mini_l.y" /* yacc.c:1646  */
+#line 767 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("mult_expr_2 -> MULT mult_expr\n");
                     //$$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "*";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "*";
 
                     //    *($$.code) << dec_temp($$.place)<< gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2333,23 +2356,23 @@ yyreduce:
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"*");
 
                   }
-#line 2337 "y.tab.c" /* yacc.c:1646  */
+#line 2360 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 758 "mini_l.y" /* yacc.c:1646  */
+#line 786 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("mult_expr_2 -> DIV mult_expr\n");
                     // $$.code = $2.code;
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "/";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "/";
 
                     //    *($$.code)<< dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
@@ -2357,11 +2380,11 @@ yyreduce:
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"/");
                     //print_test($$.code->str());
                   }
-#line 2361 "y.tab.c" /* yacc.c:1646  */
+#line 2384 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 777 "mini_l.y" /* yacc.c:1646  */
+#line 805 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("mult_expr_2 -> MOD mult_expr\n");
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"%");
@@ -2369,63 +2392,63 @@ yyreduce:
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "%";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "%";
                     //    *($$.code)<< dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
                     //} 
                   }
-#line 2383 "y.tab.c" /* yacc.c:1646  */
+#line 2406 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 794 "mini_l.y" /* yacc.c:1646  */
+#line 822 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("mult_expr_2 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 2393 "y.tab.c" /* yacc.c:1646  */
+#line 2416 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 801 "mini_l.y" /* yacc.c:1646  */
+#line 829 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term -> SUB term_2\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = new_temp();
-                    string tmp = "-1";
+                    std::string tmp = "-1";
                     *((yyval.Terminal).code)<< dec_temp((yyval.Terminal).place) << gen_code((yyval.Terminal).place, "*",(yyvsp[0].Terminal).place, &tmp );
                   }
-#line 2405 "y.tab.c" /* yacc.c:1646  */
+#line 2428 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 808 "mini_l.y" /* yacc.c:1646  */
+#line 836 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term -> term_2\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[0].Terminal).place;
                   }
-#line 2415 "y.tab.c" /* yacc.c:1646  */
+#line 2438 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 813 "mini_l.y" /* yacc.c:1646  */
+#line 841 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term -> term_3\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[0].Terminal).place;
                   }
-#line 2425 "y.tab.c" /* yacc.c:1646  */
+#line 2448 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 820 "mini_l.y" /* yacc.c:1646  */
+#line 848 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_2 -> var\n");
                     //TODO: check if var was declared?
@@ -2433,46 +2456,46 @@ yyreduce:
                     (yyval.Terminal).place= (yyvsp[0].Terminal).place;
                     (yyval.Terminal).index = (yyvsp[0].Terminal).index;
                   }
-#line 2437 "y.tab.c" /* yacc.c:1646  */
+#line 2460 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 827 "mini_l.y" /* yacc.c:1646  */
+#line 855 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_2 -> NUMBER\n");
-                    (yyval.Terminal).code = new stringstream();
-                    (yyval.Terminal).place = new string();
-                    *(yyval.Terminal).place = to_string((yyvsp[0].int_val));
+                    (yyval.Terminal).code = new std::stringstream();
+                    (yyval.Terminal).place = new std::string();
+                    *(yyval.Terminal).place = std::to_string((yyvsp[0].int_val));
                   }
-#line 2448 "y.tab.c" /* yacc.c:1646  */
+#line 2471 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 833 "mini_l.y" /* yacc.c:1646  */
+#line 861 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_2 -> L_PAREN expression R_PAREN\n");
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
                     (yyval.Terminal).place = (yyvsp[-1].Terminal).place;
                   }
-#line 2458 "y.tab.c" /* yacc.c:1646  */
+#line 2481 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 840 "mini_l.y" /* yacc.c:1646  */
+#line 868 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_3 -> IDENT L_PAREN term_31 R_PAREN\n");
                     //TODO: check if var was declared?
                     (yyval.Terminal).code = (yyvsp[-1].Terminal).code;
                     (yyval.Terminal).place = new_temp();
                     *((yyval.Terminal).code) << dec_temp((yyval.Terminal).place)<< "call " << (yyvsp[-3].str_val) << ", " << *(yyval.Terminal).place << "\n";
-                    string tmp = (yyvsp[-3].str_val);
+                    std::string tmp = (yyvsp[-3].str_val);
                     check_map_dec(tmp);
                 }
-#line 2472 "y.tab.c" /* yacc.c:1646  */
+#line 2495 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 851 "mini_l.y" /* yacc.c:1646  */
+#line 879 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_31-> expression term_32\n");
                     //TODO: check if function declared?
@@ -2480,75 +2503,75 @@ yyreduce:
                     *((yyval.Terminal).code) << (yyvsp[0].Terminal).code->str();
                     *((yyval.Terminal).code) << "param " << *(yyvsp[-1].Terminal).place << "\n";
                 }
-#line 2484 "y.tab.c" /* yacc.c:1646  */
+#line 2507 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 858 "mini_l.y" /* yacc.c:1646  */
+#line 886 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_31 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream(); 
+                    (yyval.Terminal).code = new std::stringstream(); 
                   }
-#line 2493 "y.tab.c" /* yacc.c:1646  */
+#line 2516 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 863 "mini_l.y" /* yacc.c:1646  */
+#line 891 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_32 -> COMMA term_31\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                 }
-#line 2502 "y.tab.c" /* yacc.c:1646  */
+#line 2525 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 867 "mini_l.y" /* yacc.c:1646  */
+#line 895 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("term_32 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                   }
-#line 2511 "y.tab.c" /* yacc.c:1646  */
+#line 2534 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 872 "mini_l.y" /* yacc.c:1646  */
+#line 900 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("var -> IDENT var_2\n");
                     (yyval.Terminal).code = (yyvsp[0].Terminal).code;
                     (yyval.Terminal).type = (yyvsp[0].Terminal).type;
                     //TODO: check if var was declared?
-                    string tmp = (yyvsp[-1].str_val);
+                    std::string tmp = (yyvsp[-1].str_val);
                     check_map_dec(tmp);
                     if(check_map(tmp) && var_map[tmp].type != (yyvsp[0].Terminal).type){
                         if((yyvsp[0].Terminal).type == INT_ARR){
-                            string output ="Error: used variable \"" + tmp + "\" is not an array.";
+                            std::string output ="Error: used variable \"" + tmp + "\" is not an array.";
                             yyerror(output.c_str());
                         }
                         else if((yyvsp[0].Terminal).type == INT){
-                            string output ="Error: used array variable \"" + tmp + "\" is missing a specified index.";
+                            std::string output ="Error: used array variable \"" + tmp + "\" is missing a specified index.";
                             yyerror(output.c_str());
                         }
                     }
 
                     if((yyvsp[0].Terminal).index == NULL){
-                        (yyval.Terminal).place = new string();
+                        (yyval.Terminal).place = new std::string();
                         *(yyval.Terminal).place = (yyvsp[-1].str_val);
                     }
                     else{
                         (yyval.Terminal).index = (yyvsp[0].Terminal).index;
                         (yyval.Terminal).place = new_temp();
-                        string* tmp = new string();
+                        std::string* tmp = new std::string();
                         *tmp = (yyvsp[-1].str_val);
                         *((yyval.Terminal).code) << dec_temp((yyval.Terminal).place) << gen_code((yyval.Terminal).place, "=[]", tmp,(yyvsp[0].Terminal).index);
-                        (yyval.Terminal).value = new string();
+                        (yyval.Terminal).value = new std::string();
                         *(yyval.Terminal).value = (yyvsp[-1].str_val);
                     }
                 }
-#line 2548 "y.tab.c" /* yacc.c:1646  */
+#line 2571 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 906 "mini_l.y" /* yacc.c:1646  */
+#line 934 "mini_l.yy" /* yacc.c:1646  */
     {
                     //TODO: check if var was declared?
                     //printf("var_2 -> L_SQUARE_BRACKET expression R_SQUARE_BRACKET\n");
@@ -2557,23 +2580,23 @@ yyreduce:
                     (yyval.Terminal).index = (yyvsp[-1].Terminal).place;
                     (yyval.Terminal).type = INT_ARR;
                 }
-#line 2561 "y.tab.c" /* yacc.c:1646  */
+#line 2584 "y.tab.cc" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 914 "mini_l.y" /* yacc.c:1646  */
+#line 942 "mini_l.yy" /* yacc.c:1646  */
     {
                     //printf("var_2 -> EPSILON\n");
-                    (yyval.Terminal).code = new stringstream();
+                    (yyval.Terminal).code = new std::stringstream();
                     (yyval.Terminal).index = NULL;
                     (yyval.Terminal).place = NULL;
                     (yyval.Terminal).type = INT;
                  }
-#line 2573 "y.tab.c" /* yacc.c:1646  */
+#line 2596 "y.tab.cc" /* yacc.c:1646  */
     break;
 
 
-#line 2577 "y.tab.c" /* yacc.c:1646  */
+#line 2600 "y.tab.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2801,22 +2824,22 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 923 "mini_l.y" /* yacc.c:1906  */
+#line 951 "mini_l.yy" /* yacc.c:1906  */
 
 
-void print_test(string o){
+void print_test(std::string o){
     cout << "\n---------TEST-----------\n"
         << o
         << "\n----------END -----------\n";
 }
 
-//void print_test(stringstream &o){
+//void print_test(std::stringstream &o){
 //    cout << "\n---------TEST-----------\n"
 //        << o.str()
 //        << "\n----------END -----------\n";
 //}
 
-string gen_code(string *res, string op, string *val1, string *val2){
+std::string gen_code(std::string *res, std::string op, std::string *val1, std::string *val2){
     if(op == "!"){
         return op + " " + *res + ", " + *val1 + "\n";
     }
@@ -2825,36 +2848,36 @@ string gen_code(string *res, string op, string *val1, string *val2){
     }
 }
 
-string to_string(char* s){
+std::string std::to_string(char* s){
     ostringstream c;
     c << s;
     return c.str();
 }
 
-string to_string(int s){
+std::string std::to_string(int s){
     ostringstream c;
     c << s;
     return c.str();
 }
-string go_to(string *s){
+std::string go_to(std::string *s){
     return ":= "+ *s + "\n"; 
 }
-string dec_label(string *s){
+std::string dec_label(std::string *s){
     return ": " +*s + "\n"; 
 }
-string dec_temp(string *s){
+std::string dec_temp(std::string *s){
     return ". " +*s + "\n"; 
 }
-string * new_temp(){
-    string * t = new string();
+std::string * new_temp(){
+    std::string * t = new std::string();
     ostringstream conv;
     conv << tempi;
     *t = "__temp__"+ conv.str();
     tempi++;
     return t;
 }
-string * new_label(){
-    string * t = new string();
+std::string * new_label(){
+    std::string * t = new std::string();
     ostringstream conv;
     conv << templ;
     *t = "__label__"+ conv.str();
@@ -2866,30 +2889,30 @@ string * new_label(){
                     //*($$.code) << $3.code->str();
                     //if($3.op == NULL){
                     //    $$.place = $2.place;
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "+";
                     //}
                     //else{
                     //    $$.place = new_temp();
-                    //    $$.op = new string();
+                    //    $$.op = new std::string();
                     //    *$$.op = "+";
 
                     //    *($$.code)<< dec_temp($$.place) << gen_code($$.place , *$$.op, $2.place, $3.place);
                     //} 
                     // 1 + i - j
  
-void expression_code( Terminal &DD, Terminal D2, Terminal D3, string op){
+void expression_code( Terminal &DD, Terminal D2, Terminal D3, std::string op){
     DD.code = D2.code;
     *(DD.code) << D3.code->str();
     if(D3.op == NULL){
         DD.place = D2.place;
-        DD.op = new string();
+        DD.op = new std::string();
         *DD.op = op;
     }
     else{
         //cout << "IN ELSE" << endl;
         DD.place = new_temp();
-        DD.op = new string();
+        DD.op = new std::string();
         *DD.op = op;
 
         *(DD.code) << dec_temp(DD.place)<< gen_code(DD.place , *D3.op, D2.place, D3.place);
@@ -2897,30 +2920,30 @@ void expression_code( Terminal &DD, Terminal D2, Terminal D3, string op){
 }
 
 
-void push_map(string name, Var v){
+void push_map(std::string name, Var v){
     //cout << "pushing map" << endl;
     if(var_map.find(name) == var_map.end()){
         var_map[name] = v;
     }
     else{
-        string tmp = "ERROR: " + name + " already exists";
+        std::string tmp = "ERROR: " + name + " already exists";
         yyerror(tmp.c_str());
     }
 }
-bool check_map(string name){
+bool check_map(std::string name){
     if(var_map.find(name) == var_map.end()){
         return false;
     }
     return true;
 }
-void check_map_dec(string name){
+void check_map_dec(std::string name){
     if(!check_map(name)){
-        string tmp = "ERROR: \"" + name + "\" does not exist";
+        std::string tmp = "ERROR: \"" + name + "\" does not exist";
         yyerror(tmp.c_str());
     }
 }
 
-//void print_error(string s){
+//void print_error(std::string s){
 //    extern int line_cnt;
 //    extern int cursor_pos;
 //    cout << ">>> Error
@@ -2943,7 +2966,7 @@ int yyerror(const char *s)
     success = false;
     printf(">>> Line %d, position %d: %s\n",line_cnt,cursor_pos,s);
     return -1;
-    //return yyerror(string(s));
+    //return yyerror(std::string(s));
 }
 
 
@@ -2975,3 +2998,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
