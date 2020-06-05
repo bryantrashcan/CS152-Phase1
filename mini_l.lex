@@ -1,5 +1,5 @@
 %{
-#include "heading.h"
+#include "structs.h"
 #include "y.tab.h"
 #include <string.h>
 

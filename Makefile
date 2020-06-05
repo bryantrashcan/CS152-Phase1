@@ -1,17 +1,11 @@
-# Makefile
-
-
-OBJS	= mini_l.y mini_l.lex  #bison.o lex.o main.o
-
+OBJS	= mini_l.y mini_l.lex
 CC		= g++
 CFLAGS	= -g -Wall -ansi -pedantic
 
 parser:		$(OBJS)
 			bison -v -d --file-prefix=y mini_l.y
 			flex mini_l.lex
-			g++ -o parser -x c++ y.tab.c lex.yy.c -lfl #-std=c++11 -Wno-deprecated-register
-			#g++ -o parser -x c++ y.tab.c lex.yy.c -ll -std=c++11 -Wno-deprecated-register
-
+			g++ -o parser -x c++ y.tab.c lex.yy.c -lfl 
 
 test:			parser
 			rm -f mil_code.mil

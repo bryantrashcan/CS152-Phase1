@@ -569,7 +569,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "mini_l.lex"
 #line 2 "mini_l.lex"
-#include "heading.h"
+#include "structs.h"
 #include "y.tab.h"
 #include <string.h>
 
