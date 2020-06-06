@@ -68,30 +68,40 @@
 
 int yyerror(const char* s);
 int yylex(void);
-stringstream *all_code;
-FILE * myin;
-string makeCode(string *res, string op, string *val1, string *val2);
+
+
+stringstream *all_code; /* intermediated code to be put in file */
+
+string makeIntCode(string *dst, string op, string *val1, string *val2);
+/* generating intermediate code*/
+
 string conv2String(char* s);
 string conv2String(int s);
-int tempi = 0;
-int templ = 0;
-string * new_temp();
-string * new_label();
+
+string *create_temp();
+string *create_label();
+int temp1 = 0;
+int temp2 = 0;
+
 string go_to(string *s);
-string dec_label(string *s);
-string dec_temp(string *s);
-void expression_code( Terminal &DD,  Terminal D2, Terminal D3,string op);
+
+string labdclr_label(string *s); /* label declare and variable temp declare*/
+string vardclr_temp(string *s);
+
+void expression_code( Terminal &nterm,  Terminal t2, Terminal t3, string op);
+
 bool pass = true;
 bool hasMain = false;
+
 void add_map(string name, Var v);
 bool bool_map(string name);
 void bool_map_dec(string name);
 
-map<string,Var> var_map;
+map<string,Var> arr_vars;
 stack<Loop> loop_stack;
 
 
-#line 95 "y.tab.c" /* yacc.c:339  */
+#line 105 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -182,19 +192,19 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 30 "mini_l.y" /* yacc.c:355  */
+#line 40 "mini_l.y" /* yacc.c:355  */
 
     int		int_val;
     char 	str_val[256];
 
 
-    struct {
+    struct{
         stringstream *term_code;
     }NonTerminal;
 
     struct Terminal Terminal;
 
-#line 198 "y.tab.c" /* yacc.c:355  */
+#line 208 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -211,7 +221,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 215 "y.tab.c" /* yacc.c:358  */
+#line 225 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -513,14 +523,14 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    68,    68,    77,    84,    89,   111,   122,   126,   129,
-     137,   144,   189,   224,   232,   238,   246,   249,   252,   255,
-     258,   261,   264,   267,   271,   294,   311,   315,   321,   333,
-     345,   355,   367,   377,   382,   394,   404,   409,   420,   425,
-     442,   448,   454,   469,   473,   479,   483,   490,   497,   502,
-     507,   513,   518,   523,   528,   533,   538,   545,   561,   566,
-     568,   574,   590,   594,   597,   600,   606,   612,   616,   622,
-     627,   632,   638,   647,   652,   656,   659,   663,   695,   701
+       0,    83,    83,    92,    99,   104,   126,   137,   141,   144,
+     152,   159,   204,   239,   247,   253,   263,   266,   269,   272,
+     275,   278,   281,   284,   288,   311,   328,   332,   338,   350,
+     362,   372,   384,   394,   399,   411,   421,   426,   437,   442,
+     459,   465,   473,   487,   491,   497,   501,   508,   515,   520,
+     525,   531,   536,   541,   546,   551,   556,   563,   579,   584,
+     586,   592,   608,   612,   615,   618,   624,   630,   634,   640,
+     645,   650,   656,   665,   670,   674,   677,   681,   713,   719
 };
 #endif
 
@@ -1399,36 +1409,36 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 68 "mini_l.y" /* yacc.c:1646  */
+#line 83 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.NonTerminal).term_code = (yyvsp[0].NonTerminal).term_code;
     if(!hasMain){
 		yyerror("Error: main function is undeclared.");
 	}
 }
-#line 1410 "y.tab.c" /* yacc.c:1646  */
+#line 1420 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 78 "mini_l.y" /* yacc.c:1646  */
+#line 93 "mini_l.y" /* yacc.c:1646  */
     {
 	(yyval.NonTerminal).term_code = (yyvsp[-1].Terminal).term_code;
 	*((yyval.NonTerminal).term_code) << (yyvsp[0].NonTerminal).term_code->str();
         all_code = (yyval.NonTerminal).term_code;
 }
-#line 1420 "y.tab.c" /* yacc.c:1646  */
+#line 1430 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 84 "mini_l.y" /* yacc.c:1646  */
+#line 99 "mini_l.y" /* yacc.c:1646  */
     { // function functions | epsilon
 	(yyval.NonTerminal).term_code = new stringstream(); // empty
 }
-#line 1428 "y.tab.c" /* yacc.c:1646  */
+#line 1438 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 89 "mini_l.y" /* yacc.c:1646  */
+#line 104 "mini_l.y" /* yacc.c:1646  */
     {
          
                 (yyval.Terminal).term_code = new stringstream(); 
@@ -1450,11 +1460,11 @@ yyreduce:
                  *((yyval.Terminal).term_code) << (yyvsp[-1].Terminal).term_code->str();
                 *((yyval.Terminal).term_code) << "endfunc\n";
             }
-#line 1454 "y.tab.c" /* yacc.c:1646  */
+#line 1464 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 111 "mini_l.y" /* yacc.c:1646  */
+#line 126 "mini_l.y" /* yacc.c:1646  */
     {
             string tempstr = (yyvsp[0].str_val);
             Var myf = Var();
@@ -1465,27 +1475,27 @@ yyreduce:
             (yyval.Terminal).term_place = new string();
             *(yyval.Terminal).term_place = tempstr;
         }
-#line 1469 "y.tab.c" /* yacc.c:1646  */
+#line 1479 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 122 "mini_l.y" /* yacc.c:1646  */
+#line 137 "mini_l.y" /* yacc.c:1646  */
     {
                 (yyval.Terminal).term_code = (yyvsp[-2].Terminal).term_code;
                 *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
               }
-#line 1478 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 126 "mini_l.y" /* yacc.c:1646  */
+#line 141 "mini_l.y" /* yacc.c:1646  */
     {(yyval.Terminal).term_code = new stringstream();
 		(yyval.Terminal).vars = new vector<Var>();}
-#line 1485 "y.tab.c" /* yacc.c:1646  */
+#line 1495 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 129 "mini_l.y" /* yacc.c:1646  */
+#line 144 "mini_l.y" /* yacc.c:1646  */
     {
                 (yyval.Terminal).term_code = (yyvsp[-2].Terminal).term_code;
                 (yyval.Terminal).vars = (yyvsp[-2].Terminal).vars;
@@ -1494,20 +1504,20 @@ yyreduce:
                 }
                 *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                 }
-#line 1498 "y.tab.c" /* yacc.c:1646  */
+#line 1508 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 137 "mini_l.y" /* yacc.c:1646  */
+#line 152 "mini_l.y" /* yacc.c:1646  */
     {
                 (yyval.Terminal).term_code = new stringstream();
                 (yyval.Terminal).vars = new vector<Var>();
               }
-#line 1507 "y.tab.c" /* yacc.c:1646  */
+#line 1517 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 144 "mini_l.y" /* yacc.c:1646  */
+#line 159 "mini_l.y" /* yacc.c:1646  */
     {
 
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
@@ -1523,7 +1533,7 @@ yyreduce:
                     (yyval.Terminal).vars->push_back(v);
                     if((yyvsp[0].Terminal).term_type == INT_ARR){
                         if((yyvsp[0].Terminal).term_length <= 0){
-                            yyerror("ERROR: invalid array size <= 0");
+                            yyerror("Error: array size is <= 0.");
                         }
                         *((yyval.Terminal).term_code) << ".[] " << (yyvsp[-1].str_val) << ", " << (yyvsp[0].Terminal).term_length << "\n";
                         string s = (yyvsp[-1].str_val);
@@ -1547,15 +1557,15 @@ yyreduce:
                             yyerror(tempstr.c_str());
                         }
                     }else{
-                            yyerror("ERROR: invalid type");
+                            yyerror("Error: not a valid type.");
                     }
 
                 }
-#line 1555 "y.tab.c" /* yacc.c:1646  */
+#line 1565 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 189 "mini_l.y" /* yacc.c:1646  */
+#line 204 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_type = (yyvsp[0].Terminal).term_type;
@@ -1591,108 +1601,108 @@ yyreduce:
                     }else{
                     }
                 }
-#line 1595 "y.tab.c" /* yacc.c:1646  */
+#line 1605 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 224 "mini_l.y" /* yacc.c:1646  */
+#line 239 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     (yyval.Terminal).term_type = (yyvsp[-1].Terminal).term_type;
                     (yyval.Terminal).term_length = (yyvsp[-1].Terminal).term_length;
                     (yyval.Terminal).vars = (yyvsp[-1].Terminal).vars;
                 }
-#line 1606 "y.tab.c" /* yacc.c:1646  */
+#line 1616 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 232 "mini_l.y" /* yacc.c:1646  */
+#line 247 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).vars = new vector<Var>();
                     (yyval.Terminal).term_type = INT_ARR;
                     (yyval.Terminal).term_length = (yyvsp[-2].int_val);
                 }
-#line 1617 "y.tab.c" /* yacc.c:1646  */
+#line 1627 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 238 "mini_l.y" /* yacc.c:1646  */
+#line 253 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).vars = new vector<Var>();
                     (yyval.Terminal).term_type = INT;
                     (yyval.Terminal).term_length = 0;
                   }
-#line 1628 "y.tab.c" /* yacc.c:1646  */
+#line 1638 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 246 "mini_l.y" /* yacc.c:1646  */
+#line 263 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1636 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1646 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 249 "mini_l.y" /* yacc.c:1646  */
+#line 266 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1644 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1654 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 252 "mini_l.y" /* yacc.c:1646  */
+#line 269 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1652 "y.tab.c" /* yacc.c:1646  */
+}
+#line 1662 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 255 "mini_l.y" /* yacc.c:1646  */
+#line 272 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1660 "y.tab.c" /* yacc.c:1646  */
+(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1670 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 258 "mini_l.y" /* yacc.c:1646  */
+#line 275 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1668 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1678 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 261 "mini_l.y" /* yacc.c:1646  */
+#line 278 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1676 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1686 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 264 "mini_l.y" /* yacc.c:1646  */
+#line 281 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1684 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1694 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 267 "mini_l.y" /* yacc.c:1646  */
+#line 284 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                }
-#line 1692 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+}
+#line 1702 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 271 "mini_l.y" /* yacc.c:1646  */
+#line 288 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-2].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
@@ -1700,107 +1710,107 @@ yyreduce:
                        *((yyval.Terminal).term_code) << "= " << *(yyvsp[-2].Terminal).term_place << ", " << *(yyvsp[0].Terminal).term_place << "\n";
                     }
                     else if((yyvsp[-2].Terminal).term_type == INT && (yyvsp[0].Terminal).term_type == INT_ARR){
-                        *((yyval.Terminal).term_code) << makeCode((yyvsp[-2].Terminal).term_place, "=[]", (yyvsp[0].Terminal).term_place, (yyvsp[0].Terminal).term_index);
+                        *((yyval.Terminal).term_code) << makeIntCode((yyvsp[-2].Terminal).term_place, "=[]", (yyvsp[0].Terminal).term_place, (yyvsp[0].Terminal).term_index);
                     }
                     else if((yyvsp[-2].Terminal).term_type == INT_ARR && (yyvsp[0].Terminal).term_type == INT && (yyvsp[-2].Terminal).term_value != NULL){
-                        *((yyval.Terminal).term_code) << makeCode((yyvsp[-2].Terminal).term_value, "[]=", (yyvsp[-2].Terminal).term_index, (yyvsp[0].Terminal).term_place);
+                        *((yyval.Terminal).term_code) << makeIntCode((yyvsp[-2].Terminal).term_value, "[]=", (yyvsp[-2].Terminal).term_index, (yyvsp[0].Terminal).term_place);
                     }
                     else if((yyvsp[-2].Terminal).term_type == INT_ARR && (yyvsp[0].Terminal).term_type == INT_ARR){
-                        string *tempstr = new_temp();
-                        *((yyval.Terminal).term_code) << dec_temp(tempstr) << makeCode(tempstr, "=[]", (yyvsp[0].Terminal).term_place, (yyvsp[0].Terminal).term_index);
-                        *((yyval.Terminal).term_code) << makeCode((yyvsp[-2].Terminal).term_value, "[]=", (yyvsp[-2].Terminal).term_index, tempstr);
+                        string *tempstr = create_temp();
+                        *((yyval.Terminal).term_code) << vardclr_temp(tempstr) << makeIntCode(tempstr, "=[]", (yyvsp[0].Terminal).term_place, (yyvsp[0].Terminal).term_index);
+                        *((yyval.Terminal).term_code) << makeIntCode((yyvsp[-2].Terminal).term_value, "[]=", (yyvsp[-2].Terminal).term_index, tempstr);
                     }
                     else{
-                        yyerror("Error: expression is null.");
+                        yyerror("Error: expression cannot be of NULL type.");
                     }
                 }
-#line 1718 "y.tab.c" /* yacc.c:1646  */
+#line 1728 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 294 "mini_l.y" /* yacc.c:1646  */
+#line 311 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
-                    (yyval.Terminal).begin_term = new_label();
-                    (yyval.Terminal).end_term = new_label();
+                    (yyval.Terminal).begin_term = create_label();
+                    (yyval.Terminal).end_term = create_label();
                     *((yyval.Terminal).term_code) << (yyvsp[-4].Terminal).term_code->str() << "?:= " << *(yyval.Terminal).begin_term << ", " <<  *(yyvsp[-4].Terminal).term_place << "\n";
                     if((yyvsp[-1].Terminal).begin_term != NULL){                       
                         *((yyval.Terminal).term_code) << go_to((yyvsp[-1].Terminal).begin_term); 
-                        *((yyval.Terminal).term_code) << dec_label((yyval.Terminal).begin_term)  << (yyvsp[-2].Terminal).term_code->str() << go_to((yyval.Terminal).end_term);
-                        *((yyval.Terminal).term_code) << dec_label((yyvsp[-1].Terminal).begin_term) << (yyvsp[-1].Terminal).term_code->str();
+                        *((yyval.Terminal).term_code) << labdclr_label((yyval.Terminal).begin_term)  << (yyvsp[-2].Terminal).term_code->str() << go_to((yyval.Terminal).end_term);
+                        *((yyval.Terminal).term_code) << labdclr_label((yyvsp[-1].Terminal).begin_term) << (yyvsp[-1].Terminal).term_code->str();
                     }
                     else{
-                        *((yyval.Terminal).term_code) << go_to((yyval.Terminal).end_term)<< dec_label((yyval.Terminal).begin_term)  << (yyvsp[-2].Terminal).term_code->str();
+                        *((yyval.Terminal).term_code) << go_to((yyval.Terminal).end_term)<< labdclr_label((yyval.Terminal).begin_term)  << (yyvsp[-2].Terminal).term_code->str();
                     }
-                    *((yyval.Terminal).term_code) << dec_label((yyval.Terminal).end_term);
+                    *((yyval.Terminal).term_code) << labdclr_label((yyval.Terminal).end_term);
                 }
-#line 1738 "y.tab.c" /* yacc.c:1646  */
+#line 1748 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 311 "mini_l.y" /* yacc.c:1646  */
+#line 328 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).begin_term = NULL;
                 }
-#line 1747 "y.tab.c" /* yacc.c:1646  */
+#line 1757 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 315 "mini_l.y" /* yacc.c:1646  */
+#line 332 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                    (yyval.Terminal).begin_term = new_label();
+                    (yyval.Terminal).begin_term = create_label();
                 }
-#line 1756 "y.tab.c" /* yacc.c:1646  */
+#line 1766 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 321 "mini_l.y" /* yacc.c:1646  */
+#line 338 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).begin_term = (yyvsp[-3].Terminal).begin_term;
                     (yyval.Terminal).term_parent = (yyvsp[-3].Terminal).term_parent;
                     (yyval.Terminal).end_term = (yyvsp[-3].Terminal).end_term;
-                    *((yyval.Terminal).term_code) << dec_label((yyval.Terminal).term_parent) << (yyvsp[-4].Terminal).term_code->str() << "?:= " << *(yyval.Terminal).begin_term << ", " << *(yyvsp[-4].Terminal).term_place << "\n" 
-                    << go_to((yyval.Terminal).end_term) << dec_label((yyval.Terminal).begin_term) << (yyvsp[-1].Terminal).term_code->str() << go_to((yyval.Terminal).term_parent) << dec_label((yyval.Terminal).end_term);
+                    *((yyval.Terminal).term_code) << labdclr_label((yyval.Terminal).term_parent) << (yyvsp[-4].Terminal).term_code->str() << "?:= " << *(yyval.Terminal).begin_term << ", " << *(yyvsp[-4].Terminal).term_place << "\n" 
+                    << go_to((yyval.Terminal).end_term) << labdclr_label((yyval.Terminal).begin_term) << (yyvsp[-1].Terminal).term_code->str() << go_to((yyval.Terminal).term_parent) << labdclr_label((yyval.Terminal).end_term);
                     loop_stack.pop();
 
                 }
-#line 1771 "y.tab.c" /* yacc.c:1646  */
+#line 1781 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 333 "mini_l.y" /* yacc.c:1646  */
+#line 350 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
-                    (yyval.Terminal).begin_term = new_label();
-                    (yyval.Terminal).term_parent = new_label();
-                    (yyval.Terminal).end_term = new_label();
+                    (yyval.Terminal).begin_term = create_label();
+                    (yyval.Terminal).term_parent = create_label();
+                    (yyval.Terminal).end_term = create_label();
                     Loop l = Loop();
                     l.loop_parent = (yyval.Terminal).term_parent;
                     l.begin_loop = (yyval.Terminal).begin_term;
                     l.end_loop = (yyval.Terminal).end_term;
                     loop_stack.push(l);
                 }
-#line 1787 "y.tab.c" /* yacc.c:1646  */
+#line 1797 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 345 "mini_l.y" /* yacc.c:1646  */
+#line 362 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).begin_term = (yyvsp[-4].Terminal).begin_term;
                     (yyval.Terminal).term_parent = (yyvsp[-4].Terminal).term_parent;
                     (yyval.Terminal).end_term = (yyvsp[-4].Terminal).end_term;
-                    *((yyval.Terminal).term_code) << dec_label((yyval.Terminal).begin_term) << (yyvsp[-3].Terminal).term_code->str() << dec_label((yyval.Terminal).term_parent) << (yyvsp[0].Terminal).term_code->str() << "?:= " << *(yyval.Terminal).begin_term << ", " << *(yyvsp[0].Terminal).term_place << "\n" << dec_label((yyval.Terminal).end_term);
+                    *((yyval.Terminal).term_code) << labdclr_label((yyval.Terminal).begin_term) << (yyvsp[-3].Terminal).term_code->str() << labdclr_label((yyval.Terminal).term_parent) << (yyvsp[0].Terminal).term_code->str() << "?:= " << *(yyval.Terminal).begin_term << ", " << *(yyvsp[0].Terminal).term_place << "\n" << labdclr_label((yyval.Terminal).end_term);
                     loop_stack.pop();
                 }
-#line 1800 "y.tab.c" /* yacc.c:1646  */
+#line 1810 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 355 "mini_l.y" /* yacc.c:1646  */
+#line 372 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     if((yyvsp[-1].Terminal).term_type == INT){
@@ -1811,11 +1821,11 @@ yyreduce:
                     }
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                 }
-#line 1815 "y.tab.c" /* yacc.c:1646  */
+#line 1825 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 367 "mini_l.y" /* yacc.c:1646  */
+#line 384 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     if((yyvsp[-1].Terminal).term_type == INT){
@@ -1826,19 +1836,19 @@ yyreduce:
                     }
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                 }
-#line 1830 "y.tab.c" /* yacc.c:1646  */
+#line 1840 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 377 "mini_l.y" /* yacc.c:1646  */
+#line 394 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                   }
-#line 1838 "y.tab.c" /* yacc.c:1646  */
+#line 1848 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 382 "mini_l.y" /* yacc.c:1646  */
+#line 399 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     if((yyvsp[-1].Terminal).term_type == INT){
@@ -1849,11 +1859,11 @@ yyreduce:
                     }
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                   }
-#line 1853 "y.tab.c" /* yacc.c:1646  */
+#line 1863 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 394 "mini_l.y" /* yacc.c:1646  */
+#line 411 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     if((yyvsp[-1].Terminal).term_type == INT){
@@ -1864,52 +1874,52 @@ yyreduce:
                     }
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                   }
-#line 1868 "y.tab.c" /* yacc.c:1646  */
+#line 1878 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 404 "mini_l.y" /* yacc.c:1646  */
+#line 421 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                  }
-#line 1876 "y.tab.c" /* yacc.c:1646  */
+#line 1886 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 409 "mini_l.y" /* yacc.c:1646  */
+#line 426 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     if(loop_stack.size() <= 0){
-                        yyerror("ERROR: continue statement not within a loop");
+                        yyerror("Error: continue statement cannot be used outside of a loop.");
                     }
                     else{
                         Loop l = loop_stack.top();
                         *((yyval.Terminal).term_code) << ":= " << *l.loop_parent << "\n";
                     }
                 }
-#line 1891 "y.tab.c" /* yacc.c:1646  */
+#line 1901 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 420 "mini_l.y" /* yacc.c:1646  */
+#line 437 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[0].Terminal).term_place;
                     *((yyval.Terminal).term_code) << "ret " << *(yyval.Terminal).term_place << "\n";
                 }
-#line 1901 "y.tab.c" /* yacc.c:1646  */
+#line 1911 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 425 "mini_l.y" /* yacc.c:1646  */
+#line 442 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                     if((yyvsp[0].Terminal).op != NULL && (yyvsp[0].Terminal).term_place != NULL)
                     {                        
-                        (yyval.Terminal).term_place = new_temp();
+                        (yyval.Terminal).term_place = create_temp();
                        
-                       *((yyval.Terminal).term_code) << dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
+                       *((yyval.Terminal).term_code) << vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
                      
                     }
                     else{
@@ -1917,194 +1927,194 @@ yyreduce:
                         (yyval.Terminal).op = (yyvsp[-1].Terminal).op;
                     }
                 }
-#line 1921 "y.tab.c" /* yacc.c:1646  */
+#line 1931 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 442 "mini_l.y" /* yacc.c:1646  */
+#line 459 "mini_l.y" /* yacc.c:1646  */
     {
                  
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"||");
 
 
                 }
-#line 1932 "y.tab.c" /* yacc.c:1646  */
+#line 1942 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 448 "mini_l.y" /* yacc.c:1646  */
+#line 465 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 1941 "y.tab.c" /* yacc.c:1646  */
+#line 1951 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 454 "mini_l.y" /* yacc.c:1646  */
+#line 473 "mini_l.y" /* yacc.c:1646  */
     {
-                    (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
-                    *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
-                    if((yyvsp[0].Terminal).op != NULL && (yyvsp[0].Terminal).term_place != NULL)
-                    {                        
-                        (yyval.Terminal).term_place = new_temp();
-                       *((yyval.Terminal).term_code) << dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
-                    }
-                    else{
-                        (yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
-                        (yyval.Terminal).op = (yyvsp[-1].Terminal).op;
-                    }
-                }
-#line 1959 "y.tab.c" /* yacc.c:1646  */
+	(yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
+	*((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
+	if((yyvsp[0].Terminal).op != NULL && (yyvsp[0].Terminal).term_place != NULL)
+	{                        
+		(yyval.Terminal).term_place = create_temp();
+		*((yyval.Terminal).term_code) << vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
+ 	}
+	else{
+		(yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
+		(yyval.Terminal).op = (yyvsp[-1].Terminal).op;
+	}
+}
+#line 1969 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 469 "mini_l.y" /* yacc.c:1646  */
+#line 487 "mini_l.y" /* yacc.c:1646  */
     {
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"&&");
 
                 }
-#line 1968 "y.tab.c" /* yacc.c:1646  */
+#line 1978 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 473 "mini_l.y" /* yacc.c:1646  */
+#line 491 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 1977 "y.tab.c" /* yacc.c:1646  */
+#line 1987 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 479 "mini_l.y" /* yacc.c:1646  */
+#line 497 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[0].Terminal).term_place; 
                 }
-#line 1986 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 46:
-#line 483 "mini_l.y" /* yacc.c:1646  */
-    {
-                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                    (yyval.Terminal).term_place = new_temp();
-                    *((yyval.Terminal).term_code) << dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, "!", (yyvsp[0].Terminal).term_place, NULL);
-                }
 #line 1996 "y.tab.c" /* yacc.c:1646  */
     break;
 
+  case 46:
+#line 501 "mini_l.y" /* yacc.c:1646  */
+    {
+                    (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
+                    (yyval.Terminal).term_place = create_temp();
+                    *((yyval.Terminal).term_code) << vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, "!", (yyvsp[0].Terminal).term_place, NULL);
+                }
+#line 2006 "y.tab.c" /* yacc.c:1646  */
+    break;
+
   case 47:
-#line 490 "mini_l.y" /* yacc.c:1646  */
+#line 508 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-2].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[-1].Terminal).term_code->str();
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
-                    (yyval.Terminal).term_place = new_temp();
-                    *((yyval.Terminal).term_code)<< dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, *(yyvsp[-1].Terminal).op, (yyvsp[-2].Terminal).term_place, (yyvsp[0].Terminal).term_place);
+                    (yyval.Terminal).term_place = create_temp();
+                    *((yyval.Terminal).term_code)<< vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, *(yyvsp[-1].Terminal).op, (yyvsp[-2].Terminal).term_place, (yyvsp[0].Terminal).term_place);
                 }
-#line 2008 "y.tab.c" /* yacc.c:1646  */
+#line 2018 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 497 "mini_l.y" /* yacc.c:1646  */
+#line 515 "mini_l.y" /* yacc.c:1646  */
     {                    
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).term_place = new string();
                     *(yyval.Terminal).term_place = "1";
                     }
-#line 2018 "y.tab.c" /* yacc.c:1646  */
+#line 2028 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 502 "mini_l.y" /* yacc.c:1646  */
+#line 520 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).term_place = new string();
                     *(yyval.Terminal).term_place = "0";
                   }
-#line 2028 "y.tab.c" /* yacc.c:1646  */
+#line 2038 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 507 "mini_l.y" /* yacc.c:1646  */
+#line 525 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
                 }
-#line 2037 "y.tab.c" /* yacc.c:1646  */
+#line 2047 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 513 "mini_l.y" /* yacc.c:1646  */
+#line 531 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = "==";
                   }
-#line 2047 "y.tab.c" /* yacc.c:1646  */
+#line 2057 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 518 "mini_l.y" /* yacc.c:1646  */
+#line 536 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = "!=";
                   }
-#line 2057 "y.tab.c" /* yacc.c:1646  */
+#line 2067 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 523 "mini_l.y" /* yacc.c:1646  */
+#line 541 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = "<";
                   }
-#line 2067 "y.tab.c" /* yacc.c:1646  */
+#line 2077 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 528 "mini_l.y" /* yacc.c:1646  */
+#line 546 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = ">";
                   }
-#line 2077 "y.tab.c" /* yacc.c:1646  */
+#line 2087 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 533 "mini_l.y" /* yacc.c:1646  */
+#line 551 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = "<=";
                   }
-#line 2087 "y.tab.c" /* yacc.c:1646  */
+#line 2097 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 538 "mini_l.y" /* yacc.c:1646  */
+#line 556 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = new string();
                     *(yyval.Terminal).op = ">=";
                   }
-#line 2097 "y.tab.c" /* yacc.c:1646  */
+#line 2107 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 545 "mini_l.y" /* yacc.c:1646  */
+#line 563 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                     if((yyvsp[0].Terminal).op != NULL && (yyvsp[0].Terminal).term_place != NULL)
                     {                        
-                        (yyval.Terminal).term_place = new_temp();
-                       *((yyval.Terminal).term_code)<< dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
+                        (yyval.Terminal).term_place = create_temp();
+                       *((yyval.Terminal).term_code)<< vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
                     }
                     else{
                         (yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
@@ -2112,204 +2122,204 @@ yyreduce:
                     }
                     (yyval.Terminal).term_type = INT;
                   }
-#line 2116 "y.tab.c" /* yacc.c:1646  */
+#line 2126 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 561 "mini_l.y" /* yacc.c:1646  */
+#line 579 "mini_l.y" /* yacc.c:1646  */
     {
 
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"+");
 
                   }
-#line 2126 "y.tab.c" /* yacc.c:1646  */
+#line 2136 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 566 "mini_l.y" /* yacc.c:1646  */
+#line 584 "mini_l.y" /* yacc.c:1646  */
     {expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"-");
                   }
-#line 2133 "y.tab.c" /* yacc.c:1646  */
+#line 2143 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 568 "mini_l.y" /* yacc.c:1646  */
+#line 586 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = NULL;
                   }
-#line 2142 "y.tab.c" /* yacc.c:1646  */
+#line 2152 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 574 "mini_l.y" /* yacc.c:1646  */
+#line 592 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                     if((yyvsp[0].Terminal).op != NULL && (yyvsp[0].Terminal).term_place != NULL)
                     {                        
-                        (yyval.Terminal).term_place = new_temp();
-                       *((yyval.Terminal).term_code)<< dec_temp((yyval.Terminal).term_place)<< makeCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
+                        (yyval.Terminal).term_place = create_temp();
+                       *((yyval.Terminal).term_code)<< vardclr_temp((yyval.Terminal).term_place)<< makeIntCode((yyval.Terminal).term_place, *(yyvsp[0].Terminal).op, (yyvsp[-1].Terminal).term_place, (yyvsp[0].Terminal).term_place);
                     }
                     else{
                         (yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
                         (yyval.Terminal).op = (yyvsp[-1].Terminal).op;
                     }
                   }
-#line 2160 "y.tab.c" /* yacc.c:1646  */
+#line 2170 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 590 "mini_l.y" /* yacc.c:1646  */
+#line 608 "mini_l.y" /* yacc.c:1646  */
     {
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"*");
 
                   }
-#line 2169 "y.tab.c" /* yacc.c:1646  */
+#line 2179 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 594 "mini_l.y" /* yacc.c:1646  */
+#line 612 "mini_l.y" /* yacc.c:1646  */
     {
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"/");
                   }
-#line 2177 "y.tab.c" /* yacc.c:1646  */
+#line 2187 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 597 "mini_l.y" /* yacc.c:1646  */
+#line 615 "mini_l.y" /* yacc.c:1646  */
     {
                     expression_code((yyval.Terminal),(yyvsp[-1].Terminal),(yyvsp[0].Terminal),"%");
                   }
-#line 2185 "y.tab.c" /* yacc.c:1646  */
+#line 2195 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 600 "mini_l.y" /* yacc.c:1646  */
+#line 618 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).op = NULL;
                  }
-#line 2194 "y.tab.c" /* yacc.c:1646  */
+#line 2204 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 606 "mini_l.y" /* yacc.c:1646  */
+#line 624 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
-                    (yyval.Terminal).term_place = new_temp();
+                    (yyval.Terminal).term_place = create_temp();
                     string tempstr = "-1";
-                    *((yyval.Terminal).term_code)<< dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, "*",(yyvsp[0].Terminal).term_place, &tempstr );
+                    *((yyval.Terminal).term_code)<< vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, "*",(yyvsp[0].Terminal).term_place, &tempstr );
                   }
-#line 2205 "y.tab.c" /* yacc.c:1646  */
+#line 2215 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 612 "mini_l.y" /* yacc.c:1646  */
+#line 630 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[0].Terminal).term_place;
                   }
-#line 2214 "y.tab.c" /* yacc.c:1646  */
+#line 2224 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 616 "mini_l.y" /* yacc.c:1646  */
+#line 634 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[0].Terminal).term_place;
                   }
-#line 2223 "y.tab.c" /* yacc.c:1646  */
+#line 2233 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 622 "mini_l.y" /* yacc.c:1646  */
+#line 640 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_place= (yyvsp[0].Terminal).term_place;
                     (yyval.Terminal).term_index = (yyvsp[0].Terminal).term_index;
                   }
-#line 2233 "y.tab.c" /* yacc.c:1646  */
+#line 2243 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 627 "mini_l.y" /* yacc.c:1646  */
+#line 645 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).term_place = new string();
                     *(yyval.Terminal).term_place = conv2String((yyvsp[0].int_val));
                   }
-#line 2243 "y.tab.c" /* yacc.c:1646  */
+#line 2253 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 632 "mini_l.y" /* yacc.c:1646  */
+#line 650 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     (yyval.Terminal).term_place = (yyvsp[-1].Terminal).term_place;
                   }
-#line 2252 "y.tab.c" /* yacc.c:1646  */
+#line 2262 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 638 "mini_l.y" /* yacc.c:1646  */
+#line 656 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
-                    (yyval.Terminal).term_place = new_temp();
-                    *((yyval.Terminal).term_code) << dec_temp((yyval.Terminal).term_place)<< "call " << (yyvsp[-3].str_val) << ", " << *(yyval.Terminal).term_place << "\n";
+                    (yyval.Terminal).term_place = create_temp();
+                    *((yyval.Terminal).term_code) << vardclr_temp((yyval.Terminal).term_place)<< "call " << (yyvsp[-3].str_val) << ", " << *(yyval.Terminal).term_place << "\n";
                     string tempstr = (yyvsp[-3].str_val);
                     bool_map_dec(tempstr);
                 }
-#line 2264 "y.tab.c" /* yacc.c:1646  */
+#line 2274 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 647 "mini_l.y" /* yacc.c:1646  */
+#line 665 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     *((yyval.Terminal).term_code) << (yyvsp[0].Terminal).term_code->str();
                     *((yyval.Terminal).term_code) << "param " << *(yyvsp[-1].Terminal).term_place << "\n";
                 }
-#line 2274 "y.tab.c" /* yacc.c:1646  */
+#line 2284 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 652 "mini_l.y" /* yacc.c:1646  */
+#line 670 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream(); 
                   }
-#line 2282 "y.tab.c" /* yacc.c:1646  */
+#line 2292 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 656 "mini_l.y" /* yacc.c:1646  */
+#line 674 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                 }
-#line 2290 "y.tab.c" /* yacc.c:1646  */
+#line 2300 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 659 "mini_l.y" /* yacc.c:1646  */
+#line 677 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                   }
-#line 2298 "y.tab.c" /* yacc.c:1646  */
+#line 2308 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 663 "mini_l.y" /* yacc.c:1646  */
+#line 681 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[0].Terminal).term_code;
                     (yyval.Terminal).term_type = (yyvsp[0].Terminal).term_type;
                     string tempstr = (yyvsp[-1].str_val);
                     bool_map_dec(tempstr);
-                    if(bool_map(tempstr) && var_map[tempstr].var_type != (yyvsp[0].Terminal).term_type){
-                        if((yyvsp[0].Terminal).term_type == INT_ARR){
-                            string output ="Error: used variable \"" + tempstr + "\" is not an array.";
+                    if(bool_map(tempstr) && arr_vars[tempstr].var_type != (yyvsp[0].Terminal).term_type){
+                        if((yyvsp[0].Terminal).term_type == INT_ARR){ /* type is int */
+                            string output ="Error: used variable \"" + tempstr + "\" is not of type array.";
                             yyerror(output.c_str());
                         }
-                        else if((yyvsp[0].Terminal).term_type == INT){
+                        else if((yyvsp[0].Terminal).term_type == INT){ /* type is arr int */
                             string output ="Error: used array variable \"" + tempstr + "\" is missing a specified index.";
                             yyerror(output.c_str());
                         }
@@ -2321,41 +2331,41 @@ yyreduce:
                     }
                     else{
                         (yyval.Terminal).term_index = (yyvsp[0].Terminal).term_index;
-                        (yyval.Terminal).term_place = new_temp();
+                        (yyval.Terminal).term_place = create_temp();
                         string* tempstr = new string();
                         *tempstr = (yyvsp[-1].str_val);
-                        *((yyval.Terminal).term_code) << dec_temp((yyval.Terminal).term_place) << makeCode((yyval.Terminal).term_place, "=[]", tempstr,(yyvsp[0].Terminal).term_index);
+                        *((yyval.Terminal).term_code) << vardclr_temp((yyval.Terminal).term_place) << makeIntCode((yyval.Terminal).term_place, "=[]", tempstr,(yyvsp[0].Terminal).term_index);
                         (yyval.Terminal).term_value = new string();
                         *(yyval.Terminal).term_value = (yyvsp[-1].str_val);
                     }
                 }
-#line 2333 "y.tab.c" /* yacc.c:1646  */
+#line 2343 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 695 "mini_l.y" /* yacc.c:1646  */
+#line 713 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = (yyvsp[-1].Terminal).term_code;
                     (yyval.Terminal).term_place = NULL;
                     (yyval.Terminal).term_index = (yyvsp[-1].Terminal).term_place;
                     (yyval.Terminal).term_type = INT_ARR;
                 }
-#line 2344 "y.tab.c" /* yacc.c:1646  */
+#line 2354 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 701 "mini_l.y" /* yacc.c:1646  */
+#line 719 "mini_l.y" /* yacc.c:1646  */
     {
                     (yyval.Terminal).term_code = new stringstream();
                     (yyval.Terminal).term_index = NULL;
                     (yyval.Terminal).term_place = NULL;
                     (yyval.Terminal).term_type = INT;
                  }
-#line 2355 "y.tab.c" /* yacc.c:1646  */
+#line 2365 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2359 "y.tab.c" /* yacc.c:1646  */
+#line 2369 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2583,18 +2593,18 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 709 "mini_l.y" /* yacc.c:1906  */
+#line 727 "mini_l.y" /* yacc.c:1906  */
 
 
 
 
 
-string makeCode(string *res, string op, string *val1, string *val2){
+string makeIntCode(string *dst, string op, string *src1, string *src2){
     if(op == "!"){
-        return op + " " + *res + ", " + *val1 + "\n";
+        return op + " " + *dst + ", " + *src1 + "\n";
     }
     else{
-        return op + " " + *res + ", " + *val1 + ", "+ *val2 +"\n";
+        return op + " " + *dst + ", " + *src1 + ", "+ *src2 +"\n";
     }
 }
 
@@ -2612,67 +2622,65 @@ string conv2String(int s){
 string go_to(string *s){
     return ":= "+ *s + "\n"; 
 }
-string dec_label(string *s){
+string labdclr_label(string *s){
     return ": " +*s + "\n"; 
 }
-string dec_temp(string *s){
+string vardclr_temp(string *s){
     return ". " +*s + "\n"; 
 }
-string * new_temp(){
+string * create_temp(){
     string * t = new string();
     ostringstream conv;
-    conv << tempi;
+    conv << temp1;
     *t = "__temp__"+ conv.str();
-    tempi++;
+    temp1++;
     return t;
 }
-string * new_label(){
+string * create_label(){
     string * t = new string();
     ostringstream conv;
-    conv << templ;
+    conv << temp2;
     *t = "__label__"+ conv.str();
-    templ++;
+    temp2++;
     return t;
 }
  
-void expression_code( Terminal &DD, Terminal D2, Terminal D3, string op){
-    DD.term_code = D2.term_code;
-    *(DD.term_code) << D3.term_code->str();
-    if(D3.op == NULL){
-        DD.term_place = D2.term_place;
-        DD.op = new string();
-        *DD.op = op;
+void expression_code( Terminal &nterm, Terminal t2, Terminal t3, string op){
+    nterm.term_code = t2.term_code;
+    *(nterm.term_code) << t3.term_code->str();
+    if(t3.op == NULL){
+        nterm.term_place = t2.term_place;
+        nterm.op = new string();
+        *nterm.op = op;
     }
     else{
-        //cout << "IN ELSE" << endl;
-        DD.term_place = new_temp();
-        DD.op = new string();
-        *DD.op = op;
+        nterm.term_place = create_temp();
+        nterm.op = new string();
+        *nterm.op = op;
 
-        *(DD.term_code) << dec_temp(DD.term_place)<< makeCode(DD.term_place , *D3.op, D2.term_place, D3.term_place);
+        *(nterm.term_code) << vardclr_temp(nterm.term_place)<< makeIntCode(nterm.term_place , *t3.op, t2.term_place, t3.term_place);
     } 
 }
 
 
 void add_map(string name, Var v){
-    //cout << "pushing map" << endl;
-    if(var_map.find(name) == var_map.end()){
-        var_map[name] = v;
+    if(arr_vars.find(name) == arr_vars.end()){
+        arr_vars[name] = v;
     }
     else{
-        string tempstr = "ERROR: " + name + " already exists";
+        string tempstr = "ERROR: " + name + " already exists.";
         yyerror(tempstr.c_str());
     }
 }
 bool bool_map(string name){
-    if(var_map.find(name) == var_map.end()){
+    if(arr_vars.find(name) == arr_vars.end()){
         return false;
     }
     return true;
 }
 void bool_map_dec(string name){
     if(!bool_map(name)){
-        string tempstr = "ERROR: \"" + name + "\" does not exist";
+        string tempstr = "ERROR: No name of \"" + name + "\" in map.";
         yyerror(tempstr.c_str());
     }
 }
@@ -2689,8 +2697,9 @@ int yyerror(const char *s)
 
 
 int main(int argc, char **argv) {
+    FILE *filein;
 
-    if ( (argc > 1) && (myin = fopen(argv[1],"r")) == NULL){
+    if ((argc > 1) && (filein = fopen(argv[1],"r")) == NULL){
         printf("syntax: %s filename\n", argv[0]);
         return 1;
     }
@@ -2704,7 +2713,7 @@ int main(int argc, char **argv) {
         file.close();
     }
     else{
-        cout << "***Errors exist, fix to compile term_code***" << endl;
+        cout << "Program failed to run." << endl;
     }
 
 

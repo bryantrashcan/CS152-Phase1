@@ -3,27 +3,39 @@
 
 int yyerror(const char* s);
 int yylex(void);
-stringstream *all_code;
-FILE * myin;
-string makeCode(string *res, string op, string *val1, string *val2);
+
+
+stringstream *all_code; /* intermediated code to be put in file */
+
+string makeIntCode(string *dst, string op, string *val1, string *val2);
+/* generating intermediate code*/
+
 string conv2String(char* s);
 string conv2String(int s);
-int tempi = 0;
-int templ = 0;
-string * new_temp();
-string * new_label();
+
+string *create_temp();
+string *create_label();
+int temp1 = 0;
+int temp2 = 0;
+
 string go_to(string *s);
-string dec_label(string *s);
-string dec_temp(string *s);
-void expression_code( Terminal &DD,  Terminal D2, Terminal D3,string op);
+
+string labdclr_label(string *s); /* label declare and variable temp declare*/
+string vardclr_temp(string *s);
+
+void expression_code( Terminal &nterm,  Terminal t2, Terminal t3, string op);
+
 bool pass = true;
 bool hasMain = false;
+
+map<string,Var> arr_vars;
+stack<Loop> loop_stack;
+
 void add_map(string name, Var v);
 bool bool_map(string name);
 void bool_map_dec(string name);
 
-map<string,Var> var_map;
-stack<Loop> loop_stack;
+
 
 %}
 
@@ -32,7 +44,7 @@ stack<Loop> loop_stack;
     char 	str_val[256];
 
 
-    struct {
+    struct{
         stringstream *term_code;
     }NonTerminal;
 
@@ -54,11 +66,16 @@ stack<Loop> loop_stack;
 %type <int_val> NUMBER
 %type <str_val> IDENT
 
-
 %type <NonTerminal> program_start functions
-%type <Terminal> declare_loop stmt_options stmt_loop function bool_exp      bool_choice     relation_and_expr   relandexpr_choice  relation_expr   rel_choice comp          expression    expr_choice  multiplicative_expression     mult_choice   term          term_choice        term_paren        term_choice2       term_comma       var           var_choice         beg_loop ident_term
-%type <Terminal> ident_loop ident_loop2 ident_loop_choice
-%type <Terminal> s1 s2 s3 s4 s6 s7 s8 s9 s2_choice s6_choice s7_choice
+%type <Terminal>  stmt_options stmt_loop 
+%type <Terminal> function bool_exp bool_choice     
+%type <Terminal> relation_and_expr relandexpr_choice  
+%type <Terminal> relation_expr rel_choice 
+%type <Terminal> comp expression expr_choice multiplicative_expression mult_choice   
+%type <Terminal> term term_choice term_paren term_choice2 term_comma       
+%type <Terminal> var var_choice          
+%type <Terminal> declare_loop ident_loop ident_loop2 ident_loop_choice ident_term
+%type <Terminal> s1 s2 s2_choice s3 s4 s6 s6_choice s7 s7_choice s8 s9 beg_loop  
 
 
 %%
@@ -156,7 +173,7 @@ ident_loop:    IDENT ident_loop2 {
                     $$.vars->push_back(v);
                     if($2.term_type == INT_ARR){
                         if($2.term_length <= 0){
-                            yyerror("ERROR: invalid array size <= 0");
+                            yyerror("Error: array size is <= 0.");
                         }
                         *($$.term_code) << ".[] " << $1 << ", " << $2.term_length << "\n";
                         string s = $1;
@@ -180,7 +197,7 @@ ident_loop:    IDENT ident_loop2 {
                             yyerror(tempstr.c_str());
                         }
                     }else{
-                            yyerror("ERROR: invalid type");
+                            yyerror("Error: not a valid type.");
                     }
 
                 }
@@ -243,30 +260,32 @@ ident_loop_choice:  ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
                   }
                 ;
 
-stmt_options:      s1 {
-                    $$.term_code = $1.term_code;
-                }
-                | s2 {
-                    $$.term_code = $1.term_code;
-                }
-                | s3 {
-                    $$.term_code = $1.term_code;
-                }
-                | s4 {
-                    $$.term_code = $1.term_code;
-                }
-                | s6 {
-                    $$.term_code = $1.term_code;
-                }
-                | s7 {
-                    $$.term_code = $1.term_code;
-                }
-                | s8 {
-                    $$.term_code = $1.term_code;
-                }
-                | s9 {
-                    $$.term_code = $1.term_code;
-                }
+stmt_options:      
+
+	s1 {
+		$$.term_code = $1.term_code;
+	}
+	| s2 {
+		$$.term_code = $1.term_code;
+	}
+	| s3 {
+		$.term_code = $1.term_code;
+	}
+	| s4 {
+		$$.term_code = $1.term_code;
+	}
+	| s6 {
+		$$.term_code = $1.term_code;
+	}
+	| s7 {
+		$$.term_code = $1.term_code;
+	}
+	| s8 {
+		$$.term_code = $1.term_code;
+	}
+	| s9 {
+		$$.term_code = $1.term_code;
+	};
 
 s1:    var ASSIGN expression{
                     $$.term_code = $1.term_code;
@@ -275,36 +294,36 @@ s1:    var ASSIGN expression{
                        *($$.term_code) << "= " << *$1.term_place << ", " << *$3.term_place << "\n";
                     }
                     else if($1.term_type == INT && $3.term_type == INT_ARR){
-                        *($$.term_code) << makeCode($1.term_place, "=[]", $3.term_place, $3.term_index);
+                        *($$.term_code) << makeIntCode($1.term_place, "=[]", $3.term_place, $3.term_index);
                     }
                     else if($1.term_type == INT_ARR && $3.term_type == INT && $1.term_value != NULL){
-                        *($$.term_code) << makeCode($1.term_value, "[]=", $1.term_index, $3.term_place);
+                        *($$.term_code) << makeIntCode($1.term_value, "[]=", $1.term_index, $3.term_place);
                     }
                     else if($1.term_type == INT_ARR && $3.term_type == INT_ARR){
-                        string *tempstr = new_temp();
-                        *($$.term_code) << dec_temp(tempstr) << makeCode(tempstr, "=[]", $3.term_place, $3.term_index);
-                        *($$.term_code) << makeCode($1.term_value, "[]=", $1.term_index, tempstr);
+                        string *tempstr = create_temp();
+                        *($$.term_code) << vardclr_temp(tempstr) << makeIntCode(tempstr, "=[]", $3.term_place, $3.term_index);
+                        *($$.term_code) << makeIntCode($1.term_value, "[]=", $1.term_index, tempstr);
                     }
                     else{
-                        yyerror("Error: expression is null.");
+                        yyerror("Error: expression cannot be of NULL type.");
                     }
                 }
                 ;
 
 s2:    IF bool_exp THEN stmt_loop s2_choice ENDIF{
                     $$.term_code = new stringstream();
-                    $$.begin_term = new_label();
-                    $$.end_term = new_label();
+                    $$.begin_term = create_label();
+                    $$.end_term = create_label();
                     *($$.term_code) << $2.term_code->str() << "?:= " << *$$.begin_term << ", " <<  *$2.term_place << "\n";
                     if($5.begin_term != NULL){                       
                         *($$.term_code) << go_to($5.begin_term); 
-                        *($$.term_code) << dec_label($$.begin_term)  << $4.term_code->str() << go_to($$.end_term);
-                        *($$.term_code) << dec_label($5.begin_term) << $5.term_code->str();
+                        *($$.term_code) << labdclr_label($$.begin_term)  << $4.term_code->str() << go_to($$.end_term);
+                        *($$.term_code) << labdclr_label($5.begin_term) << $5.term_code->str();
                     }
                     else{
-                        *($$.term_code) << go_to($$.end_term)<< dec_label($$.begin_term)  << $4.term_code->str();
+                        *($$.term_code) << go_to($$.end_term)<< labdclr_label($$.begin_term)  << $4.term_code->str();
                     }
-                    *($$.term_code) << dec_label($$.end_term);
+                    *($$.term_code) << labdclr_label($$.end_term);
                 }
                 ;
 
@@ -314,7 +333,7 @@ s2_choice:   {
                 }
                 | ELSE stmt_loop{
                     $$.term_code = $2.term_code;
-                    $$.begin_term = new_label();
+                    $$.begin_term = create_label();
                 }
                 ;
 
@@ -323,8 +342,8 @@ s3:    WHILE bool_exp beg_loop BEGINLOOP stmt_loop ENDLOOP{
                     $$.begin_term = $3.begin_term;
                     $$.term_parent = $3.term_parent;
                     $$.end_term = $3.end_term;
-                    *($$.term_code) << dec_label($$.term_parent) << $2.term_code->str() << "?:= " << *$$.begin_term << ", " << *$2.term_place << "\n" 
-                    << go_to($$.end_term) << dec_label($$.begin_term) << $5.term_code->str() << go_to($$.term_parent) << dec_label($$.end_term);
+                    *($$.term_code) << labdclr_label($$.term_parent) << $2.term_code->str() << "?:= " << *$$.begin_term << ", " << *$2.term_place << "\n" 
+                    << go_to($$.end_term) << labdclr_label($$.begin_term) << $5.term_code->str() << go_to($$.term_parent) << labdclr_label($$.end_term);
                     loop_stack.pop();
 
                 }
@@ -332,9 +351,9 @@ s3:    WHILE bool_exp beg_loop BEGINLOOP stmt_loop ENDLOOP{
 
 beg_loop: BEGINLOOP{
                     $$.term_code = new stringstream();
-                    $$.begin_term = new_label();
-                    $$.term_parent = new_label();
-                    $$.end_term = new_label();
+                    $$.begin_term = create_label();
+                    $$.term_parent = create_label();
+                    $$.end_term = create_label();
                     Loop l = Loop();
                     l.loop_parent = $$.term_parent;
                     l.begin_loop = $$.begin_term;
@@ -347,7 +366,7 @@ s4:    DO beg_loop  stmt_loop ENDLOOP WHILE bool_exp{
                     $$.begin_term = $2.begin_term;
                     $$.term_parent = $2.term_parent;
                     $$.end_term = $2.end_term;
-                    *($$.term_code) << dec_label($$.begin_term) << $3.term_code->str() << dec_label($$.term_parent) << $6.term_code->str() << "?:= " << *$$.begin_term << ", " << *$6.term_place << "\n" << dec_label($$.end_term);
+                    *($$.term_code) << labdclr_label($$.begin_term) << $3.term_code->str() << labdclr_label($$.term_parent) << $6.term_code->str() << "?:= " << *$$.begin_term << ", " << *$6.term_place << "\n" << labdclr_label($$.end_term);
                     loop_stack.pop();
                 }
                 ;
@@ -409,7 +428,7 @@ s7_choice:   COMMA var s7_choice{
 s8: CONTINUE{
                     $$.term_code = new stringstream();
                     if(loop_stack.size() <= 0){
-                        yyerror("ERROR: continue statement not within a loop");
+                        yyerror("Error: continue statement cannot be used outside of a loop.");
                     }
                     else{
                         Loop l = loop_stack.top();
@@ -427,9 +446,9 @@ bool_exp:       relation_and_expr bool_choice{
                     *($$.term_code) << $2.term_code->str();
                     if($2.op != NULL && $2.term_place != NULL)
                     {                        
-                        $$.term_place = new_temp();
+                        $$.term_place = create_temp();
                        
-                       *($$.term_code) << dec_temp($$.term_place) << makeCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+                       *($$.term_code) << vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
                      
                     }
                     else{
@@ -451,20 +470,21 @@ bool_choice:      OR relation_and_expr bool_choice{
                  }
                 ; 
 
-relation_and_expr:    relation_expr relandexpr_choice{
-                    $$.term_code = $1.term_code;
-                    *($$.term_code) << $2.term_code->str();
-                    if($2.op != NULL && $2.term_place != NULL)
-                    {                        
-                        $$.term_place = new_temp();
-                       *($$.term_code) << dec_temp($$.term_place) << makeCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
-                    }
-                    else{
-                        $$.term_place = $1.term_place;
-                        $$.op = $1.op;
-                    }
-                }
-                ;
+relation_and_expr:    
+
+relation_expr relandexpr_choice{
+	$$.term_code = $1.term_code;
+	*($$.term_code) << $2.term_code->str();
+	if($2.op != NULL && $2.term_place != NULL)
+	{                        
+		$$.term_place = create_temp();
+		*($$.term_code) << vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+ 	}
+	else{
+		$$.term_place = $1.term_place;
+		$$.op = $1.op;
+	}
+};
 
 relandexpr_choice:   AND relation_expr relandexpr_choice{
                     expression_code($$,$2,$3,"&&");
@@ -482,8 +502,8 @@ relation_expr:   rel_choice{
                 }
                 | NOT rel_choice{
                     $$.term_code = $2.term_code;
-                    $$.term_place = new_temp();
-                    *($$.term_code) << dec_temp($$.term_place) << makeCode($$.term_place, "!", $2.term_place, NULL);
+                    $$.term_place = create_temp();
+                    *($$.term_code) << vardclr_temp($$.term_place) << makeIntCode($$.term_place, "!", $2.term_place, NULL);
                 }
                 ;
 
@@ -491,8 +511,8 @@ rel_choice: expression comp expression{
                     $$.term_code = $1.term_code;
                     *($$.term_code) << $2.term_code->str();
                     *($$.term_code) << $3.term_code->str();
-                    $$.term_place = new_temp();
-                    *($$.term_code)<< dec_temp($$.term_place) << makeCode($$.term_place, *$2.op, $1.term_place, $3.term_place);
+                    $$.term_place = create_temp();
+                    *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $3.term_place);
                 }
                 | TRUE{                    
                     $$.term_code = new stringstream();
@@ -547,8 +567,8 @@ expression:     multiplicative_expression expr_choice{
                     *($$.term_code) << $2.term_code->str();
                     if($2.op != NULL && $2.term_place != NULL)
                     {                        
-                        $$.term_place = new_temp();
-                       *($$.term_code)<< dec_temp($$.term_place) << makeCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+                        $$.term_place = create_temp();
+                       *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
                     }
                     else{
                         $$.term_place = $1.term_place;
@@ -576,8 +596,8 @@ multiplicative_expression:      term mult_choice{
                     *($$.term_code) << $2.term_code->str();
                     if($2.op != NULL && $2.term_place != NULL)
                     {                        
-                        $$.term_place = new_temp();
-                       *($$.term_code)<< dec_temp($$.term_place)<< makeCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+                        $$.term_place = create_temp();
+                       *($$.term_code)<< vardclr_temp($$.term_place)<< makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
                     }
                     else{
                         $$.term_place = $1.term_place;
@@ -605,9 +625,9 @@ mult_choice:    MULT term mult_choice{
 
 term:           SUB term_choice{
                     $$.term_code = $2.term_code;
-                    $$.term_place = new_temp();
+                    $$.term_place = create_temp();
                     string tempstr = "-1";
-                    *($$.term_code)<< dec_temp($$.term_place) << makeCode($$.term_place, "*",$2.term_place, &tempstr );
+                    *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, "*",$2.term_place, &tempstr );
                   }
                 | term_choice{
                     $$.term_code = $1.term_code;
@@ -637,8 +657,8 @@ term_choice:         var{
 
 term_paren:         IDENT L_PAREN term_choice2 R_PAREN{
                     $$.term_code = $3.term_code;
-                    $$.term_place = new_temp();
-                    *($$.term_code) << dec_temp($$.term_place)<< "call " << $1 << ", " << *$$.term_place << "\n";
+                    $$.term_place = create_temp();
+                    *($$.term_code) << vardclr_temp($$.term_place)<< "call " << $1 << ", " << *$$.term_place << "\n";
                     string tempstr = $1;
                     bool_map_dec(tempstr);
                 }
@@ -665,12 +685,12 @@ var:            IDENT var_choice{
                     $$.term_type = $2.term_type;
                     string tempstr = $1;
                     bool_map_dec(tempstr);
-                    if(bool_map(tempstr) && var_map[tempstr].var_type != $2.term_type){
-                        if($2.term_type == INT_ARR){
-                            string output ="Error: used variable \"" + tempstr + "\" is not an array.";
+                    if(bool_map(tempstr) && arr_vars[tempstr].var_type != $2.term_type){
+                        if($2.term_type == INT_ARR){ /* type is int */
+                            string output ="Error: used variable \"" + tempstr + "\" is not of type array.";
                             yyerror(output.c_str());
                         }
-                        else if($2.term_type == INT){
+                        else if($2.term_type == INT){ /* type is arr int */
                             string output ="Error: used array variable \"" + tempstr + "\" is missing a specified index.";
                             yyerror(output.c_str());
                         }
@@ -682,10 +702,10 @@ var:            IDENT var_choice{
                     }
                     else{
                         $$.term_index = $2.term_index;
-                        $$.term_place = new_temp();
+                        $$.term_place = create_temp();
                         string* tempstr = new string();
                         *tempstr = $1;
-                        *($$.term_code) << dec_temp($$.term_place) << makeCode($$.term_place, "=[]", tempstr,$2.term_index);
+                        *($$.term_code) << vardclr_temp($$.term_place) << makeIntCode($$.term_place, "=[]", tempstr,$2.term_index);
                         $$.term_value = new string();
                         *$$.term_value = $1;
                     }
@@ -711,12 +731,12 @@ var_choice:          L_SQUARE_BRACKET expression R_SQUARE_BRACKET{
 
 
 
-string makeCode(string *res, string op, string *val1, string *val2){
+string makeIntCode(string *dst, string op, string *src1, string *src2){
     if(op == "!"){
-        return op + " " + *res + ", " + *val1 + "\n";
+        return op + " " + *dst + ", " + *src1 + "\n";
     }
     else{
-        return op + " " + *res + ", " + *val1 + ", "+ *val2 +"\n";
+        return op + " " + *dst + ", " + *src1 + ", "+ *src2 +"\n";
     }
 }
 
@@ -734,67 +754,65 @@ string conv2String(int s){
 string go_to(string *s){
     return ":= "+ *s + "\n"; 
 }
-string dec_label(string *s){
+string labdclr_label(string *s){
     return ": " +*s + "\n"; 
 }
-string dec_temp(string *s){
+string vardclr_temp(string *s){
     return ". " +*s + "\n"; 
 }
-string * new_temp(){
+string * create_temp(){
     string * t = new string();
     ostringstream conv;
-    conv << tempi;
+    conv << temp1;
     *t = "__temp__"+ conv.str();
-    tempi++;
+    temp1++;
     return t;
 }
-string * new_label(){
+string * create_label(){
     string * t = new string();
     ostringstream conv;
-    conv << templ;
+    conv << temp2;
     *t = "__label__"+ conv.str();
-    templ++;
+    temp2++;
     return t;
 }
  
-void expression_code( Terminal &DD, Terminal D2, Terminal D3, string op){
-    DD.term_code = D2.term_code;
-    *(DD.term_code) << D3.term_code->str();
-    if(D3.op == NULL){
-        DD.term_place = D2.term_place;
-        DD.op = new string();
-        *DD.op = op;
+void expression_code( Terminal &nterm, Terminal t2, Terminal t3, string op){
+    nterm.term_code = t2.term_code;
+    *(nterm.term_code) << t3.term_code->str();
+    if(t3.op == NULL){
+        nterm.term_place = t2.term_place;
+        nterm.op = new string();
+        *nterm.op = op;
     }
     else{
-        //cout << "IN ELSE" << endl;
-        DD.term_place = new_temp();
-        DD.op = new string();
-        *DD.op = op;
+        nterm.term_place = create_temp();
+        nterm.op = new string();
+        *nterm.op = op;
 
-        *(DD.term_code) << dec_temp(DD.term_place)<< makeCode(DD.term_place , *D3.op, D2.term_place, D3.term_place);
+        *(nterm.term_code) << vardclr_temp(nterm.term_place)<< makeIntCode(nterm.term_place , *t3.op, t2.term_place, t3.term_place);
     } 
 }
 
 
 void add_map(string name, Var v){
-    //cout << "pushing map" << endl;
-    if(var_map.find(name) == var_map.end()){
-        var_map[name] = v;
+    if(arr_vars.find(name) == arr_vars.end()){
+        arr_vars[name] = v;
     }
     else{
-        string tempstr = "ERROR: " + name + " already exists";
+        string tempstr = "ERROR: " + name + " already exists.";
         yyerror(tempstr.c_str());
     }
 }
 bool bool_map(string name){
-    if(var_map.find(name) == var_map.end()){
+    if(arr_vars.find(name) == arr_vars.end()){
         return false;
     }
     return true;
 }
 void bool_map_dec(string name){
     if(!bool_map(name)){
-        string tempstr = "ERROR: \"" + name + "\" does not exist";
+        string tempstr = "ERROR: No name of \"" + name + "\" in map.";
         yyerror(tempstr.c_str());
     }
 }
@@ -811,8 +829,9 @@ int yyerror(const char *s)
 
 
 int main(int argc, char **argv) {
+    FILE *filein;
 
-    if ( (argc > 1) && (myin = fopen(argv[1],"r")) == NULL){
+    if ((argc > 1) && (filein = fopen(argv[1],"r")) == NULL){
         printf("syntax: %s filename\n", argv[0]);
         return 1;
     }
@@ -826,7 +845,7 @@ int main(int argc, char **argv) {
         file.close();
     }
     else{
-        cout << "***Errors exist, fix to compile term_code***" << endl;
+        cout << "Program failed to run." << endl;
     }
 
 
