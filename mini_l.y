@@ -1,7 +1,7 @@
 %{
 #include "structs.h"
 
-int yyerror(const char* s);
+int yyerror(const char* nameStr);
 int yylex(void);
 
 
@@ -10,18 +10,18 @@ stringstream *all_code; /* intermediated code to be put in file */
 string makeIntCode(string *dst, string op, string *val1, string *val2);
 /* generating intermediate code*/
 
-string conv2String(char* s);
-string conv2String(int s);
+string conv2String(char* nameStr);
+string conv2String(int nameStr);
 
 string *create_temp();
 string *create_label();
 int temp1 = 0;
 int temp2 = 0;
 
-string go_to(string *s);
+string go_to(string *nameStr);
 
-string labdclr_label(string *s); /* label declare and variable temp declare*/
-string vardclr_temp(string *s);
+string labdclr_label(string *nameStr); /* label declare and variable temp declare*/
+string vardclr_temp(string *nameStr);
 
 void expression_code( Terminal &nterm,  Terminal t2, Terminal t3, string op);
 
@@ -31,9 +31,9 @@ bool noMainErr = false;
 map<string,Var> arr_vars;
 stack<Loop> loop_stack;
 
-void add_map(string name, Var v);
-bool bool_map(string name);
-void bool_map_dec(string name);
+void add_map(string mapName, Var vartemp);
+bool bool_map(string mapName);
+void bool_map_dec(string mapName);
 
 
 
@@ -163,35 +163,35 @@ ident_loop:    IDENT ident_loop2 {
                     $$.term_length = $2.term_length;
 
                     $$.vars = $2.vars;
-                    Var v = Var();
-                    v.var_type = $2.term_type;
-                    v.var_length = $2.term_length;
-                    v.var_place = new string();
-                    *v.var_place = $1;
-                    $$.vars->push_back(v);
+                    Var vartemp = Var();
+                    vartemp.var_type = $2.term_type;
+                    vartemp.var_length = $2.term_length;
+                    vartemp.var_place = new string();
+                    *vartemp.var_place = $1;
+                    $$.vars->push_back(vartemp);
                     if($2.term_type == INT_ARR){
                         if($2.term_length <= 0){
                             yyerror("Error: array size is <= 0.");
                         }
                         *($$.term_code) << ".[] " << $1 << ", " << $2.term_length << "\n";
-                        string s = $1;
-                        if(!bool_map(s)){
-                            add_map(s,v);
+                        string nameStr = $1;
+                        if(!bool_map(nameStr)){
+                            add_map(nameStr,vartemp);
                         }
                         else{
-                            string tempstr = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            string tempstr = "Error: Symbol \"" + nameStr + "\" is multiply-defined";
                             yyerror(tempstr.c_str());
                         }
                     }
 
                     else if($2.term_type == INT){
                         *($$.term_code) << ". " << $1 << "\n";
-                        string s = $1;
-                        if(!bool_map(s)){
-                            add_map(s,v);
+                        string nameStr = $1;
+                        if(!bool_map(nameStr)){
+                            add_map(nameStr,vartemp);
                         }
                         else{
-                            string tempstr = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            string tempstr = "Error: Symbol \"" + nameStr + "\" is multiply-defined";
                             yyerror(tempstr.c_str());
                         }
                     }else{
@@ -205,31 +205,31 @@ ident_loop2:  COMMA IDENT ident_loop2 {
                     $$.term_type = $3.term_type;
                     $$.term_length = $3.term_length;
                     $$.vars = $3.vars;
-                    Var v = Var();
-                    v.var_type = $3.term_type;
-                    v.var_length = $3.term_length;
-                    v.var_place = new string();
-                    *v.var_place = $2;
-                    $$.vars->push_back(v);
+                    Var vartemp = Var();
+                    vartemp.var_type = $3.term_type;
+                    vartemp.var_length = $3.term_length;
+                    vartemp.var_place = new string();
+                    *vartemp.var_place = $2;
+                    $$.vars->push_back(vartemp);
                     if($3.term_type == INT_ARR){
                         *($$.term_code) << ".[] " << $2 << ", " << $3.term_length << "\n";
-                        string s = $2;
-                        if(!bool_map(s)){
-                            add_map(s,v);
+                        string nameStr = $2;
+                        if(!bool_map(nameStr)){
+                            add_map(nameStr,vartemp);
                         }
                         else{
-                            string tempstr = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            string tempstr = "Error: Symbol \"" + nameStr + "\" is multiply-defined";
                             yyerror(tempstr.c_str());
                         }
                     }
                     else if($3.term_type == INT){
                         *($$.term_code) << ". " << $2 << "\n";
-                        string s = $2;
-                        if(!bool_map(s)){
-                            add_map(s,v);
+                        string nameStr = $2;
+                        if(!bool_map(nameStr)){
+                            add_map(nameStr,vartemp);
                         }
                         else{
-                            string tempstr = "Error: Symbol \"" + s + "\" is multiply-defined";
+                            string tempstr = "Error: Symbol \"" + nameStr + "\" is multiply-defined";
                             yyerror(tempstr.c_str());
                         }
                     }else{
@@ -721,15 +721,15 @@ term_comma:        COMMA term_choice2{
 %%
 
 
-string conv2String(char* s){
+string conv2String(char* nameStr){
     ostringstream c;
-    c << s;
+    c << nameStr;
     return c.str();
 }
 
-string conv2String(int s){
+string conv2String(int nameStr){
     ostringstream c;
-    c << s;
+    c << nameStr;
     return c.str();
 }
 
@@ -751,37 +751,37 @@ void expression_code( Terminal &nterm, Terminal t2, Terminal t3, string op){
     } 
 }
 
-string go_to(string *s){
-    return ":= "+ *s + "\n"; 
+string go_to(string *nameStr){
+    return ":= "+ *nameStr + "\n"; 
 }
-string labdclr_label(string *s){
-    return ": " +*s + "\n"; 
+string labdclr_label(string *nameStr){
+    return ": " +*nameStr + "\n"; 
 }
 
-void add_map(string name, Var v){
-    if(arr_vars.find(name) == arr_vars.end()){
-        arr_vars[name] = v;
+void add_map(string mapName, Var vartemp){
+    if(arr_vars.find(mapName) == arr_vars.end()){
+        arr_vars[mapName] = vartemp;
     }
     else{
-        string tempstr = "Error: " + name + " already exists.";
+        string tempstr = "Error: " + mapName + " already exists.";
         yyerror(tempstr.c_str());
     }
 }
-bool bool_map(string name){
-    if(arr_vars.find(name) == arr_vars.end()){
+bool bool_map(string mapName){
+    if(arr_vars.find(mapName) == arr_vars.end()){
         return false;
     }
     return true;
 }
-void bool_map_dec(string name){
-    if(!bool_map(name)){
-        string tempstr = "Error: No name of \"" + name + "\" in map.";
+void bool_map_dec(string mapName){
+    if(!bool_map(mapName)){
+        string tempstr = "Error: No name of \"" + mapName + "\" in map.";
         yyerror(tempstr.c_str());
     }
 }
 
-string vardclr_temp(string *s){
-    return ". " +*s + "\n"; 
+string vardclr_temp(string *nameStr){
+    return ". " +*nameStr + "\n"; 
 }
 string * create_temp(){
     string * t = new string();
@@ -811,11 +811,11 @@ string makeIntCode(string *dst, string op, string *src1, string *src2){
 
 
 
-int yyerror(const char *s)
+int yyerror(const char *nameStr)
 {
     extern int line_cnt;
     pass = false;
-    printf("Line %d: %s\n",line_cnt,s);
+    printf("Line %d: %nameStr\n",line_cnt,nameStr);
     return -1;
 }
 
@@ -824,7 +824,7 @@ int main(int argc, char **argv) {
     FILE *filein;
 
     if ((argc > 1) && (filein = fopen(argv[1],"r")) == NULL){
-        printf("syntax: %s filename\n", argv[0]);
+        printf("syntax: %nameStr filename\n", argv[0]);
         return 1;
     }
 
