@@ -26,7 +26,7 @@ string vardclr_temp(string *s);
 void expression_code( Terminal &nterm,  Terminal t2, Terminal t3, string op);
 
 bool pass = true;
-bool hasMain = false;
+bool noMainErr = false;
 
 map<string,Var> arr_vars;
 stack<Loop> loop_stack;
@@ -67,16 +67,19 @@ void bool_map_dec(string name);
 %type <str_val> IDENT
 
 %type <NonTerminal> program_start functions
-%type <Terminal>  stmt_options stmt_loop 
+
+%type <Terminal> declare_loop ident_loop ident_loop2 ident_loop_choice ident_term
+%type <Terminal> stmt_loop stmt_options 
+%type <Terminal> s1 s2 s2_choice s3 s4 s6 s6_choice s7 s7_choice s8 s9 beg_loop  
+
 %type <Terminal> function bool_exp bool_choice     
 %type <Terminal> relation_and_expr relandexpr_choice  
 %type <Terminal> relation_expr rel_choice 
-%type <Terminal> comp expression expr_choice multiplicative_expression mult_choice   
-%type <Terminal> term term_choice term_paren term_choice2 term_comma       
-%type <Terminal> var var_choice          
-%type <Terminal> declare_loop ident_loop ident_loop2 ident_loop_choice ident_term
-%type <Terminal> s1 s2 s2_choice s3 s4 s6 s6_choice s7 s7_choice s8 s9 beg_loop  
-
+ 
+%type <Terminal> comp expression     
+%type <Terminal> var var_choice
+%type <Terminal> expr_choice multiplicative_expression mult_choice  
+%type <Terminal> term term_choice term_paren term_choice2 term_comma  
 
 %%
 
@@ -84,17 +87,20 @@ program_start:
 
 functions{
 	$$.term_code = $1.term_code;
-    if(!hasMain){
+	if(!noMainErr){
 		yyerror("Error: main function is undeclared.");
 	}
+	
 }
               
 functions:      
 
 function functions
 {
+	
 	$$.term_code = $1.term_code;
 	*($$.term_code) << $2.term_code->str();
+	
         all_code = $$.term_code;
 } 
 	| 
@@ -107,8 +113,8 @@ function:   FUNCTION ident_term SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS B
          
                 $$.term_code = new stringstream(); 
                 string tempstr = *$2.term_place;
-                if(tempstr.compare("main")){
-                    hasMain = true;
+                if(tempstr.compare("main") == false){ // false in this case means tempstr is main, so set true
+                    noMainErr = true;
                 }
                 *($$.term_code)  << "func " << tempstr << "\n" << $5.term_code->str() << $8.term_code->str();
                 for(int i = 0; i < $5.vars->size(); ++i){
@@ -136,13 +142,6 @@ ident_term: IDENT {
             *$$.term_place = tempstr;
         };
 
-stmt_loop: stmt_options SEMICOLON stmt_loop{
-                $$.term_code = $1.term_code;
-                *($$.term_code) << $3.term_code->str();
-              } 
-            | {$$.term_code = new stringstream();
-		$$.vars = new vector<Var>();};
-
 declare_loop:  ident_loop SEMICOLON declare_loop {
                 $$.term_code = $1.term_code;
                 $$.vars = $1.vars;
@@ -154,8 +153,7 @@ declare_loop:  ident_loop SEMICOLON declare_loop {
             | {
                 $$.term_code = new stringstream();
                 $$.vars = new vector<Var>();
-              }
-            ;
+              };
 
 
 ident_loop:    IDENT ident_loop2 {
@@ -200,8 +198,7 @@ ident_loop:    IDENT ident_loop2 {
                             yyerror("Error: not a valid type.");
                     }
 
-                }
-                ;
+                };
 
 ident_loop2:  COMMA IDENT ident_loop2 {
                     $$.term_code = $3.term_code;
@@ -243,8 +240,7 @@ ident_loop2:  COMMA IDENT ident_loop2 {
                     $$.term_type = $2.term_type;
                     $$.term_length = $2.term_length;
                     $$.vars = $2.vars;
-                }
-                ;
+                };
 
 ident_loop_choice:  ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
                     $$.term_code = new stringstream();
@@ -260,6 +256,13 @@ ident_loop_choice:  ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
                   }
                 ;
 
+stmt_loop: stmt_options SEMICOLON stmt_loop{
+                $$.term_code = $1.term_code;
+                *($$.term_code) << $3.term_code->str();
+              } 
+            | {$$.term_code = new stringstream();
+		$$.vars = new vector<Var>();};
+
 stmt_options:      
 
 	s1 {
@@ -269,7 +272,7 @@ stmt_options:
 		$$.term_code = $1.term_code;
 	}
 	| s3 {
-		$.term_code = $1.term_code;
+		$$.term_code = $1.term_code;
 	}
 	| s4 {
 		$$.term_code = $1.term_code;
@@ -307,8 +310,7 @@ s1:    var ASSIGN expression{
                     else{
                         yyerror("Error: expression cannot be of NULL type.");
                     }
-                }
-                ;
+                };
 
 s2:    IF bool_exp THEN stmt_loop s2_choice ENDIF{
                     $$.term_code = new stringstream();
@@ -324,8 +326,7 @@ s2:    IF bool_exp THEN stmt_loop s2_choice ENDIF{
                         *($$.term_code) << go_to($$.end_term)<< labdclr_label($$.begin_term)  << $4.term_code->str();
                     }
                     *($$.term_code) << labdclr_label($$.end_term);
-                }
-                ;
+                };
 
 s2_choice:   {
                     $$.term_code = new stringstream();
@@ -334,8 +335,7 @@ s2_choice:   {
                 | ELSE stmt_loop{
                     $$.term_code = $2.term_code;
                     $$.begin_term = create_label();
-                }
-                ;
+                };
 
 s3:    WHILE bool_exp beg_loop BEGINLOOP stmt_loop ENDLOOP{
                     $$.term_code = new stringstream();
@@ -346,8 +346,7 @@ s3:    WHILE bool_exp beg_loop BEGINLOOP stmt_loop ENDLOOP{
                     << go_to($$.end_term) << labdclr_label($$.begin_term) << $5.term_code->str() << go_to($$.term_parent) << labdclr_label($$.end_term);
                     loop_stack.pop();
 
-                }
-                ;
+                };
 
 beg_loop: BEGINLOOP{
                     $$.term_code = new stringstream();
@@ -368,8 +367,7 @@ s4:    DO beg_loop  stmt_loop ENDLOOP WHILE bool_exp{
                     $$.end_term = $2.end_term;
                     *($$.term_code) << labdclr_label($$.begin_term) << $3.term_code->str() << labdclr_label($$.term_parent) << $6.term_code->str() << "?:= " << *$$.begin_term << ", " << *$6.term_place << "\n" << labdclr_label($$.end_term);
                     loop_stack.pop();
-                }
-                ;
+                };
 
 s6:    READ var s6_choice{
                     $$.term_code = $2.term_code;
@@ -380,8 +378,7 @@ s6:    READ var s6_choice{
                        *($$.term_code) << ".[]< " << *$2.term_place << ", " << $2.term_index << "\n"; 
                     }
                     *($$.term_code) << $3.term_code->str();
-                }
-                ;
+                };
 
 s6_choice:   COMMA var s6_choice {
                     $$.term_code = $2.term_code;
@@ -395,8 +392,7 @@ s6_choice:   COMMA var s6_choice {
                 }
                 | {
                     $$.term_code = new stringstream();
-                  }
-                ;
+                  };
 
 s7:    WRITE var s7_choice{
                     $$.term_code = $2.term_code;
@@ -407,8 +403,7 @@ s7:    WRITE var s7_choice{
                        *($$.term_code) << ".[]> " << *$2.term_value << ", " << *$2.term_index << "\n"; 
                     }
                     *($$.term_code) << $3.term_code->str();
-                  }
-                ;
+                  };
 
 s7_choice:   COMMA var s7_choice{
                     $$.term_code = $2.term_code;
@@ -422,8 +417,7 @@ s7_choice:   COMMA var s7_choice{
                   }
                 |{
                     $$.term_code = new stringstream();
-                 }
-                ;
+                 };
 
 s8: CONTINUE{
                     $$.term_code = new stringstream();
@@ -455,8 +449,7 @@ bool_exp:       relation_and_expr bool_choice{
                         $$.term_place = $1.term_place;
                         $$.op = $1.op;
                     }
-                }
-                ;
+                };
 
 bool_choice:      OR relation_and_expr bool_choice{
                  
@@ -467,8 +460,7 @@ bool_choice:      OR relation_and_expr bool_choice{
                 |{
                     $$.term_code = new stringstream();
                     $$.op = NULL;
-                 }
-                ; 
+                 }; 
 
 relation_and_expr:    
 
@@ -493,8 +485,7 @@ relandexpr_choice:   AND relation_expr relandexpr_choice{
                 |{
                     $$.term_code = new stringstream();
                     $$.op = NULL;
-                 }
-                ;
+                 };
 
 relation_expr:   rel_choice{
                     $$.term_code = $1.term_code;
@@ -527,8 +518,7 @@ rel_choice: expression comp expression{
                 | L_PAREN bool_exp R_PAREN{
                     $$.term_code = $2.term_code;
                     $$.term_place = $2.term_place;
-                }
-                ;
+                };
 
 comp:           EQ{
                     $$.term_code = new stringstream();
@@ -562,125 +552,7 @@ comp:           EQ{
                   }
                 ;
 
-expression:     multiplicative_expression expr_choice{
-                    $$.term_code = $1.term_code;
-                    *($$.term_code) << $2.term_code->str();
-                    if($2.op != NULL && $2.term_place != NULL)
-                    {                        
-                        $$.term_place = create_temp();
-                       *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
-                    }
-                    else{
-                        $$.term_place = $1.term_place;
-                        $$.op = $1.op;
-                    }
-                    $$.term_type = INT;
-                  }
-                ;
-
-expr_choice:   ADD multiplicative_expression expr_choice {
-
-                    expression_code($$,$2,$3,"+");
-
-                  }
-                | SUB multiplicative_expression expr_choice{expression_code($$,$2,$3,"-");
-                  }
-                | {
-                    $$.term_code = new stringstream();
-                    $$.op = NULL;
-                  }
-                ;
-
-multiplicative_expression:      term mult_choice{
-                    $$.term_code = $1.term_code;
-                    *($$.term_code) << $2.term_code->str();
-                    if($2.op != NULL && $2.term_place != NULL)
-                    {                        
-                        $$.term_place = create_temp();
-                       *($$.term_code)<< vardclr_temp($$.term_place)<< makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
-                    }
-                    else{
-                        $$.term_place = $1.term_place;
-                        $$.op = $1.op;
-                    }
-                  }
-                ;
-
-
-mult_choice:    MULT term mult_choice{
-                    expression_code($$,$2,$3,"*");
-
-                  }
-                | DIV term mult_choice{
-                    expression_code($$,$2,$3,"/");
-                  }
-                | MOD term mult_choice{
-                    expression_code($$,$2,$3,"%");
-                  }
-                |{
-                    $$.term_code = new stringstream();
-                    $$.op = NULL;
-                 }
-                ;
-
-term:           SUB term_choice{
-                    $$.term_code = $2.term_code;
-                    $$.term_place = create_temp();
-                    string tempstr = "-1";
-                    *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, "*",$2.term_place, &tempstr );
-                  }
-                | term_choice{
-                    $$.term_code = $1.term_code;
-                    $$.term_place = $1.term_place;
-                  }
-                | term_paren{
-                    $$.term_code = $1.term_code;
-                    $$.term_place = $1.term_place;
-                  }
-                ;
-
-term_choice:         var{
-                    $$.term_code = $1.term_code;
-                    $$.term_place= $1.term_place;
-                    $$.term_index = $1.term_index;
-                  }
-                | NUMBER{
-                    $$.term_code = new stringstream();
-                    $$.term_place = new string();
-                    *$$.term_place = conv2String($1);
-                  }
-                | L_PAREN expression R_PAREN{
-                    $$.term_code = $2.term_code;
-                    $$.term_place = $2.term_place;
-                  }
-                ;
-
-term_paren:         IDENT L_PAREN term_choice2 R_PAREN{
-                    $$.term_code = $3.term_code;
-                    $$.term_place = create_temp();
-                    *($$.term_code) << vardclr_temp($$.term_place)<< "call " << $1 << ", " << *$$.term_place << "\n";
-                    string tempstr = $1;
-                    bool_map_dec(tempstr);
-                }
-                ;
-
-term_choice2:        expression term_comma{
-                    $$.term_code = $1.term_code;
-                    *($$.term_code) << $2.term_code->str();
-                    *($$.term_code) << "param " << *$1.term_place << "\n";
-                } 
-                | {
-                    $$.term_code = new stringstream(); 
-                  }
-                ;
-term_comma:        COMMA term_choice2{
-                    $$.term_code = $2.term_code;
-                } 
-                | {
-                    $$.term_code = new stringstream();
-                  }
-
-var:            IDENT var_choice{
+var: IDENT var_choice{
                     $$.term_code = $2.term_code;
                     $$.term_type = $2.term_type;
                     string tempstr = $1;
@@ -712,7 +584,7 @@ var:            IDENT var_choice{
                 }
                 ;
 
-var_choice:          L_SQUARE_BRACKET expression R_SQUARE_BRACKET{
+var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET{
                     $$.term_code = $2.term_code;
                     $$.term_place = NULL;
                     $$.term_index = $2.term_place;
@@ -725,20 +597,129 @@ var_choice:          L_SQUARE_BRACKET expression R_SQUARE_BRACKET{
                     $$.term_type = INT;
                  }
                 ;
+
+expression: multiplicative_expression expr_choice{
+                    $$.term_code = $1.term_code;
+                    *($$.term_code) << $2.term_code->str();
+                    if($2.op != NULL && $2.term_place != NULL)
+                    {                        
+                        $$.term_place = create_temp();
+                       *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+                    }
+                    else{
+                        $$.term_place = $1.term_place;
+                        $$.op = $1.op;
+                    }
+                    $$.term_type = INT;
+                  }
+                ;
+
+expr_choice: ADD multiplicative_expression expr_choice {
+
+                    expression_code($$,$2,$3,"+");
+
+                  }
+                | SUB multiplicative_expression expr_choice{expression_code($$,$2,$3,"-");
+                  }
+                | {
+                    $$.term_code = new stringstream();
+                    $$.op = NULL;
+                  }
+                ;
+
+multiplicative_expression: term mult_choice{
+                    $$.term_code = $1.term_code;
+                    *($$.term_code) << $2.term_code->str();
+                    if($2.op != NULL && $2.term_place != NULL)
+                    {                        
+                        $$.term_place = create_temp();
+                       *($$.term_code)<< vardclr_temp($$.term_place)<< makeIntCode($$.term_place, *$2.op, $1.term_place, $2.term_place);
+                    }
+                    else{
+                        $$.term_place = $1.term_place;
+                        $$.op = $1.op;
+                    }
+                  }
+                ;
+
+
+mult_choice: MULT term mult_choice{
+                    expression_code($$,$2,$3,"*");
+
+                  }
+                | DIV term mult_choice{
+                    expression_code($$,$2,$3,"/");
+                  }
+                | MOD term mult_choice{
+                    expression_code($$,$2,$3,"%");
+                  }
+                |{
+                    $$.term_code = new stringstream();
+                    $$.op = NULL;
+                 }
+                ;
+
+term: SUB term_choice{
+                    $$.term_code = $2.term_code;
+                    $$.term_place = create_temp();
+                    string tempstr = "-1";
+                    *($$.term_code)<< vardclr_temp($$.term_place) << makeIntCode($$.term_place, "*",$2.term_place, &tempstr );
+                  }
+                | term_choice{
+                    $$.term_code = $1.term_code;
+                    $$.term_place = $1.term_place;
+                  }
+                | term_paren{
+                    $$.term_code = $1.term_code;
+                    $$.term_place = $1.term_place;
+                  }
+                ;
+
+term_choice: var{
+                    $$.term_code = $1.term_code;
+                    $$.term_place= $1.term_place;
+                    $$.term_index = $1.term_index;
+                  }
+                | NUMBER{
+                    $$.term_code = new stringstream();
+                    $$.term_place = new string();
+                    *$$.term_place = conv2String($1);
+                  }
+                | L_PAREN expression R_PAREN{
+                    $$.term_code = $2.term_code;
+                    $$.term_place = $2.term_place;
+                  }
+                ;
+
+term_paren: IDENT L_PAREN term_choice2 R_PAREN{
+                    $$.term_code = $3.term_code;
+                    $$.term_place = create_temp();
+                    *($$.term_code) << vardclr_temp($$.term_place)<< "call " << $1 << ", " << *$$.term_place << "\n";
+                    string tempstr = $1;
+                    bool_map_dec(tempstr);
+                }
+                ;
+
+term_choice2: expression term_comma{
+                    $$.term_code = $1.term_code;
+                    *($$.term_code) << $2.term_code->str();
+                    *($$.term_code) << "param " << *$1.term_place << "\n";
+                } 
+                | {
+                    $$.term_code = new stringstream(); 
+                  }
+                ;
+term_comma:        COMMA term_choice2{
+                    $$.term_code = $2.term_code;
+                } 
+                | {
+                    $$.term_code = new stringstream();
+                  };
+
+
             
 %%
 
-
-
-
-string makeIntCode(string *dst, string op, string *src1, string *src2){
-    if(op == "!"){
-        return op + " " + *dst + ", " + *src1 + "\n";
-    }
-    else{
-        return op + " " + *dst + ", " + *src1 + ", "+ *src2 +"\n";
-    }
-}
 
 string conv2String(char* s){
     ostringstream c;
@@ -751,12 +732,54 @@ string conv2String(int s){
     c << s;
     return c.str();
 }
+
+
+void expression_code( Terminal &nterm, Terminal t2, Terminal t3, string op){
+    nterm.term_code = t2.term_code;
+    *(nterm.term_code) << t3.term_code->str();
+    if(t3.op == NULL){
+        nterm.term_place = t2.term_place;
+        nterm.op = new string();
+        *nterm.op = op;
+    }
+    else{
+        nterm.term_place = create_temp();
+        nterm.op = new string();
+        *nterm.op = op;
+
+        *(nterm.term_code) << vardclr_temp(nterm.term_place)<< makeIntCode(nterm.term_place , *t3.op, t2.term_place, t3.term_place);
+    } 
+}
+
 string go_to(string *s){
     return ":= "+ *s + "\n"; 
 }
 string labdclr_label(string *s){
     return ": " +*s + "\n"; 
 }
+
+void add_map(string name, Var v){
+    if(arr_vars.find(name) == arr_vars.end()){
+        arr_vars[name] = v;
+    }
+    else{
+        string tempstr = "Error: " + name + " already exists.";
+        yyerror(tempstr.c_str());
+    }
+}
+bool bool_map(string name){
+    if(arr_vars.find(name) == arr_vars.end()){
+        return false;
+    }
+    return true;
+}
+void bool_map_dec(string name){
+    if(!bool_map(name)){
+        string tempstr = "Error: No name of \"" + name + "\" in map.";
+        yyerror(tempstr.c_str());
+    }
+}
+
 string vardclr_temp(string *s){
     return ". " +*s + "\n"; 
 }
@@ -776,54 +799,23 @@ string * create_label(){
     temp2++;
     return t;
 }
- 
-void expression_code( Terminal &nterm, Terminal t2, Terminal t3, string op){
-    nterm.term_code = t2.term_code;
-    *(nterm.term_code) << t3.term_code->str();
-    if(t3.op == NULL){
-        nterm.term_place = t2.term_place;
-        nterm.op = new string();
-        *nterm.op = op;
+
+string makeIntCode(string *dst, string op, string *src1, string *src2){
+    if(op == "!"){
+        return op + " " + *dst + ", " + *src1 + "\n";
     }
     else{
-        nterm.term_place = create_temp();
-        nterm.op = new string();
-        *nterm.op = op;
-
-        *(nterm.term_code) << vardclr_temp(nterm.term_place)<< makeIntCode(nterm.term_place , *t3.op, t2.term_place, t3.term_place);
-    } 
+        return op + " " + *dst + ", " + *src1 + ", "+ *src2 +"\n";
+    }
 }
 
-
-void add_map(string name, Var v){
-    if(arr_vars.find(name) == arr_vars.end()){
-        arr_vars[name] = v;
-    }
-    else{
-        string tempstr = "ERROR: " + name + " already exists.";
-        yyerror(tempstr.c_str());
-    }
-}
-bool bool_map(string name){
-    if(arr_vars.find(name) == arr_vars.end()){
-        return false;
-    }
-    return true;
-}
-void bool_map_dec(string name){
-    if(!bool_map(name)){
-        string tempstr = "ERROR: No name of \"" + name + "\" in map.";
-        yyerror(tempstr.c_str());
-    }
-}
 
 
 int yyerror(const char *s)
 {
     extern int line_cnt;
-    extern int cursor_pos;
     pass = false;
-    printf(">>> Line %d, position %d: %s\n",line_cnt,cursor_pos,s);
+    printf("Line %d: %s\n",line_cnt,s);
     return -1;
 }
 
@@ -844,10 +836,6 @@ int main(int argc, char **argv) {
         file << all_code->str();
         file.close();
     }
-    else{
-        cout << "Program failed to run." << endl;
-    }
-
 
     return 0;
 }

@@ -11,19 +11,19 @@ Grammar
 
     5 ident_term: IDENT
 
-    6 stmt_loop: stmt_options SEMICOLON stmt_loop
-    7          | %empty
+    6 declare_loop: ident_loop SEMICOLON declare_loop
+    7             | %empty
 
-    8 declare_loop: ident_loop SEMICOLON declare_loop
-    9             | %empty
+    8 ident_loop: IDENT ident_loop2
 
-   10 ident_loop: IDENT ident_loop2
+    9 ident_loop2: COMMA IDENT ident_loop2
+   10            | COLON ident_loop_choice INTEGER
 
-   11 ident_loop2: COMMA IDENT ident_loop2
-   12            | COLON ident_loop_choice INTEGER
+   11 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
+   12                  | %empty
 
-   13 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
-   14                  | %empty
+   13 stmt_loop: stmt_options SEMICOLON stmt_loop
+   14          | %empty
 
    15 stmt_options: s1
    16             | s2
@@ -86,38 +86,38 @@ Grammar
    54     | LTE
    55     | GTE
 
-   56 expression: multiplicative_expression expr_choice
+   56 var: IDENT var_choice
 
-   57 expr_choice: ADD multiplicative_expression expr_choice
-   58            | SUB multiplicative_expression expr_choice
-   59            | %empty
+   57 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+   58           | %empty
 
-   60 multiplicative_expression: term mult_choice
+   59 expression: multiplicative_expression expr_choice
 
-   61 mult_choice: MULT term mult_choice
-   62            | DIV term mult_choice
-   63            | MOD term mult_choice
-   64            | %empty
+   60 expr_choice: ADD multiplicative_expression expr_choice
+   61            | SUB multiplicative_expression expr_choice
+   62            | %empty
 
-   65 term: SUB term_choice
-   66     | term_choice
-   67     | term_paren
+   63 multiplicative_expression: term mult_choice
 
-   68 term_choice: var
-   69            | NUMBER
-   70            | L_PAREN expression R_PAREN
+   64 mult_choice: MULT term mult_choice
+   65            | DIV term mult_choice
+   66            | MOD term mult_choice
+   67            | %empty
 
-   71 term_paren: IDENT L_PAREN term_choice2 R_PAREN
+   68 term: SUB term_choice
+   69     | term_choice
+   70     | term_paren
 
-   72 term_choice2: expression term_comma
-   73             | %empty
+   71 term_choice: var
+   72            | NUMBER
+   73            | L_PAREN expression R_PAREN
 
-   74 term_comma: COMMA term_choice2
-   75           | %empty
+   74 term_paren: IDENT L_PAREN term_choice2 R_PAREN
 
-   76 var: IDENT var_choice
+   75 term_choice2: expression term_comma
+   76             | %empty
 
-   77 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET
+   77 term_comma: COMMA term_choice2
    78           | %empty
 
 
@@ -132,9 +132,9 @@ BEGIN_LOCALS (261) 4
 END_LOCALS (262) 4
 BEGIN_BODY (263) 4
 END_BODY (264) 4
-INTEGER (265) 12
-ARRAY (266) 13
-OF (267) 13
+INTEGER (265) 10
+ARRAY (266) 11
+OF (267) 11
 IF (268) 24
 THEN (269) 24
 ENDIF (270) 24
@@ -152,27 +152,27 @@ OR (281) 39
 NOT (282) 45
 TRUE (283) 47
 FALSE (284) 48
-SUB (285) 58 65
-ADD (286) 57
-MULT (287) 61
-DIV (288) 62
-MOD (289) 63
+SUB (285) 61 68
+ADD (286) 60
+MULT (287) 64
+DIV (288) 65
+MOD (289) 66
 EQ (290) 50
 NEQ (291) 51
 LT (292) 52
 GT (293) 53
 LTE (294) 54
 GTE (295) 55
-SEMICOLON (296) 4 6 8
-COLON (297) 12
-COMMA (298) 11 31 34 74
-L_PAREN (299) 49 70 71
-R_PAREN (300) 49 70 71
-L_SQUARE_BRACKET (301) 13 77
-R_SQUARE_BRACKET (302) 13 77
+SEMICOLON (296) 4 6 13
+COLON (297) 10
+COMMA (298) 9 31 34 77
+L_PAREN (299) 49 73 74
+R_PAREN (300) 49 73 74
+L_SQUARE_BRACKET (301) 11 57
+R_SQUARE_BRACKET (302) 11 57
 ASSIGN (303) 23
-NUMBER (304) 13 69
-IDENT (305) 5 10 11 71 76
+NUMBER (304) 11 72
+IDENT (305) 5 8 9 56 74
 
 
 Nonterminals, with rules where they appear
@@ -187,18 +187,18 @@ function (54)
     on left: 4, on right: 2
 ident_term (55)
     on left: 5, on right: 4
-stmt_loop (56)
-    on left: 6 7, on right: 4 6 24 26 27 29
-declare_loop (57)
-    on left: 8 9, on right: 4 8
-ident_loop (58)
-    on left: 10, on right: 8
-ident_loop2 (59)
-    on left: 11 12, on right: 10 11
-ident_loop_choice (60)
-    on left: 13 14, on right: 12
+declare_loop (56)
+    on left: 6 7, on right: 4 6
+ident_loop (57)
+    on left: 8, on right: 6
+ident_loop2 (58)
+    on left: 9 10, on right: 8 9
+ident_loop_choice (59)
+    on left: 11 12, on right: 10
+stmt_loop (60)
+    on left: 13 14, on right: 4 13 24 26 27 29
 stmt_options (61)
-    on left: 15 16 17 18 19 20 21 22, on right: 6
+    on left: 15 16 17 18 19 20 21 22, on right: 13
 s1 (62)
     on left: 23, on right: 15
 s2 (63)
@@ -237,28 +237,28 @@ rel_choice (79)
     on left: 46 47 48 49, on right: 44 45
 comp (80)
     on left: 50 51 52 53 54 55, on right: 46
-expression (81)
-    on left: 56, on right: 23 37 46 70 72 77
-expr_choice (82)
-    on left: 57 58 59, on right: 56 57 58
-multiplicative_expression (83)
-    on left: 60, on right: 56 57 58
-mult_choice (84)
-    on left: 61 62 63 64, on right: 60 61 62 63
-term (85)
-    on left: 65 66 67, on right: 60 61 62 63
-term_choice (86)
-    on left: 68 69 70, on right: 65 66
-term_paren (87)
-    on left: 71, on right: 67
-term_choice2 (88)
-    on left: 72 73, on right: 71 74
-term_comma (89)
-    on left: 74 75, on right: 72
-var (90)
-    on left: 76, on right: 23 30 31 33 34 68
-var_choice (91)
-    on left: 77 78, on right: 76
+var (81)
+    on left: 56, on right: 23 30 31 33 34 71
+var_choice (82)
+    on left: 57 58, on right: 56
+expression (83)
+    on left: 59, on right: 23 37 46 57 73 75
+expr_choice (84)
+    on left: 60 61 62, on right: 59 60 61
+multiplicative_expression (85)
+    on left: 63, on right: 59 60 61
+mult_choice (86)
+    on left: 64 65 66 67, on right: 63 64 65 66
+term (87)
+    on left: 68 69 70, on right: 63 64 65 66
+term_choice (88)
+    on left: 71 72 73, on right: 68 69
+term_paren (89)
+    on left: 74, on right: 70
+term_choice2 (90)
+    on left: 75 76, on right: 74 77
+term_comma (91)
+    on left: 77 78, on right: 75
 
 
 State 0
@@ -350,7 +350,7 @@ State 10
 
     IDENT  shift, and go to state 11
 
-    $default  reduce using rule 9 (declare_loop)
+    $default  reduce using rule 7 (declare_loop)
 
     declare_loop  go to state 12
     ident_loop    go to state 13
@@ -358,7 +358,7 @@ State 10
 
 State 11
 
-   10 ident_loop: IDENT . ident_loop2
+    8 ident_loop: IDENT . ident_loop2
 
     COLON  shift, and go to state 14
     COMMA  shift, and go to state 15
@@ -375,34 +375,34 @@ State 12
 
 State 13
 
-    8 declare_loop: ident_loop . SEMICOLON declare_loop
+    6 declare_loop: ident_loop . SEMICOLON declare_loop
 
     SEMICOLON  shift, and go to state 18
 
 
 State 14
 
-   12 ident_loop2: COLON . ident_loop_choice INTEGER
+   10 ident_loop2: COLON . ident_loop_choice INTEGER
 
     ARRAY  shift, and go to state 19
 
-    $default  reduce using rule 14 (ident_loop_choice)
+    $default  reduce using rule 12 (ident_loop_choice)
 
     ident_loop_choice  go to state 20
 
 
 State 15
 
-   11 ident_loop2: COMMA . IDENT ident_loop2
+    9 ident_loop2: COMMA . IDENT ident_loop2
 
     IDENT  shift, and go to state 21
 
 
 State 16
 
-   10 ident_loop: IDENT ident_loop2 .
+    8 ident_loop: IDENT ident_loop2 .
 
-    $default  reduce using rule 10 (ident_loop)
+    $default  reduce using rule 8 (ident_loop)
 
 
 State 17
@@ -414,11 +414,11 @@ State 17
 
 State 18
 
-    8 declare_loop: ident_loop SEMICOLON . declare_loop
+    6 declare_loop: ident_loop SEMICOLON . declare_loop
 
     IDENT  shift, and go to state 11
 
-    $default  reduce using rule 9 (declare_loop)
+    $default  reduce using rule 7 (declare_loop)
 
     declare_loop  go to state 23
     ident_loop    go to state 13
@@ -426,21 +426,21 @@ State 18
 
 State 19
 
-   13 ident_loop_choice: ARRAY . L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
+   11 ident_loop_choice: ARRAY . L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF
 
     L_SQUARE_BRACKET  shift, and go to state 24
 
 
 State 20
 
-   12 ident_loop2: COLON ident_loop_choice . INTEGER
+   10 ident_loop2: COLON ident_loop_choice . INTEGER
 
     INTEGER  shift, and go to state 25
 
 
 State 21
 
-   11 ident_loop2: COMMA IDENT . ident_loop2
+    9 ident_loop2: COMMA IDENT . ident_loop2
 
     COLON  shift, and go to state 14
     COMMA  shift, and go to state 15
@@ -454,7 +454,7 @@ State 22
 
     IDENT  shift, and go to state 11
 
-    $default  reduce using rule 9 (declare_loop)
+    $default  reduce using rule 7 (declare_loop)
 
     declare_loop  go to state 27
     ident_loop    go to state 13
@@ -462,30 +462,30 @@ State 22
 
 State 23
 
-    8 declare_loop: ident_loop SEMICOLON declare_loop .
+    6 declare_loop: ident_loop SEMICOLON declare_loop .
 
-    $default  reduce using rule 8 (declare_loop)
+    $default  reduce using rule 6 (declare_loop)
 
 
 State 24
 
-   13 ident_loop_choice: ARRAY L_SQUARE_BRACKET . NUMBER R_SQUARE_BRACKET OF
+   11 ident_loop_choice: ARRAY L_SQUARE_BRACKET . NUMBER R_SQUARE_BRACKET OF
 
     NUMBER  shift, and go to state 28
 
 
 State 25
 
-   12 ident_loop2: COLON ident_loop_choice INTEGER .
+   10 ident_loop2: COLON ident_loop_choice INTEGER .
 
-    $default  reduce using rule 12 (ident_loop2)
+    $default  reduce using rule 10 (ident_loop2)
 
 
 State 26
 
-   11 ident_loop2: COMMA IDENT ident_loop2 .
+    9 ident_loop2: COMMA IDENT ident_loop2 .
 
-    $default  reduce using rule 11 (ident_loop2)
+    $default  reduce using rule 9 (ident_loop2)
 
 
 State 27
@@ -497,7 +497,7 @@ State 27
 
 State 28
 
-   13 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER . R_SQUARE_BRACKET OF
+   11 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER . R_SQUARE_BRACKET OF
 
     R_SQUARE_BRACKET  shift, and go to state 30
 
@@ -511,7 +511,7 @@ State 29
 
 State 30
 
-   13 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET . OF
+   11 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET . OF
 
     OF  shift, and go to state 32
 
@@ -529,7 +529,7 @@ State 31
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 41
     stmt_options  go to state 42
@@ -546,9 +546,9 @@ State 31
 
 State 32
 
-   13 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF .
+   11 ident_loop_choice: ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF .
 
-    $default  reduce using rule 13 (ident_loop_choice)
+    $default  reduce using rule 11 (ident_loop_choice)
 
 
 State 33
@@ -567,12 +567,12 @@ State 33
     relation_and_expr          go to state 60
     relation_expr              go to state 61
     rel_choice                 go to state 62
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 34
@@ -591,12 +591,12 @@ State 34
     relation_and_expr          go to state 60
     relation_expr              go to state 61
     rel_choice                 go to state 62
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 35
@@ -642,21 +642,21 @@ State 39
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     expression                 go to state 75
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 40
 
-   76 var: IDENT . var_choice
+   56 var: IDENT . var_choice
 
     L_SQUARE_BRACKET  shift, and go to state 76
 
-    $default  reduce using rule 78 (var_choice)
+    $default  reduce using rule 58 (var_choice)
 
     var_choice  go to state 77
 
@@ -670,7 +670,7 @@ State 41
 
 State 42
 
-    6 stmt_loop: stmt_options . SEMICOLON stmt_loop
+   13 stmt_loop: stmt_options . SEMICOLON stmt_loop
 
     SEMICOLON  shift, and go to state 79
 
@@ -750,12 +750,12 @@ State 52
     IDENT    shift, and go to state 58
 
     rel_choice                 go to state 81
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 53
@@ -774,20 +774,20 @@ State 54
 
 State 55
 
-   65 term: SUB . term_choice
+   68 term: SUB . term_choice
 
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 40
 
+    var          go to state 63
     term_choice  go to state 82
-    var          go to state 68
 
 
 State 56
 
    49 rel_choice: L_PAREN . bool_exp R_PAREN
-   70 term_choice: L_PAREN . expression R_PAREN
+   73 term_choice: L_PAREN . expression R_PAREN
 
     NOT      shift, and go to state 52
     TRUE     shift, and go to state 53
@@ -801,30 +801,30 @@ State 56
     relation_and_expr          go to state 60
     relation_expr              go to state 61
     rel_choice                 go to state 62
+    var                        go to state 63
     expression                 go to state 84
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 57
 
-   69 term_choice: NUMBER .
+   72 term_choice: NUMBER .
 
-    $default  reduce using rule 69 (term_choice)
+    $default  reduce using rule 72 (term_choice)
 
 
 State 58
 
-   71 term_paren: IDENT . L_PAREN term_choice2 R_PAREN
-   76 var: IDENT . var_choice
+   56 var: IDENT . var_choice
+   74 term_paren: IDENT . L_PAREN term_choice2 R_PAREN
 
     L_PAREN           shift, and go to state 85
     L_SQUARE_BRACKET  shift, and go to state 76
 
-    $default  reduce using rule 78 (var_choice)
+    $default  reduce using rule 58 (var_choice)
 
     var_choice  go to state 77
 
@@ -867,6 +867,13 @@ State 62
 
 State 63
 
+   71 term_choice: var .
+
+    $default  reduce using rule 71 (term_choice)
+
+
+State 64
+
    46 rel_choice: expression . comp expression
 
     EQ   shift, and go to state 91
@@ -879,50 +886,43 @@ State 63
     comp  go to state 97
 
 
-State 64
+State 65
 
-   56 expression: multiplicative_expression . expr_choice
+   59 expression: multiplicative_expression . expr_choice
 
     SUB  shift, and go to state 98
     ADD  shift, and go to state 99
 
-    $default  reduce using rule 59 (expr_choice)
+    $default  reduce using rule 62 (expr_choice)
 
     expr_choice  go to state 100
 
 
-State 65
+State 66
 
-   60 multiplicative_expression: term . mult_choice
+   63 multiplicative_expression: term . mult_choice
 
     MULT  shift, and go to state 101
     DIV   shift, and go to state 102
     MOD   shift, and go to state 103
 
-    $default  reduce using rule 64 (mult_choice)
+    $default  reduce using rule 67 (mult_choice)
 
     mult_choice  go to state 104
 
 
-State 66
-
-   66 term: term_choice .
-
-    $default  reduce using rule 66 (term)
-
-
 State 67
 
-   67 term: term_paren .
+   69 term: term_choice .
 
-    $default  reduce using rule 67 (term)
+    $default  reduce using rule 69 (term)
 
 
 State 68
 
-   68 term_choice: var .
+   70 term: term_paren .
 
-    $default  reduce using rule 68 (term_choice)
+    $default  reduce using rule 70 (term)
 
 
 State 69
@@ -954,7 +954,7 @@ State 71
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 106
     stmt_options  go to state 42
@@ -993,19 +993,19 @@ State 73
 
 State 74
 
-   70 term_choice: L_PAREN . expression R_PAREN
+   73 term_choice: L_PAREN . expression R_PAREN
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     expression                 go to state 111
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 75
@@ -1017,26 +1017,26 @@ State 75
 
 State 76
 
-   77 var_choice: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET
+   57 var_choice: L_SQUARE_BRACKET . expression R_SQUARE_BRACKET
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     expression                 go to state 112
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 77
 
-   76 var: IDENT var_choice .
+   56 var: IDENT var_choice .
 
-    $default  reduce using rule 76 (var)
+    $default  reduce using rule 56 (var)
 
 
 State 78
@@ -1048,7 +1048,7 @@ State 78
 
 State 79
 
-    6 stmt_loop: stmt_options SEMICOLON . stmt_loop
+   13 stmt_loop: stmt_options SEMICOLON . stmt_loop
 
     IF        shift, and go to state 33
     WHILE     shift, and go to state 34
@@ -1059,7 +1059,7 @@ State 79
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 113
     stmt_options  go to state 42
@@ -1083,12 +1083,12 @@ State 80
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     expression                 go to state 114
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 81
@@ -1100,9 +1100,9 @@ State 81
 
 State 82
 
-   65 term: SUB term_choice .
+   68 term: SUB term_choice .
 
-    $default  reduce using rule 65 (term)
+    $default  reduce using rule 68 (term)
 
 
 State 83
@@ -1115,7 +1115,7 @@ State 83
 State 84
 
    46 rel_choice: expression . comp expression
-   70 term_choice: L_PAREN expression . R_PAREN
+   73 term_choice: L_PAREN expression . R_PAREN
 
     EQ       shift, and go to state 91
     NEQ      shift, and go to state 92
@@ -1130,22 +1130,22 @@ State 84
 
 State 85
 
-   71 term_paren: IDENT L_PAREN . term_choice2 R_PAREN
+   74 term_paren: IDENT L_PAREN . term_choice2 R_PAREN
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
-    $default  reduce using rule 73 (term_choice2)
+    $default  reduce using rule 76 (term_choice2)
 
+    var                        go to state 63
     expression                 go to state 117
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
     term_choice2               go to state 118
-    var                        go to state 68
 
 
 State 86
@@ -1161,7 +1161,7 @@ State 86
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 119
     stmt_options  go to state 42
@@ -1191,12 +1191,12 @@ State 87
     relation_and_expr          go to state 120
     relation_expr              go to state 61
     rel_choice                 go to state 62
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 88
@@ -1220,12 +1220,12 @@ State 89
 
     relation_expr              go to state 121
     rel_choice                 go to state 62
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 90
@@ -1286,103 +1286,103 @@ State 97
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     expression                 go to state 122
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 98
 
-   58 expr_choice: SUB . multiplicative_expression expr_choice
+   61 expr_choice: SUB . multiplicative_expression expr_choice
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     multiplicative_expression  go to state 123
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 99
 
-   57 expr_choice: ADD . multiplicative_expression expr_choice
+   60 expr_choice: ADD . multiplicative_expression expr_choice
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var                        go to state 63
     multiplicative_expression  go to state 124
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 100
 
-   56 expression: multiplicative_expression expr_choice .
+   59 expression: multiplicative_expression expr_choice .
 
-    $default  reduce using rule 56 (expression)
+    $default  reduce using rule 59 (expression)
 
 
 State 101
 
-   61 mult_choice: MULT . term mult_choice
+   64 mult_choice: MULT . term mult_choice
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var          go to state 63
     term         go to state 125
-    term_choice  go to state 66
-    term_paren   go to state 67
-    var          go to state 68
+    term_choice  go to state 67
+    term_paren   go to state 68
 
 
 State 102
 
-   62 mult_choice: DIV . term mult_choice
+   65 mult_choice: DIV . term mult_choice
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var          go to state 63
     term         go to state 126
-    term_choice  go to state 66
-    term_paren   go to state 67
-    var          go to state 68
+    term_choice  go to state 67
+    term_paren   go to state 68
 
 
 State 103
 
-   63 mult_choice: MOD . term mult_choice
+   66 mult_choice: MOD . term mult_choice
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
+    var          go to state 63
     term         go to state 127
-    term_choice  go to state 66
-    term_paren   go to state 67
-    var          go to state 68
+    term_choice  go to state 67
+    term_paren   go to state 68
 
 
 State 104
 
-   60 multiplicative_expression: term mult_choice .
+   63 multiplicative_expression: term mult_choice .
 
-    $default  reduce using rule 60 (multiplicative_expression)
+    $default  reduce using rule 63 (multiplicative_expression)
 
 
 State 105
@@ -1433,23 +1433,23 @@ State 110
 
 State 111
 
-   70 term_choice: L_PAREN expression . R_PAREN
+   73 term_choice: L_PAREN expression . R_PAREN
 
     R_PAREN  shift, and go to state 116
 
 
 State 112
 
-   77 var_choice: L_SQUARE_BRACKET expression . R_SQUARE_BRACKET
+   57 var_choice: L_SQUARE_BRACKET expression . R_SQUARE_BRACKET
 
     R_SQUARE_BRACKET  shift, and go to state 132
 
 
 State 113
 
-    6 stmt_loop: stmt_options SEMICOLON stmt_loop .
+   13 stmt_loop: stmt_options SEMICOLON stmt_loop .
 
-    $default  reduce using rule 6 (stmt_loop)
+    $default  reduce using rule 13 (stmt_loop)
 
 
 State 114
@@ -1468,25 +1468,25 @@ State 115
 
 State 116
 
-   70 term_choice: L_PAREN expression R_PAREN .
+   73 term_choice: L_PAREN expression R_PAREN .
 
-    $default  reduce using rule 70 (term_choice)
+    $default  reduce using rule 73 (term_choice)
 
 
 State 117
 
-   72 term_choice2: expression . term_comma
+   75 term_choice2: expression . term_comma
 
     COMMA  shift, and go to state 133
 
-    $default  reduce using rule 75 (term_comma)
+    $default  reduce using rule 78 (term_comma)
 
     term_comma  go to state 134
 
 
 State 118
 
-   71 term_paren: IDENT L_PAREN term_choice2 . R_PAREN
+   74 term_paren: IDENT L_PAREN term_choice2 . R_PAREN
 
     R_PAREN  shift, and go to state 135
 
@@ -1533,63 +1533,63 @@ State 122
 
 State 123
 
-   58 expr_choice: SUB multiplicative_expression . expr_choice
+   61 expr_choice: SUB multiplicative_expression . expr_choice
 
     SUB  shift, and go to state 98
     ADD  shift, and go to state 99
 
-    $default  reduce using rule 59 (expr_choice)
+    $default  reduce using rule 62 (expr_choice)
 
     expr_choice  go to state 140
 
 
 State 124
 
-   57 expr_choice: ADD multiplicative_expression . expr_choice
+   60 expr_choice: ADD multiplicative_expression . expr_choice
 
     SUB  shift, and go to state 98
     ADD  shift, and go to state 99
 
-    $default  reduce using rule 59 (expr_choice)
+    $default  reduce using rule 62 (expr_choice)
 
     expr_choice  go to state 141
 
 
 State 125
 
-   61 mult_choice: MULT term . mult_choice
+   64 mult_choice: MULT term . mult_choice
 
     MULT  shift, and go to state 101
     DIV   shift, and go to state 102
     MOD   shift, and go to state 103
 
-    $default  reduce using rule 64 (mult_choice)
+    $default  reduce using rule 67 (mult_choice)
 
     mult_choice  go to state 142
 
 
 State 126
 
-   62 mult_choice: DIV term . mult_choice
+   65 mult_choice: DIV term . mult_choice
 
     MULT  shift, and go to state 101
     DIV   shift, and go to state 102
     MOD   shift, and go to state 103
 
-    $default  reduce using rule 64 (mult_choice)
+    $default  reduce using rule 67 (mult_choice)
 
     mult_choice  go to state 143
 
 
 State 127
 
-   63 mult_choice: MOD term . mult_choice
+   66 mult_choice: MOD term . mult_choice
 
     MULT  shift, and go to state 101
     DIV   shift, and go to state 102
     MOD   shift, and go to state 103
 
-    $default  reduce using rule 64 (mult_choice)
+    $default  reduce using rule 67 (mult_choice)
 
     mult_choice  go to state 144
 
@@ -1607,7 +1607,7 @@ State 128
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 145
     stmt_options  go to state 42
@@ -1653,43 +1653,43 @@ State 131
 
 State 132
 
-   77 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET .
+   57 var_choice: L_SQUARE_BRACKET expression R_SQUARE_BRACKET .
 
-    $default  reduce using rule 77 (var_choice)
+    $default  reduce using rule 57 (var_choice)
 
 
 State 133
 
-   74 term_comma: COMMA . term_choice2
+   77 term_comma: COMMA . term_choice2
 
     SUB      shift, and go to state 55
     L_PAREN  shift, and go to state 74
     NUMBER   shift, and go to state 57
     IDENT    shift, and go to state 58
 
-    $default  reduce using rule 73 (term_choice2)
+    $default  reduce using rule 76 (term_choice2)
 
+    var                        go to state 63
     expression                 go to state 117
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
     term_choice2               go to state 149
-    var                        go to state 68
 
 
 State 134
 
-   72 term_choice2: expression term_comma .
+   75 term_choice2: expression term_comma .
 
-    $default  reduce using rule 72 (term_choice2)
+    $default  reduce using rule 75 (term_choice2)
 
 
 State 135
 
-   71 term_paren: IDENT L_PAREN term_choice2 R_PAREN .
+   74 term_paren: IDENT L_PAREN term_choice2 R_PAREN .
 
-    $default  reduce using rule 71 (term_paren)
+    $default  reduce using rule 74 (term_paren)
 
 
 State 136
@@ -1705,7 +1705,7 @@ State 136
     RETURN    shift, and go to state 39
     IDENT     shift, and go to state 40
 
-    $default  reduce using rule 7 (stmt_loop)
+    $default  reduce using rule 14 (stmt_loop)
 
     stmt_loop     go to state 150
     stmt_options  go to state 42
@@ -1743,37 +1743,37 @@ State 139
 
 State 140
 
-   58 expr_choice: SUB multiplicative_expression expr_choice .
+   61 expr_choice: SUB multiplicative_expression expr_choice .
 
-    $default  reduce using rule 58 (expr_choice)
+    $default  reduce using rule 61 (expr_choice)
 
 
 State 141
 
-   57 expr_choice: ADD multiplicative_expression expr_choice .
+   60 expr_choice: ADD multiplicative_expression expr_choice .
 
-    $default  reduce using rule 57 (expr_choice)
+    $default  reduce using rule 60 (expr_choice)
 
 
 State 142
 
-   61 mult_choice: MULT term mult_choice .
+   64 mult_choice: MULT term mult_choice .
 
-    $default  reduce using rule 61 (mult_choice)
+    $default  reduce using rule 64 (mult_choice)
 
 
 State 143
 
-   62 mult_choice: DIV term mult_choice .
+   65 mult_choice: DIV term mult_choice .
 
-    $default  reduce using rule 62 (mult_choice)
+    $default  reduce using rule 65 (mult_choice)
 
 
 State 144
 
-   63 mult_choice: MOD term mult_choice .
+   66 mult_choice: MOD term mult_choice .
 
-    $default  reduce using rule 63 (mult_choice)
+    $default  reduce using rule 66 (mult_choice)
 
 
 State 145
@@ -1799,12 +1799,12 @@ State 146
     relation_and_expr          go to state 60
     relation_expr              go to state 61
     rel_choice                 go to state 62
-    expression                 go to state 63
-    multiplicative_expression  go to state 64
-    term                       go to state 65
-    term_choice                go to state 66
-    term_paren                 go to state 67
-    var                        go to state 68
+    var                        go to state 63
+    expression                 go to state 64
+    multiplicative_expression  go to state 65
+    term                       go to state 66
+    term_choice                go to state 67
+    term_paren                 go to state 68
 
 
 State 147
@@ -1823,9 +1823,9 @@ State 148
 
 State 149
 
-   74 term_comma: COMMA term_choice2 .
+   77 term_comma: COMMA term_choice2 .
 
-    $default  reduce using rule 74 (term_comma)
+    $default  reduce using rule 77 (term_comma)
 
 
 State 150
