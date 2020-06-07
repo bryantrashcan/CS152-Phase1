@@ -1,8 +1,11 @@
-%{
-#include "structs.h"
+%{ 
+#include "structs.h" 
 
+using namespace std;
+ 
 int yyerror(const char* nameStr);
 int yylex(void);
+
 
 
 stringstream *all_code; /* intermediated code to be put in file */
@@ -42,7 +45,6 @@ void bool_map_dec(string mapName);
 %union{
     int		int_val;
     char 	str_val[256];
-
 
     struct{
         stringstream *term_code;
@@ -89,8 +91,7 @@ functions{
 	$$.term_code = $1.term_code;
 	if(!noMainErr){
 		yyerror("Error: main function is undeclared.");
-	}
-	
+	}	
 }
               
 functions:      
@@ -128,7 +129,7 @@ function:   FUNCTION ident_term SEMICOLON BEGIN_PARAMS declare_loop END_PARAMS B
                     }
                 }
                  *($$.term_code) << $11.term_code->str();
-                *($$.term_code) << "endfunc\n";
+                 *($$.term_code) << "endfunc\n";
             }
 ;
 ident_term: IDENT {
@@ -242,11 +243,12 @@ ident_loop2:  COMMA IDENT ident_loop2 {
                     $$.vars = $2.vars;
                 };
 
-ident_loop_choice:  ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
-                    $$.term_code = new stringstream();
-                    $$.vars = new vector<Var>();
-                    $$.term_type = INT_ARR;
-                    $$.term_length = $3;
+ident_loop_choice:  
+ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF{
+	$$.term_code = new stringstream();
+	$$.vars = new vector<Var>();
+	$$.term_type = INT_ARR;
+	$$.term_length = $3;
                 }
                 | {
                     $$.term_code = new stringstream();
@@ -268,24 +270,31 @@ stmt_options:
 	s1 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s2 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s3 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s4 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s6 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s7 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s8 {
 		$$.term_code = $1.term_code;
 	}
+
 	| s9 {
 		$$.term_code = $1.term_code;
 	};

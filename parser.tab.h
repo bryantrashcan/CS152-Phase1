@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_PARSER_TAB_H_INCLUDED
+# define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -101,44 +101,18 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 37 "mini_l.y" /* yacc.c:1909  */
+#line 45 "mini_l.y" /* yacc.c:1909  */
 
-    int       int_val;
-    char str_val[256];
+    int		int_val;
+    char 	str_val[256];
 
-    //enum Type {INT, INT_ARR};
-
-    struct {
-        stringstream *code;
+    struct{
+        stringstream *term_code;
     }NonTerminal;
 
     struct Terminal Terminal;
 
-
-//    struct {
-//       stringstream *code;
-//       //location
-//       string *place;
-//       string *value;
-//       string *offset;
-//       // branches
-//       string *op;
-//       string *begin;
-//       string *parent;
-//       string *end;
-//       // type
-//       //uint val;
-//       Type type;
-//       int length;
-//       string *index;
-//       // idents and vars
-//       vector<string> *ids;
-//       vector<Var> *vars; 
-//    } Terminal;
-
-
-
-#line 142 "y.tab.h" /* yacc.c:1909  */
+#line 116 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -151,4 +125,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
